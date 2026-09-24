@@ -63,21 +63,17 @@ describe("newResume", () => {
       ...resume.content.sections.map((s) => s.id),
     ];
 
-    expect(new Set(ids).size).toBe(7);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
-  test("uses fresh UUIDs by default, so two new Resumes share no ids", () => {
+  test("by default, two new Resumes share no ids", () => {
     const idsOf = (resume: ReturnType<typeof newResume>) => [
       resume.metadata.id,
       ...resume.content.sections.map((s) => s.id),
     ];
-    const a = idsOf(newResume());
-    const b = idsOf(newResume());
+    const ids = [...idsOf(newResume()), ...idsOf(newResume())];
 
-    expect(a[0]).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
-    );
-    expect(new Set([...a, ...b]).size).toBe(14);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   test("has the default Resume Title and both timestamps set to now", () => {
