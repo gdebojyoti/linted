@@ -41,7 +41,7 @@ A Section with a fixed position that the user cannot move, such as the Header, w
 _Avoid_: Locked, fixed, sticky
 
 **Section**:
-A titled group of Entries within a Resume's Content, such as Summary, Experience or Skills. Any number of its Entries may be Enabled at once. Sections can be renamed, deleted, and repeated (for example, two Experience Sections). The Header is the exception: it cannot be repeated [or renamed], and besides its Entries it holds name and headline fields of its own.
+A titled group of Entries within a Resume's Content, such as Summary, Experience or Skills. Any number of its Entries may be Enabled at once. Sections can be renamed, deleted, and repeated (for example, two Experience Sections). The Header is the exception: it cannot be repeated or renamed, and besides its Entries it holds name and headline fields of its own.
 _Avoid_: Block, category, part
 
 **Default Section**:
