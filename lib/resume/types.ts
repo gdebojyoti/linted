@@ -39,11 +39,9 @@ export type Content = {
 // Dates
 
 /** A year, optionally narrowed to a month (1-12) and then a day (1-31). */
-export type ResumeDate = {
-  year: number;
-  month: number | null;
-  day: number | null;
-};
+export type ResumeDate =
+  | { year: number; month: null; day: null }
+  | { year: number; month: number; day: number | null };
 
 /**
  * Start and end of an Entry. A Current Entry has no end date, so the two
@@ -56,19 +54,19 @@ export type DateRange = { start: ResumeDate | null } & (
 
 // Items that can be Enabled or Disabled
 
-type Toggleable = {
+type Enableable = {
   id: string;
   enabled: boolean;
 };
 
 /** A point of Prose. Children are at most two levels deep (enforced by the Resume module). */
-export type Bullet = Toggleable & {
+export type Bullet = Enableable & {
   /** Prose, stored as Markdown source (ADR 0004). */
   text: string;
   children: Bullet[];
 };
 
-export type Skill = Toggleable & {
+export type Skill = Enableable & {
   name: string;
 };
 
@@ -76,18 +74,18 @@ export type Skill = Toggleable & {
 
 export type ContactKind = "email" | "phone" | "location" | "link";
 
-export type ContactEntry = Toggleable &
+export type ContactEntry = Enableable &
   (
     | { kind: Exclude<ContactKind, "link">; value: string }
     | { kind: "link"; label: string; value: string }
   );
 
-export type SummaryEntry = Toggleable & {
+export type SummaryEntry = Enableable & {
   /** Prose, stored as Markdown source (ADR 0004). */
   text: string;
 };
 
-export type ExperienceEntry = Toggleable & {
+export type ExperienceEntry = Enableable & {
   company: string;
   role: string;
   location: string;
@@ -95,7 +93,7 @@ export type ExperienceEntry = Toggleable & {
   bullets: Bullet[];
 };
 
-export type ProjectEntry = Toggleable & {
+export type ProjectEntry = Enableable & {
   name: string;
   link: string;
   techStack: string;
@@ -103,12 +101,12 @@ export type ProjectEntry = Toggleable & {
   bullets: Bullet[];
 };
 
-export type SkillsEntry = Toggleable & {
+export type SkillsEntry = Enableable & {
   label: string;
   skills: Skill[];
 };
 
-export type EducationEntry = Toggleable & {
+export type EducationEntry = Enableable & {
   institution: string;
   degree: string;
   location: string;
@@ -118,7 +116,7 @@ export type EducationEntry = Toggleable & {
   bullets: Bullet[];
 };
 
-export type CustomEntry = Toggleable & {
+export type CustomEntry = Enableable & {
   title: string;
   subtitle: string;
   dates: DateRange;
@@ -127,7 +125,7 @@ export type CustomEntry = Toggleable & {
 
 // Sections
 
-type SectionOf<Type extends string, E> = Toggleable & {
+type SectionOf<Type extends string, E> = Enableable & {
   type: Type;
   title: string;
   entries: E[];
@@ -135,6 +133,7 @@ type SectionOf<Type extends string, E> = Toggleable & {
 
 /** At most one per Resume, Pinned first, with a fixed title. */
 export type HeaderSection = SectionOf<"header", ContactEntry> & {
+  title: "Header";
   pinned: true;
   name: string;
   headline: string;
