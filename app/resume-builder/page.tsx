@@ -1,5 +1,3 @@
-"use client";
-
 export default function ResumesPage() {
   return (
     <main className="p-8">

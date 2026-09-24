@@ -1,11 +1,7 @@
-"use client";
-
-import { use } from "react";
-
-export default function ResumeEditorPage({
+export default async function ResumeEditorPage({
   params,
-}: PageProps<"/resume-builder/[uuid]">) {
-  const { uuid } = use(params);
+}: PageProps<"/resume-builder/resumes/[uuid]">) {
+  const { uuid } = await params;
 
   return (
     <main className="p-8">
