@@ -37,11 +37,11 @@ The Section holding personal details. Name and headline belong to the Header its
 _Avoid_: Contact section, personal info, profile
 
 **Pinned**:
-A Section with a fixed position that the user cannot move, such as the Header, which is always first, including when it is deleted and added back.
+A Section with a fixed position that the user cannot move, such as the Header, which is always first, including when it is deleted and added back. This will matter once reordering exists.
 _Avoid_: Locked, fixed, sticky
 
 **Section**:
-A titled group of Entries within a Resume's Content, such as Summary, Experience or Skills. Any number of its Entries may be Enabled at once. Sections can be renamed, deleted, and repeated (for example, two Experience Sections).
+A titled group of Entries within a Resume's Content, such as Summary, Experience or Skills. Any number of its Entries may be Enabled at once. Sections can be renamed, deleted, and repeated (for example, two Experience Sections). The Header is the exception: it cannot be repeated [or renamed], and besides its Entries it holds name and headline fields of its own.
 _Avoid_: Block, category, part
 
 **Default Section**:
@@ -57,7 +57,7 @@ One item within a Section, such as a single job, degree, project or summary para
 _Avoid_: Item, record, row
 
 **Prose**:
-Free-text Content that supports inline formatting (bold, italic, links): Summaries, Bullets, and Custom Section subtitles. All other fields are plain text.
+Free-text Content that supports inline formatting (bold, italic, links): Summaries and Bullets. All other fields are plain text.
 _Avoid_: Rich text, description
 
 **Bullet**:
@@ -83,7 +83,7 @@ _Avoid_: Ongoing, active, open-ended
 ### Presentation
 
 **Theme**:
-The visual design that renders a Resume's Enabled Content, including where each Section is placed on the page. Every Theme must be able to render any Custom Section. Changing the Theme changes appearance only, never Content.
+The visual design that renders a Resume's Enabled Content, including where each Section is placed on the page (except Pinned Sections, which keep their fixed position). Every Theme must be able to render any Custom Section. Changing the Theme changes appearance only, never Content.
 _Avoid_: Template, skin, layout
 
 **Export**:
