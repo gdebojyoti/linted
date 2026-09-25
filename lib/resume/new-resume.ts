@@ -12,7 +12,7 @@ type Options = {
 
 /**
  * Builds a new Resume with the six Default Sections, all Empty and Enabled,
- * the Header Pinned first. Pure apart from the clock and id generator, which
+ * the Header Pinned. Pure apart from the clock and id generator, which
  * callers can pass in.
  */
 export function newResume({

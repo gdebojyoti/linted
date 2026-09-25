@@ -32,7 +32,7 @@ export type ThemeSettings = {
 };
 
 export type Content = {
-  /** Stored order is kept even though v1 Themes decide placement (ADR 0003). */
+  /** Order is the editor's only; placement on the page is the Layout's (ADR 0005). */
   sections: Section[];
 };
 
@@ -131,7 +131,7 @@ type SectionOf<Type extends string, E> = Enableable & {
   entries: E[];
 };
 
-/** At most one per Resume, Pinned first, with a fixed title. */
+/** Exactly one per Resume, Pinned first in its Zone, with a fixed title. */
 export type HeaderSection = SectionOf<"header", ContactEntry> & {
   title: "Header";
   pinned: true;
