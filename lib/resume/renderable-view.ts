@@ -30,13 +30,13 @@ export type RenderableView = {
 };
 
 /**
- * Turns a Resume into only the Content a Theme should draw: an item is kept
- * only if it and all its ancestors are Enabled and it is not Empty. Blank
- * fields of kept items come out as "". Section order is the Content's; placing
- * Sections is the Theme's job (ADR 0005).
+ * Turns a Resume into only the Content a Theme should draw. A Section, Entry,
+ * Bullet, Skill or contact item is kept only if it and all its ancestors are
+ * Enabled and it is not Empty. Unfilled fields of kept items come out as "".
+ * Section order is the Content's; placing Sections is the Theme's job (ADR 0005).
  */
 export function renderableView(resume: Resume): RenderableView {
-  return { sections: kept(resume.content.sections.map(renderSection)) };
+  return { sections: dropNulls(resume.content.sections.map(renderSection)) };
 }
 
 function renderSection(section: Section): RenderedSection | null {
@@ -44,9 +44,9 @@ function renderSection(section: Section): RenderedSection | null {
 
   switch (section.type) {
     case "header": {
-      const entries = kept(section.entries.map(renderContactEntry));
-      const name = clean(section.name);
-      const headline = clean(section.headline);
+      const entries = dropNulls(section.entries.map(renderContactEntry));
+      const name = emptyIfUnfilled(section.name);
+      const headline = emptyIfUnfilled(section.headline);
       if (name === "" && headline === "" && entries.length === 0) return null;
       return {
         id: section.id,
@@ -78,7 +78,7 @@ function withEntries<S extends Section, E>(
   section: S,
   entries: (E | null)[],
 ): { id: string; type: S["type"]; title: string; entries: E[] } | null {
-  const rendered = kept(entries);
+  const rendered = dropNulls(entries);
   return rendered.length > 0
     ? { id: section.id, type: section.type, title: section.title, entries: rendered }
     : null;
@@ -87,7 +87,7 @@ function withEntries<S extends Section, E>(
 function renderContactEntry(entry: ContactEntry): Rendered<ContactEntry> | null {
   if (!entry.enabled) return null;
   if (entry.kind === "link") {
-    const rendered = { id: entry.id, kind: entry.kind, label: clean(entry.label), value: clean(entry.value) };
+    const rendered = { id: entry.id, kind: entry.kind, label: emptyIfUnfilled(entry.label), value: emptyIfUnfilled(entry.value) };
     return rendered.label !== "" || rendered.value !== "" ? rendered : null;
   }
   return isFilled(entry.value) ? { id: entry.id, kind: entry.kind, value: entry.value } : null;
@@ -102,9 +102,9 @@ function renderExperienceEntry(entry: ExperienceEntry): Rendered<ExperienceEntry
   if (!entry.enabled) return null;
   const rendered = {
     id: entry.id,
-    company: clean(entry.company),
-    role: clean(entry.role),
-    location: clean(entry.location),
+    company: emptyIfUnfilled(entry.company),
+    role: emptyIfUnfilled(entry.role),
+    location: emptyIfUnfilled(entry.location),
     dates: entry.dates,
     bullets: renderBullets(entry.bullets),
   };
@@ -115,9 +115,9 @@ function renderProjectEntry(entry: ProjectEntry): Rendered<ProjectEntry> | null 
   if (!entry.enabled) return null;
   const rendered = {
     id: entry.id,
-    name: clean(entry.name),
-    link: clean(entry.link),
-    techStack: clean(entry.techStack),
+    name: emptyIfUnfilled(entry.name),
+    link: emptyIfUnfilled(entry.link),
+    techStack: emptyIfUnfilled(entry.techStack),
     dates: entry.dates,
     bullets: renderBullets(entry.bullets),
   };
@@ -131,18 +131,18 @@ function renderSkillsEntry(entry: SkillsEntry): Rendered<SkillsEntry> | null {
     .filter((skill) => skill.enabled && isFilled(skill.name))
     .map((skill) => ({ id: skill.id, name: skill.name }));
   if (skills.length === 0) return null;
-  return { id: entry.id, label: clean(entry.label), skills };
+  return { id: entry.id, label: emptyIfUnfilled(entry.label), skills };
 }
 
 function renderEducationEntry(entry: EducationEntry): Rendered<EducationEntry> | null {
   if (!entry.enabled) return null;
   const rendered = {
     id: entry.id,
-    institution: clean(entry.institution),
-    degree: clean(entry.degree),
-    location: clean(entry.location),
+    institution: emptyIfUnfilled(entry.institution),
+    degree: emptyIfUnfilled(entry.degree),
+    location: emptyIfUnfilled(entry.location),
     dates: entry.dates,
-    results: clean(entry.results),
+    results: emptyIfUnfilled(entry.results),
     bullets: renderBullets(entry.bullets),
   };
   return anyFilled(rendered, [rendered.institution, rendered.degree, rendered.location, rendered.results])
@@ -154,8 +154,8 @@ function renderCustomEntry(entry: CustomEntry): Rendered<CustomEntry> | null {
   if (!entry.enabled) return null;
   const rendered = {
     id: entry.id,
-    title: clean(entry.title),
-    subtitle: clean(entry.subtitle),
+    title: emptyIfUnfilled(entry.title),
+    subtitle: emptyIfUnfilled(entry.subtitle),
     dates: entry.dates,
     bullets: renderBullets(entry.bullets),
   };
@@ -165,22 +165,22 @@ function renderCustomEntry(entry: CustomEntry): Rendered<CustomEntry> | null {
 /** An Entry is filled if any of its text fields, its dates or its Bullets are. */
 function anyFilled(
   entry: { dates: DateRange; bullets: Rendered<Bullet>[] },
-  cleanedFields: string[],
+  fields: string[],
 ): boolean {
-  return cleanedFields.some((field) => field !== "") || hasDates(entry.dates) || entry.bullets.length > 0;
+  return fields.some((field) => field !== "") || hasDates(entry.dates) || entry.bullets.length > 0;
 }
 
 /**
  * An Empty Bullet is left out unless it has renderable children, in which
- * case it renders blank and holds them.
+ * case it renders with empty text and holds them.
  */
 function renderBullets(bullets: Bullet[]): Rendered<Bullet>[] {
-  return kept(
+  return dropNulls(
     bullets.map((bullet) => {
       if (!bullet.enabled) return null;
       const children = renderBullets(bullet.children);
       if (!isFilled(bullet.text) && children.length === 0) return null;
-      return { id: bullet.id, text: clean(bullet.text), children };
+      return { id: bullet.id, text: emptyIfUnfilled(bullet.text), children };
     }),
   );
 }
@@ -193,11 +193,11 @@ function isFilled(text: string): boolean {
   return text.trim() !== "";
 }
 
-/** Blank text becomes "", so a Theme only has to check for "". */
-function clean(text: string): string {
+/** Whitespace-only text becomes "", so a Theme only has to check for "". */
+function emptyIfUnfilled(text: string): string {
   return isFilled(text) ? text : "";
 }
 
-function kept<T>(items: (T | null)[]): T[] {
+function dropNulls<T>(items: (T | null)[]): T[] {
   return items.filter((item): item is T => item !== null);
 }

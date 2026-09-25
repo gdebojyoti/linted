@@ -1,18 +1,22 @@
 import { describe, expect, test } from "vitest";
 import { newResume } from "./new-resume";
-import { renderableView, type Rendered } from "./renderable-view";
+import { renderableView, type RenderedSection } from "./renderable-view";
 import { sampleResume } from "./sample-resume";
 import type {
   Bullet,
   CustomEntry,
+  CustomSection,
   DateRange,
   EducationEntry,
+  EducationSection,
   ExperienceEntry,
   ExperienceSection,
   HeaderSection,
   ProjectEntry,
+  ProjectsSection,
   Resume,
   Section,
+  SectionType,
   Skill,
   SkillsEntry,
   SkillsSection,
@@ -25,12 +29,12 @@ function sequentialIds() {
   return () => `id-${++n}`;
 }
 
-function blankResume() {
+function emptyResume() {
   return newResume({ now: new Date("2026-09-26T10:00:00.000Z"), newId: sequentialIds() });
 }
 
 function resumeWith(...sections: Section[]): Resume {
-  return { ...blankResume(), content: { sections } };
+  return { ...emptyResume(), content: { sections } };
 }
 
 function summary(entries: SummaryEntry[], overrides: Partial<SummarySection> = {}): SummarySection {
@@ -83,6 +87,18 @@ function skill(name: string, overrides: Partial<Skill> = {}): Skill {
   return { id: `skill-${name}`, enabled: true, name, ...overrides };
 }
 
+function projects(entries: ProjectEntry[]): ProjectsSection {
+  return { id: "projects", type: "projects", title: "Projects", enabled: true, entries };
+}
+
+function education(entries: EducationEntry[]): EducationSection {
+  return { id: "education", type: "education", title: "Education", enabled: true, entries };
+}
+
+function custom(entries: CustomEntry[]): CustomSection {
+  return { id: "talks", type: "custom", title: "Talks", enabled: true, entries };
+}
+
 function header(overrides: Partial<HeaderSection> = {}): HeaderSection {
   return {
     id: "header",
@@ -99,7 +115,7 @@ function header(overrides: Partial<HeaderSection> = {}): HeaderSection {
 
 describe("renderableView", () => {
   test("a new Resume renders no Sections, since all of them are Empty", () => {
-    expect(renderableView(blankResume()).sections).toEqual([]);
+    expect(renderableView(emptyResume()).sections).toEqual([]);
   });
 
   test("a filled Section renders with its id, type and title, without Enabled flags", () => {
@@ -160,9 +176,9 @@ describe("renderableView", () => {
   test("the sample Resume renders only its Enabled, filled Content", () => {
     const { sections } = renderableView(sampleResume);
     const ids = (items: { id: string }[]) => items.map((item) => item.id);
-    const section = (id: string) => {
-      const found = sections.find((s) => s.id === id);
-      if (!found) throw new Error(`expected Section ${id} to render`);
+    const section = <T extends SectionType>(type: T) => {
+      const found = sections.find((s): s is Extract<RenderedSection, { type: T }> => s.type === type);
+      if (!found) throw new Error(`expected the ${type} Section to render`);
       return found;
     };
 
@@ -173,12 +189,12 @@ describe("renderableView", () => {
     expect(ids(section("projects").entries)).toEqual(["proj-ledgerly", "proj-rate-limiter"]);
     expect(ids(section("skills").entries)).toEqual(["skills-languages", "skills-infra"]);
 
-    const [paystream, northwind] = section("experience").entries as Rendered<ExperienceEntry>[];
+    const [paystream, northwind] = section("experience").entries;
     expect(ids(paystream.bullets)).toEqual(["exp-paystream-b1", "exp-paystream-b2", "exp-paystream-b3"]);
     expect(ids(paystream.bullets[0].children)).toEqual(["exp-paystream-b1-1"]);
     expect(ids(northwind.bullets)).toEqual(["exp-northwind-b1"]);
 
-    const [languages] = section("skills").entries as Rendered<SkillsEntry>[];
+    const [languages] = section("skills").entries;
     expect(languages.skills.map((s) => s.name)).toEqual(["Go", "Python", "SQL", "TypeScript"]);
   });
 
@@ -199,7 +215,7 @@ describe("renderableView", () => {
       expect(renderableView(resume).sections).toEqual([]);
     });
 
-    test("an Entry with any one field filled renders, and its blank fields come out as empty strings", () => {
+    test("an Entry with any one field filled renders, and its unfilled fields come out as empty strings", () => {
       const resume = resumeWith(experience([experienceEntry({ role: "  ", location: "Leeds" })]));
 
       expect(renderableView(resume).sections[0].entries).toEqual([
@@ -216,7 +232,7 @@ describe("renderableView", () => {
       ]);
     });
 
-    test("an Entry with every field blank is Empty and left out", () => {
+    test("an Entry with every field unfilled is Empty and left out", () => {
       const resume = resumeWith(experience([experienceEntry({ company: " ", role: "\t" })]));
 
       expect(renderableView(resume).sections).toEqual([]);
@@ -259,7 +275,7 @@ describe("renderableView", () => {
       expect(renderedBullets(bullets)).toEqual([{ id: "bullet-Led", text: "Led", children: [] }]);
     });
 
-    test("an Empty parent Bullet with filled children renders as a blank Bullet holding them", () => {
+    test("an Empty parent Bullet with filled children renders as an empty Bullet holding them", () => {
       expect(renderedBullets([bullet("  ", [bullet("Planned")])])).toEqual([
         { id: "bullet-  ", text: "", children: [{ id: "bullet-Planned", text: "Planned", children: [] }] },
       ]);
@@ -335,7 +351,7 @@ describe("renderableView", () => {
           entries: [
             { id: "phone", enabled: false, kind: "phone", value: "+44 7700 900123" },
             { id: "location", enabled: true, kind: "location", value: " " },
-            { id: "blank-link", enabled: true, kind: "link", label: "", value: "" },
+            { id: "empty-link", enabled: true, kind: "link", label: "", value: "" },
             { id: "github", enabled: true, kind: "link", label: "GitHub", value: "https://github.com/maya" },
           ],
         }),
@@ -378,7 +394,7 @@ describe("renderableView", () => {
   });
 
   describe("Projects, Education and Custom Entries", () => {
-    const blankProject: ProjectEntry = {
+    const emptyProject: ProjectEntry = {
       id: "project",
       enabled: true,
       name: "",
@@ -387,7 +403,7 @@ describe("renderableView", () => {
       dates: noDates,
       bullets: [],
     };
-    const blankDegree: EducationEntry = {
+    const emptyDegree: EducationEntry = {
       id: "degree",
       enabled: true,
       institution: "",
@@ -397,7 +413,7 @@ describe("renderableView", () => {
       results: "",
       bullets: [],
     };
-    const blankCustom: CustomEntry = {
+    const emptyCustom: CustomEntry = {
       id: "talk",
       enabled: true,
       title: "",
@@ -406,46 +422,24 @@ describe("renderableView", () => {
       bullets: [],
     };
 
-    const projects = (entries: ProjectEntry[]): Section => ({
-      id: "projects",
-      type: "projects",
-      title: "Projects",
-      enabled: true,
-      entries,
-    });
-    const education = (entries: EducationEntry[]): Section => ({
-      id: "education",
-      type: "education",
-      title: "Education",
-      enabled: true,
-      entries,
-    });
-    const custom = (entries: CustomEntry[]): Section => ({
-      id: "talks",
-      type: "custom",
-      title: "Talks",
-      enabled: true,
-      entries,
-    });
-
-    test("a Project with only its tech stack filled renders, blank fields empty", () => {
-      const resume = resumeWith(projects([{ ...blankProject, name: " ", techStack: "Go" }]));
+    test("a Project with only its tech stack filled renders, unfilled fields empty", () => {
+      const resume = resumeWith(projects([{ ...emptyProject, name: " ", techStack: "Go" }]));
 
       expect(renderableView(resume).sections[0].entries).toEqual([
         { id: "project", name: "", link: "", techStack: "Go", dates: noDates, bullets: [] },
       ]);
     });
 
-    test("an Education Entry with only its results filled renders, blank fields empty", () => {
-      const resume = resumeWith(education([{ ...blankDegree, location: "\t", results: "First" }]));
+    test("an Education Entry with only its results filled renders, unfilled fields empty", () => {
+      const resume = resumeWith(education([{ ...emptyDegree, location: "\t", results: "First" }]));
 
       expect(renderableView(resume).sections[0].entries).toEqual([
         { id: "degree", institution: "", degree: "", location: "", dates: noDates, results: "First", bullets: [] },
       ]);
     });
 
-    test("a Custom Entry with only its subtitle filled renders, blank fields empty", () => {
-      const resume = resumeWith(custom([{ ...blankCustom, title: " ", subtitle: "GopherCon UK" }]));
+    test("a Custom Entry with only its subtitle filled renders, unfilled fields empty", () => {
+      const resume = resumeWith(custom([{ ...emptyCustom, title: " ", subtitle: "GopherCon UK" }]));
 
       expect(renderableView(resume).sections).toEqual([
         {
@@ -460,9 +454,9 @@ describe("renderableView", () => {
     test("their Bullets render with the same rules", () => {
       const bullets = [bullet("Shipped"), bullet("Off", [], { enabled: false }), bullet(" ")];
       const resume = resumeWith(
-        projects([{ ...blankProject, bullets }]),
-        education([{ ...blankDegree, bullets }]),
-        custom([{ ...blankCustom, bullets }]),
+        projects([{ ...emptyProject, bullets }]),
+        education([{ ...emptyDegree, bullets }]),
+        custom([{ ...emptyCustom, bullets }]),
       );
       const shipped = [{ id: "bullet-Shipped", text: "Shipped", children: [] }];
 
@@ -473,11 +467,11 @@ describe("renderableView", () => {
       ]);
     });
 
-    test("blank or Disabled ones are left out, and so are their Sections", () => {
+    test("Empty or Disabled ones are left out, and so are their Sections", () => {
       const resume = resumeWith(
-        projects([blankProject, { ...blankProject, name: "Ledgerly", enabled: false }]),
-        education([blankDegree, { ...blankDegree, degree: "BSc", enabled: false }]),
-        custom([blankCustom, { ...blankCustom, title: "Talk", enabled: false }]),
+        projects([emptyProject, { ...emptyProject, name: "Ledgerly", enabled: false }]),
+        education([emptyDegree, { ...emptyDegree, degree: "BSc", enabled: false }]),
+        custom([emptyCustom, { ...emptyCustom, title: "Talk", enabled: false }]),
       );
 
       expect(renderableView(resume).sections).toEqual([]);
