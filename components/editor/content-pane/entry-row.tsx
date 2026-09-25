@@ -11,6 +11,7 @@ export function EntryRow({
   enabled,
   onEnabledChange,
   action,
+  columns = "grid-flow-col auto-cols-fr",
   children,
 }: {
   /** Names the Entry for screen readers, e.g. "Email" or "GitHub link". */
@@ -18,6 +19,8 @@ export function EntryRow({
   enabled: boolean;
   onEnabledChange: (enabled: boolean) => void;
   action?: ReactNode;
+  /** Tailwind grid classes for the fields; by default they share the width equally. */
+  columns?: string;
   children: ReactNode;
 }) {
   return (
@@ -29,7 +32,7 @@ export function EntryRow({
           aria-label={`${name} enabled`}
         />
       </div>
-      <div className="grid min-w-0 grow grid-flow-col auto-cols-fr gap-3">{children}</div>
+      <div className={`grid min-w-0 grow gap-3 ${columns}`}>{children}</div>
       {action && <div className={alignWithInput}>{action}</div>}
     </li>
   );

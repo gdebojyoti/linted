@@ -2,9 +2,10 @@ import type { Resume, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
 import { HeaderFields } from "./header-fields";
 import { SectionRow } from "./section-row";
+import { SkillsFields } from "./skills-fields";
 
-// Only the Header can be edited so far; the other Sections gain their fields
-// in later tickets.
+// Only the Header and Skills can be edited so far; the other Sections gain
+// their fields in later tickets.
 
 export function ContentPane({
   sections,
@@ -23,15 +24,24 @@ export function ContentPane({
         <span className="text-xs text-ink-meta">{formatCount(sections.length, "section", "sections")}</span>
       </div>
       <ul className="flex grow flex-col gap-2 overflow-auto px-6 pt-4 pb-8">
-        {sections.map((section) =>
-          section.type === "header" ? (
-            <SectionRow key={section.id} section={section} defaultExpanded>
-              <HeaderFields header={section} onEdit={onEdit} />
-            </SectionRow>
-          ) : (
-            <SectionRow key={section.id} section={section} />
-          ),
-        )}
+        {sections.map((section) => {
+          switch (section.type) {
+            case "header":
+              return (
+                <SectionRow key={section.id} section={section} defaultExpanded>
+                  <HeaderFields header={section} onEdit={onEdit} />
+                </SectionRow>
+              );
+            case "skills":
+              return (
+                <SectionRow key={section.id} section={section}>
+                  <SkillsFields section={section} onEdit={onEdit} />
+                </SectionRow>
+              );
+            default:
+              return <SectionRow key={section.id} section={section} />;
+          }
+        })}
       </ul>
     </aside>
   );
