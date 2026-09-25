@@ -2,9 +2,26 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 
+// Import style: "./" for files in the same folder or below it, "@/" for
+// everything else. Climbing up with "../" is never allowed.
+//
+// ESLint lets a later config block replace a rule's options rather than add
+// to them, so every block below that sets no-restricted-imports includes
+// this pattern again.
+const noParentImports = {
+  regex: "(^|/)\\.\\.(/|$)",
+  message: 'Use "@/..." instead of "../". Relative imports are only for the same folder or below.',
+};
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    files: ["**/*.{ts,tsx,mts}"],
+    rules: {
+      "no-restricted-imports": ["error", { patterns: [noParentImports] }],
+    },
+  },
   // Import boundaries between the app and resume Themes.
   //
   // The app (components/) and each Theme (themes/) must stay independent:
@@ -23,8 +40,9 @@ const eslintConfig = defineConfig([
         "error",
         {
           patterns: [
+            noParentImports,
             {
-              group: ["@/components/**", "**/components/**"],
+              group: ["@/components/**"],
               message: "Themes must not use app components. Keep the Theme self-contained.",
             },
           ],
@@ -40,8 +58,9 @@ const eslintConfig = defineConfig([
         "error",
         {
           patterns: [
+            noParentImports,
             {
-              group: ["@/themes/**", "**/themes/**"],
+              group: ["@/themes/**"],
               message: "App components must not use Theme code. Only the preview pane shows a Theme.",
             },
           ],
