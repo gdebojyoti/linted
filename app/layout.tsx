@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 
-// Loaded once. The app uses it through --font-sans (globals.css); a Theme
-// that wants it points its own font variable at --font-open-sans.
+// The app font, used through --font-sans (globals.css). Themes load their
+// own fonts, so changing the app font never changes a Resume.
 const openSans = Open_Sans({
   variable: "--font-open-sans",
   subsets: ["latin"],
