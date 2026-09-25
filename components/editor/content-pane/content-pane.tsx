@@ -1,18 +1,17 @@
-import type { Section } from "@/lib/resume/types";
-import type { HeaderChanges } from "@/lib/resume/update-header";
+import type { Resume, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
 import { HeaderFields } from "./header-fields";
 import { SectionRow } from "./section-row";
 
-// Only the Header's name and headline can be edited so far; the other
-// Sections gain their fields in later tickets (#18 onwards).
+// Only the Header can be edited so far; the other Sections gain their fields
+// in later tickets.
 
 export function ContentPane({
   sections,
-  onHeaderUpdate,
+  onEdit,
 }: {
   sections: Section[];
-  onHeaderUpdate: (changes: HeaderChanges) => void;
+  onEdit: (edit: (resume: Resume) => Resume) => void;
 }) {
   return (
     <aside
@@ -27,7 +26,7 @@ export function ContentPane({
         {sections.map((section) =>
           section.type === "header" ? (
             <SectionRow key={section.id} section={section} defaultExpanded>
-              <HeaderFields header={section} onUpdate={onHeaderUpdate} />
+              <HeaderFields header={section} onEdit={onEdit} />
             </SectionRow>
           ) : (
             <SectionRow key={section.id} section={section} />
