@@ -15,7 +15,7 @@ Everything the user writes in a Resume (Sections, Entries, Bullets) plus whether
 _Avoid_: Data, body
 
 **Theme Settings**:
-The part of a Resume that says which Theme renders it and how that Theme is configured for this Resume.
+The part of a Resume that says which Theme renders it and how that Theme is configured for this Resume, including its Layout.
 _Avoid_: Style, appearance
 
 **Metadata**:
@@ -33,23 +33,23 @@ _Avoid_: Clone, fork, template
 ### Content structure
 
 **Header**:
-The Section holding personal details. Name and headline belong to the Header itself; each contact item (email, phone, location, each link) is one of its Entries. A Resume has at most one Header, and it is Pinned to the top.
+The Section holding personal details. Name and headline belong to the Header itself; each contact item (email, phone, location, each link) is one of its Entries. A Resume has exactly one Header, and it is Pinned.
 _Avoid_: Contact section, personal info, profile
 
 **Pinned**:
-A Section with a fixed position that the user cannot move, such as the Header, which is always first, including when it is deleted and added back. This will matter once reordering exists.
+A Section that is always first in whichever Zone its Theme puts it in. The user cannot move it or place another Section above it. The Header is Pinned.
 _Avoid_: Locked, fixed, sticky
 
 **Section**:
-A titled group of Entries within a Resume's Content, such as Summary, Experience or Skills. Any number of its Entries may be Enabled at once. Sections can be renamed, deleted, and repeated (for example, two Experience Sections). The Header is the exception: it cannot be repeated or renamed, and besides its Entries it holds name and headline fields of its own.
+A titled group of Entries within a Resume's Content, such as Summary, Experience or Skills. Any number of its Entries may be Enabled at once. Sections can be renamed, except the Header, which besides its Entries holds name and headline fields of its own.
 _Avoid_: Block, category, part
 
 **Default Section**:
-A Section of a type Linted provides out of the box, with a known shape: Header, Summary, Experience, Projects, Skills or Education. A new Resume starts with one of each, all Empty.
+A Section of a type Linted provides out of the box, with a known shape: Header, Summary, Experience, Projects, Skills or Education. A Resume has one of each from the start, all Empty. Default Sections cannot be deleted, only left Empty or Disabled.
 _Avoid_: Built-in section, standard section
 
 **Custom Section**:
-A Section the user creates and names themselves, using a generic Entry shape. A Resume can have any number of them.
+A Section the user creates and names themselves, using a generic Entry shape. A Resume can have any number of them, and they can be deleted.
 _Avoid_: User section, freeform section
 
 **Entry**:
@@ -69,11 +69,11 @@ A single named skill (e.g. "Go") within a Skills Entry, which groups Skills unde
 _Avoid_: Tag, keyword
 
 **Enabled / Disabled**:
-Whether a Section, Entry, Bullet or Skill is included in the preview and the Export. Disabling a parent hides everything beneath it without changing the children's own Enabled state.
+Whether a Section, Entry, Bullet or Skill is included in the Export. Disabling a parent hides everything beneath it without changing the children's own Enabled state. A Disabled Section is Ghosted in the preview.
 _Avoid_: Hidden, visible, active, checked
 
 **Empty**:
-Content the user has not filled in. Empty content is never rendered, regardless of whether it is Enabled.
+Content the user has not filled in. Empty content is never included in the Export, regardless of whether it is Enabled. An Empty Section is Ghosted in the preview.
 _Avoid_: Blank, unset
 
 **Current**:
@@ -83,8 +83,20 @@ _Avoid_: Ongoing, active, open-ended
 ### Presentation
 
 **Theme**:
-The visual design that renders a Resume's Enabled Content, including where each Section is placed on the page (except Pinned Sections, which keep their fixed position). Every Theme must be able to render any Custom Section. Changing the Theme changes appearance only, never Content.
-_Avoid_: Template, skin, layout
+The visual design that renders a Resume's Enabled Content. A Theme defines its Zones and a default Layout, which places Sections into Zones by their type. Every Theme must be able to render any Custom Section. Changing the Theme never changes Content, but resets the Layout to the new Theme's default.
+_Avoid_: Template, skin
+
+**Zone**:
+A named area of the page that a Theme defines, such as header, sidebar or main, holding Sections in order. Each Zone belongs to one Theme.
+_Avoid_: Column, region, slot, area
+
+**Layout**:
+Which Zone each Section of a Resume sits in, and the order of Sections within each Zone, for the Resume's current Theme. Part of Theme Settings, not Content. The user changes it in the preview.
+_Avoid_: Arrangement, placement, order
+
+**Ghosted**:
+How the preview shows a Section that is Empty or Disabled: only its title, faded, so the user can still move it within the Layout. Ghosted Sections never appear in the Export.
+_Avoid_: Hidden, dimmed, placeholder
 
 **Export**:
 Producing a PDF of a Resume's Enabled Content in its Theme.
