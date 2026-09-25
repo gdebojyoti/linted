@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Editor A — form and live preview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=EB+Garamond:wght@400;600&amp;family=IBM+Plex+Mono:wght@400;600&amp;family=IBM+Plex+Sans:wght@400;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap">
+<style>
+body{margin:0;font-family:'Geist',system-ui,sans-serif;color:#1A1A18;background:#F6F6F3}
+a{color:#17784A}a:hover{color:#0F5E39}
+input[type=checkbox]{accent-color:#17784A;width:16px;height:16px;margin:0;flex-shrink:0;cursor:pointer}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1440px; height: 940px; display: flex; flex-direction: column; background: #F6F6F3; font-family: 'Geist', system-ui, sans-serif; color: #1A1A18; overflow: hidden">
+
+<header style="height: 56px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 16px; padding: 0 20px; background: #FFFFFF; border-bottom: 1px solid #E3E3DE">
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 24px; height: 24px; border-radius: 6px; background: #17784A; display: flex; align-items: center; justify-content: center; color: #FFFFFF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></div>
+<span style="font-family: 'Geist Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: -0.02em">linted</span>
+</div>
+<div style="width: 1px; height: 20px; background: #E3E3DE"></div>
+<nav aria-label="Breadcrumb" style="display: flex; align-items: center; gap: 8px; font-size: 13px">
+<a href="#" style="color: #5F5F58; text-decoration: none">Resumes</a>
+<span style="color: #B5B5AE">/</span>
+<span style="font-weight: 600">Backend — payments v2</span>
+<button aria-label="Rename resume" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg></button>
+</nav>
+<div style="flex-grow: 1"></div>
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="display: flex; align-items: center; gap: 6px; font-family: 'Geist Mono', monospace; font-size: 12px; color: #5F5F58"><span style="width: 6px; height: 6px; border-radius: 3px; background: #17784A"></span>Saved</span>
+<button disabled="{{ true }}" title="Coming soon" style="height: 34px; padding: 0 12px; display: flex; align-items: center; gap: 6px; border: 1px solid #E3E3DE; background: #F6F6F3; border-radius: 7px; font-size: 13px; font-weight: 500; color: #8F8F88; cursor: not-allowed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>Duplicate</button>
+<button style="height: 34px; padding: 0 14px; display: flex; align-items: center; gap: 6px; border: 1px solid #17784A; background: #17784A; border-radius: 7px; font-size: 13px; font-weight: 500; color: #FFFFFF; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>Export PDF</button>
+</div>
+</header>
+
+<div style="flex-grow: 1; display: flex; min-height: 0">
+
+<aside aria-label="Content" style="width: 640px; flex-shrink: 0; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E3DE; display: flex; flex-direction: column; min-height: 0">
+<div style="height: 44px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 0 24px; border-bottom: 1px solid #EFEFEA">
+<span style="font-size: 13px; font-weight: 600">Content</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">7 sections</span>
+<span style="flex-grow: 1"></span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #5F5F58">Arrange sections in the preview<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></span>
+</div>
+<div style="flex-grow: 1; overflow: auto; padding: 16px 24px 32px; display: flex; flex-direction: column; gap: 8px">
+
+<div style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 8px 0 12px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px">
+<input type="checkbox" aria-label="Header enabled" checked="{{on.header}}" onChange="{{t.header}}">
+<span style="font-size: 14px; font-weight: 500; color: {{c.header}}">Header</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">Asha Rao · 4 of 5 entries</span>
+<sc-if value="{{g.header}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #45453F; background: #F2F2EE; padding: 2px 6px; border-radius: 4px">Ghosted</span></sc-if>
+<span style="flex-grow: 1"></span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #5F5F58; padding: 2px 6px; border: 1px solid #E3E3DE; border-radius: 4px">Pinned</span>
+<button aria-label="Expand Header" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 8px 0 12px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px">
+<input type="checkbox" aria-label="Summary enabled" checked="{{on.summary}}" onChange="{{t.summary}}">
+<span style="font-size: 14px; font-weight: 500; color: {{c.summary}}">Summary</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">1 entry</span>
+<sc-if value="{{g.summary}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #45453F; background: #F2F2EE; padding: 2px 6px; border-radius: 4px">Ghosted</span></sc-if>
+<span style="flex-grow: 1"></span>
+<button aria-label="Expand Summary" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px; display: flex; flex-direction: column; flex-shrink: 0">
+<div style="display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px 0 12px; border-bottom: 1px solid #EFEFEA">
+<input type="checkbox" aria-label="Experience enabled" checked="{{on.exp}}" onChange="{{t.exp}}">
+<span style="font-size: 14px; font-weight: 600; color: {{c.exp}}">Experience</span>
+<button aria-label="Rename section" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #6B6B64; cursor: pointer; padding: 0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg></button>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">2 entries</span>
+<sc-if value="{{g.exp}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #45453F; background: #F2F2EE; padding: 2px 6px; border-radius: 4px">Ghosted</span></sc-if>
+<span style="flex-grow: 1"></span>
+<button aria-label="Section actions" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg></button>
+<button aria-label="Collapse Experience" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
+</div>
+
+<div style="padding: 12px; display: flex; flex-direction: column; gap: 8px">
+
+<div style="border: 1px solid #9CC8B1; box-shadow: 0 0 0 3px #E8F3ED; border-radius: 8px; background: #FCFCFA; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 8px 0 12px">
+<span style="color: #A3A39C; display: flex; width: 12px; justify-content: center; cursor: grab" aria-hidden="true"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></span>
+<input type="checkbox" aria-label="Parcelwise entry enabled" checked="{{on.parcel}}" onChange="{{t.parcel}}">
+<span style="font-size: 14px; font-weight: 600; color: {{c.parcel}}">Parcelwise</span>
+<span style="font-size: 13px; color: #5F5F58">Senior Backend Engineer</span>
+<span style="flex-grow: 1"></span>
+<sc-if value="{{cur}}" hint-placeholder-val="{{ true }}"><span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #0F5E39; background: #E8F3ED; padding: 2px 6px; border-radius: 4px">Current</span></sc-if>
+<button aria-label="Collapse entry" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
+</div>
+
+<div style="padding: 4px 16px 16px 44px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 500; color: #5F5F58">Company<input type="text" defaultValue="Parcelwise" style="height: 36px; box-sizing: border-box; width: 100%; border: 1px solid #D9D9D3; border-radius: 6px; padding: 0 10px; font-family: inherit; font-size: 13px; color: #1A1A18; background: #FFFFFF"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 500; color: #5F5F58">Role<input type="text" defaultValue="Senior Backend Engineer" style="height: 36px; box-sizing: border-box; width: 100%; border: 1px solid #D9D9D3; border-radius: 6px; padding: 0 10px; font-family: inherit; font-size: 13px; color: #1A1A18; background: #FFFFFF"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 500; color: #5F5F58">Location<input type="text" defaultValue="Bengaluru" style="height: 36px; box-sizing: border-box; width: 100%; border: 1px solid #D9D9D3; border-radius: 6px; padding: 0 10px; font-family: inherit; font-size: 13px; color: #1A1A18; background: #FFFFFF"></label>
+<div style="display: flex; gap: 8px; align-items: flex-end">
+<label style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 500; color: #5F5F58">Start<input type="text" defaultValue="Mar 2022" style="height: 36px; box-sizing: border-box; width: 100%; border: 1px solid #D9D9D3; border-radius: 6px; padding: 0 10px; font-family: 'Geist Mono', monospace; font-size: 12.5px; color: #1A1A18; background: #FFFFFF"></label>
+<span style="height: 36px; display: flex; align-items: center; color: #8F8F88">–</span>
+<sc-if value="{{cur}}" hint-placeholder-val="{{ true }}">
+<label style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 500; color: #5F5F58">End<input type="text" disabled="{{ true }}" placeholder="Present" style="height: 36px; box-sizing: border-box; width: 100%; border: 1px dashed #D9D9D3; border-radius: 6px; padding: 0 10px; font-family: 'Geist Mono', monospace; font-size: 12.5px; color: #1A1A18; background: #F6F6F3"></label>
+</sc-if>
+<sc-if value="{{notCur}}" hint-placeholder-val="{{ false }}">
+<label style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 500; color: #5F5F58">End<input type="text" placeholder="Month Year" style="height: 36px; box-sizing: border-box; width: 100%; border: 1px solid #D9D9D3; border-radius: 6px; padding: 0 10px; font-family: 'Geist Mono', monospace; font-size: 12.5px; color: #1A1A18; background: #FFFFFF"></label>
+</sc-if>
+</div>
+</div>
+<label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1A1A18; cursor: pointer; margin-top: -4px; justify-content: flex-end"><input type="checkbox" checked="{{cur}}" onChange="{{toggleCur}}">Current<span style="color: #6B6B64">— no end date, shown as “Present”</span></label>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 8px; padding-bottom: 4px">
+<span style="font-size: 12px; font-weight: 500; color: #5F5F58">Bullets</span>
+<span style="flex-grow: 1"></span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #6B6B64">Tab to nest · 2 levels max</span>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 8px; padding: 7px 8px; border-radius: 6px">
+<span style="color: #A3A39C; display: flex; padding-top: 3px; cursor: grab" aria-hidden="true"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></span>
+<input type="checkbox" aria-label="Bullet enabled" checked="{{on.b1}}" onChange="{{t.b1}}" style="margin-top: 2px">
+<div style="flex-grow: 1; font-size: 13px; line-height: 1.5; color: {{c.b1}}">Led the move of the order ledger from a single Postgres instance to a sharded cluster, with <b>no customer-facing downtime</b>.</div>
+</div>
+
+<div style="margin-left: 26px; padding-left: 10px; border-left: 1px solid #E3E3DE; display: flex; flex-direction: column; gap: 2px">
+<div style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 8px; border-radius: 6px">
+<span style="color: #A3A39C; display: flex; padding-top: 3px; cursor: grab" aria-hidden="true"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></span>
+<input type="checkbox" aria-label="Child bullet enabled" checked="{{on.b1a}}" onChange="{{t.b1a}}" style="margin-top: 2px">
+<div style="flex-grow: 1; font-size: 13px; line-height: 1.5; color: {{c.b1a}}">Wrote the dual-write and backfill tooling, reviewed by three teams before rollout.</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 8px; border-radius: 6px">
+<span style="color: #A3A39C; display: flex; padding-top: 3px; cursor: grab" aria-hidden="true"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></span>
+<input type="checkbox" aria-label="Child bullet enabled" checked="{{on.b1b}}" onChange="{{t.b1b}}" style="margin-top: 2px">
+<div style="flex-grow: 1; font-size: 13px; line-height: 1.5; color: {{c.b1b}}">Built dashboards for replication lag and reconciliation drift.</div>
+</div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 8px; padding: 7px 8px; border-radius: 6px; background: #FFFFFF; border: 1px solid #17784A; box-shadow: 0 0 0 3px #E8F3ED">
+<span style="color: #A3A39C; display: flex; padding-top: 3px; cursor: grab" aria-hidden="true"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></span>
+<input type="checkbox" aria-label="Bullet enabled" checked="{{on.b2}}" onChange="{{t.b2}}" style="margin-top: 2px">
+<div style="flex-grow: 1; font-size: 13px; line-height: 1.5; color: {{c.b2}}">Designed the idempotency layer for the public payouts API, now used by every write endpoint.<span style="display: inline-block; width: 1.5px; height: 15px; background: #17784A; vertical-align: -3px; margin-left: 1px"></span></div>
+<div style="display: flex; gap: 2px; margin-top: -3px; flex-shrink: 0">
+<button aria-label="Bold" style="width: 26px; height: 26px; border: 0; background: #F2F2EE; border-radius: 5px; font-size: 13px; font-weight: 700; color: #1A1A18; cursor: pointer; padding: 0">B</button>
+<button aria-label="Italic" style="width: 26px; height: 26px; border: 0; background: #F2F2EE; border-radius: 5px; font-size: 13px; font-style: italic; font-family: Georgia, serif; color: #1A1A18; cursor: pointer; padding: 0">I</button>
+<button aria-label="Link" style="width: 26px; height: 26px; border: 0; background: #F2F2EE; border-radius: 5px; color: #1A1A18; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"></path><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"></path></svg></button>
+</div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 8px; padding: 7px 8px; border-radius: 6px">
+<span style="color: #A3A39C; display: flex; padding-top: 3px; cursor: grab" aria-hidden="true"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></span>
+<input type="checkbox" aria-label="Bullet enabled" checked="{{on.b3}}" onChange="{{t.b3}}" style="margin-top: 2px">
+<div style="flex-grow: 1; font-size: 13px; line-height: 1.5; color: {{c.b3}}">Mentor two engineers and run the fortnightly backend design review.</div>
+</div>
+
+<button style="align-self: flex-start; height: 32px; margin-left: 4px; padding: 0 10px; display: flex; align-items: center; gap: 6px; border: 0; background: transparent; border-radius: 6px; font-size: 13px; color: #17784A; font-weight: 500; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add bullet</button>
+</div>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 8px 0 12px; border: 1px solid #E3E3DE; border-radius: 8px">
+<span style="color: #A3A39C; display: flex; width: 12px; justify-content: center; cursor: grab" aria-hidden="true"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></span>
+<input type="checkbox" aria-label="Kitefin entry enabled" checked="{{on.kite}}" onChange="{{t.kite}}">
+<span style="font-size: 14px; font-weight: 600; color: {{c.kite}}">Kitefin</span>
+<span style="font-size: 13px; color: #5F5F58">Software Engineer</span>
+<span style="flex-grow: 1"></span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">Jul 2019 – Feb 2022</span>
+<button aria-label="Expand entry" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+</div>
+
+<button style="align-self: flex-start; height: 32px; padding: 0 10px; display: flex; align-items: center; gap: 6px; border: 0; background: transparent; border-radius: 6px; font-size: 13px; color: #17784A; font-weight: 500; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add entry</button>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 8px 0 12px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px">
+<input type="checkbox" aria-label="Projects enabled" checked="{{on.projects}}" onChange="{{t.projects}}">
+<span style="font-size: 14px; font-weight: 500; color: #1A1A18">Projects</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">No entries</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #45453F; background: #F2F2EE; padding: 2px 6px; border-radius: 4px">Empty · Ghosted</span>
+<span style="flex-grow: 1"></span>
+<button style="height: 30px; padding: 0 10px; display: flex; align-items: center; gap: 6px; border: 1px solid #D9D9D3; background: #FFFFFF; border-radius: 6px; font-size: 12.5px; font-weight: 500; color: #1A1A18; cursor: pointer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add project</button>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 8px 0 12px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px">
+<input type="checkbox" aria-label="Skills enabled" checked="{{on.skills}}" onChange="{{t.skills}}">
+<span style="font-size: 14px; font-weight: 500; color: {{c.skills}}">Skills</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">3 groups · 11 skills</span>
+<sc-if value="{{g.skills}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #45453F; background: #F2F2EE; padding: 2px 6px; border-radius: 4px">Ghosted</span></sc-if>
+<span style="flex-grow: 1"></span>
+<button aria-label="Expand Skills" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 8px 0 12px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px">
+<input type="checkbox" aria-label="Education enabled" checked="{{on.edu}}" onChange="{{t.edu}}">
+<span style="font-size: 14px; font-weight: 500; color: {{c.edu}}">Education</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">1 entry</span>
+<sc-if value="{{g.edu}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #45453F; background: #F2F2EE; padding: 2px 6px; border-radius: 4px">Ghosted</span></sc-if>
+<span style="flex-grow: 1"></span>
+<button aria-label="Expand Education" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+</div>
+
+<div style="position: relative; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 8px 0 12px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 8px; flex-shrink: 0">
+<input type="checkbox" aria-label="Talks enabled" checked="{{on.talks}}" onChange="{{t.talks}}">
+<span style="font-size: 14px; font-weight: 500; color: {{c.talks}}">Talks</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #5F5F58; padding: 2px 6px; border: 1px solid #E3E3DE; border-radius: 4px">Custom</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">1 entry</span>
+<sc-if value="{{g.talks}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #45453F; background: #F2F2EE; padding: 2px 6px; border-radius: 4px">Ghosted</span></sc-if>
+<span style="flex-grow: 1"></span>
+<button onClick="{{toggleMenu}}" aria-label="Section actions" aria-expanded="{{menuExpanded}}" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: {{menuBtnBg}}; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg></button>
+<button aria-label="Expand Talks" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{menu}}" hint-placeholder-val="{{ true }}">
+<div role="menu" style="position: absolute; right: 44px; top: 42px; width: 208px; padding: 4px; background: #FFFFFF; border: 1px solid #D9D9D3; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); display: flex; flex-direction: column; z-index: 5">
+<button role="menuitem" style="height: 34px; padding: 0 10px; display: flex; align-items: center; gap: 8px; border: 0; background: transparent; border-radius: 5px; font-size: 13px; color: #1A1A18; cursor: pointer; text-align: left"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg>Rename section</button>
+<div style="height: 1px; background: #EFEFEA; margin: 4px 0"></div>
+<button role="menuitem" style="height: 34px; padding: 0 10px; display: flex; align-items: center; gap: 8px; border: 0; background: transparent; border-radius: 5px; font-size: 13px; color: #B42318; cursor: pointer; text-align: left"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M6 7l1 13h10l1-13"></path><path d="M9 7V4h6v3"></path></svg>Delete section</button>
+</div>
+</sc-if>
+</div>
+
+<button style="min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px dashed #C9C9C2; background: transparent; border-radius: 8px; font-size: 13px; font-weight: 500; color: #1A1A18; cursor: pointer; flex-shrink: 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add custom section</button>
+</div>
+</aside>
+
+<main style="flex-grow: 1; min-width: 0; background: #EDEDE9; display: flex; flex-direction: column">
+<div style="height: 44px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-bottom: 1px solid #E3E3DE; background: #F6F6F3">
+<span style="font-size: 13px; font-weight: 600">Preview</span>
+<span style="flex-grow: 1"></span>
+<button disabled="{{ true }}" title="Coming soon" style="height: 28px; padding: 0 10px; display: flex; align-items: center; gap: 6px; border: 1px solid #E3E3DE; background: #F6F6F3; border-radius: 6px; font-size: 12px; color: #8F8F88; cursor: not-allowed"><span>Theme</span><span style="font-weight: 600">Ledger</span></button>
+</div>
+<div style="flex-grow: 1; display: flex; justify-content: center; padding-top: 24px; overflow: hidden">
+<div style="width: 612px; height: 792px; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 10px 30px rgba(0,0,0,0.08)">
+<dc-import name="PreviewPage" en="{{on}}" order="{{order}}" sel="{{sel}}" select="{{select}}" move="{{move}}" current="{{cur}}" highlight="{{ false }}" hint-size="612px,792px"></dc-import>
+</div>
+</div>
+</main>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var D = {header:true, phone:false, summary:true, exp:true, parcel:true, b1:true, b1a:true, b1b:false, b2:true, b3:true, kite:true, k1:true, k2:true, projects:true, skills:true, sk1:true, sk2:true, sk3:true, edu:true, talks:true};
+    var st = this.state || {};
+    var en = Object.assign({}, D, st.en || {});
+    var cur = st.cur === undefined ? true : st.cur;
+    var P = {phone:'header', parcel:'exp', b1:'parcel', b1a:'b1', b1b:'b1', b2:'parcel', b3:'parcel', kite:'exp', k1:'kite', k2:'kite', sk1:'skills', sk2:'skills', sk3:'skills'};
+    var eff = function (k) { return en[k] && (!P[k] || eff(P[k])); };
+    var t = {}, c = {};
+    Object.keys(D).forEach(function (k) {
+      t[k] = function () { var n = Object.assign({}, en); n[k] = !en[k]; self.setState({ en: n }); };
+      c[k] = eff(k) ? '#1A1A18' : '#8F8F88';
+    });
+    var order = st.order || ['summary', 'exp', 'projects', 'skills', 'edu', 'talks'];
+    var sel = st.sel !== undefined ? st.sel : null;
+    var menu = st.menu === undefined ? true : st.menu;
+    var EMPTY = { projects: true };
+    var g = {};
+    ['header', 'summary', 'exp', 'projects', 'skills', 'edu', 'talks'].forEach(function (k) { g[k] = !en[k] && !EMPTY[k]; });
+    return {
+      on: en, t: t, c: c, g: g, cur: cur, notCur: !cur,
+      toggleCur: function () { self.setState({ cur: !cur }); },
+      order: order, sel: sel,
+      select: function (id) { self.setState({ sel: sel === id ? null : id }); },
+      move: function (id, dir) {
+        var o = order.slice(); var i = o.indexOf(id); var j = i + dir;
+        if (j < 0 || j >= o.length) return;
+        o[i] = o[j]; o[j] = id; self.setState({ order: o });
+      },
+      menu: menu, menuExpanded: menu ? 'true' : 'false', menuBtnBg: menu ? '#F2F2EE' : 'transparent',
+      toggleMenu: function () { self.setState({ menu: !menu }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

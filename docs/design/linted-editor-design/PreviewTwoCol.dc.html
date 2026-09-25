@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Two-column preview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 612px; height: 792px; box-sizing: border-box; padding: 46px 48px 42px; background: #FFFFFF; font-family: 'Source Serif 4', Georgia, serif; font-size: 9.5px; line-height: 1.42; color: #1F1F1D; overflow: hidden">
+<div style="display: grid; grid-template-columns: 164px minmax(0, 1fr); gap: 30px 28px; align-items: start">
+<sc-for list="{{zones}}" as="z" hint-placeholder-count="3">
+<div style="grid-column: {{z.span}}; min-height: 28px; display: flex; flex-direction: column; gap: 14px; outline: {{zoneOutline}}; outline-offset: 10px; border-radius: 2px">
+
+<sc-if value="{{z.isTop}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative">
+<sc-if value="{{showPin}}" hint-placeholder-val="{{ true }}"><span title="Pinned: always first" style="position: absolute; left: -26px; top: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #9A9A93"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Pinned"><path d="M9 4h6l-1 5 3 3H7l3-3-1-5z"></path><path d="M12 12v8"></path></svg></span></sc-if>
+<sc-if value="{{en.header}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 22.8px; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em">Asha Rao</div>
+<div style="font-size: 10.6px; color: #45453F">Backend engineer · Payments and distributed systems</div>
+<div style="display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 8.75px; color: #45453F; margin-top: 3px">
+<span>asha@asharao.dev</span>
+<span>Bengaluru, India</span>
+<sc-if value="{{en.phone}}" hint-placeholder-val="{{ false }}"><span>[PHONE]</span></sc-if>
+<span style="color: #17784A">github.com/asharao</span>
+<span style="color: #17784A">asharao.dev</span>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{headerGhost}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: flex-end; gap: 8px; border-bottom: 0.75px dashed #BDBDB6; padding-bottom: 3px; opacity: 0.4">
+<span style="font-size: 8.55px; font-weight: 600; color: #17784A; text-transform: uppercase; letter-spacing: 0.12em">Header</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 8px; color: #1F1F1D; border: 1px solid #A3A39C; border-radius: 3px; padding: 0 4px">Disabled</span>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-for list="{{z.sections}}" as="s" hint-placeholder-count="2">
+<section style="position: relative; display: flex; flex-direction: column; gap: 5px; outline: {{s.outline}}; outline-offset: 6px; border-radius: 2px; background: #FFFFFF; box-shadow: {{s.lift}}">
+<sc-if value="{{s.showGrip}}" hint-placeholder-val="{{ true }}"><button onClick="{{s.pick}}" aria-label="Arrange {{s.title}}" aria-pressed="{{s.pressed}}" style="position: absolute; left: {{s.gl}}; right: {{s.gr}}; top: {{s.gt}}; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 5px; background: {{s.gripBg}}; color: {{s.gripColor}}; cursor: grab; padding: 0; z-index: 1"><svg width="9" height="13" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></button></sc-if>
+<sc-if value="{{s.sel}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; right: -8px; top: -40px; height: 28px; display: flex; align-items: center; gap: 1px; padding: 0 3px 0 8px; background: #FFFFFF; border: 1px solid #D9D9D3; border-radius: 6px; box-shadow: 0 3px 10px rgba(0,0,0,0.10); font-family: 'Geist', sans-serif; z-index: 3; white-space: nowrap">
+<span style="font-family: 'Geist Mono', monospace; font-size: 10px; color: #5F5F58; padding-right: 6px">{{s.pos}}</span>
+<span style="width: 1px; height: 16px; background: #E3E3DE; margin-right: 2px"></span>
+<button onClick="{{s.left}}" disabled="{{s.leftDis}}" aria-label="Move {{s.title}} to the left column" style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 4px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{s.leftOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M11 6l-6 6 6 6"></path></svg></button>
+<button onClick="{{s.up}}" disabled="{{s.upDis}}" aria-label="Move {{s.title}} up" style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 4px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{s.upOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></button>
+<button onClick="{{s.down}}" disabled="{{s.downDis}}" aria-label="Move {{s.title}} down" style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 4px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{s.downOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M6 13l6 6 6-6"></path></svg></button>
+<button onClick="{{s.right}}" disabled="{{s.rightDis}}" aria-label="Move {{s.title}} to the right column" style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 4px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{s.rightOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></button>
+</div>
+</sc-if>
+<div style="display: flex; align-items: flex-end; gap: 8px; border-bottom: {{s.hb}}; padding-bottom: 3px; opacity: {{s.op}}">
+<h2 style="margin: 0; font-size: 8.55px; font-weight: 600; color: #17784A; text-transform: uppercase; letter-spacing: 0.12em">{{s.title}}</h2>
+<sc-if value="{{s.ghost}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 8px; color: #1F1F1D; border: 1px solid #A3A39C; border-radius: 3px; padding: 0 4px">{{s.tag}}</span></sc-if>
+</div>
+
+<sc-if value="{{s.isSummary}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0">Backend engineer with six years building payment and ledger services in Go and Postgres. I like boring, observable systems and APIs that are hard to misuse.</p>
+</sc-if>
+
+<sc-if value="{{s.isExp}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 9px; padding-top: 3px">
+<sc-if value="{{en.parcel}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 3px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 12px">
+<div><span style="font-weight: 600">Senior Backend Engineer</span><span style="color: #45453F">, Parcelwise</span></div>
+<div style="font-size: 8.75px; color: #45453F; white-space: nowrap">Bengaluru · Mar 2022 – {{endLabel}}</div>
+</div>
+<ul style="margin: 0; padding-left: 14px; display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.b1}}" hint-placeholder-val="{{ true }}">
+<li>Led the move of the order ledger from a single Postgres instance to a sharded cluster, with <b>no customer-facing downtime</b>.
+<ul style="margin: 2px 0 0; padding-left: 14px; list-style-type: circle; display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.b1a}}" hint-placeholder-val="{{ true }}"><li>Wrote the dual-write and backfill tooling, reviewed by three teams before rollout.</li></sc-if>
+<sc-if value="{{en.b1b}}" hint-placeholder-val="{{ false }}"><li>Built dashboards for replication lag and reconciliation drift.</li></sc-if>
+</ul>
+</li>
+</sc-if>
+<sc-if value="{{en.b2}}" hint-placeholder-val="{{ true }}"><li>Designed the idempotency layer for the public payouts API, now used by every write endpoint.</li></sc-if>
+<sc-if value="{{en.b3}}" hint-placeholder-val="{{ true }}"><li>Mentor two engineers and run the fortnightly backend design review.</li></sc-if>
+</ul>
+</div>
+</sc-if>
+<sc-if value="{{en.kite}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 3px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 12px">
+<div><span style="font-weight: 600">Software Engineer</span><span style="color: #45453F">, Kitefin</span></div>
+<div style="font-size: 8.75px; color: #45453F; white-space: nowrap">Pune · Jul 2019 – Feb 2022</div>
+</div>
+<ul style="margin: 0; padding-left: 14px; display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.k1}}" hint-placeholder-val="{{ true }}"><li>Built the webhook delivery service in Go, with retries, request signing and a replay tool for support.</li></sc-if>
+<sc-if value="{{en.k2}}" hint-placeholder-val="{{ true }}"><li>Moved hot account-search queries to a read replica and added the indexes they were missing.</li></sc-if>
+</ul>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{s.isSkills}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-if value="{{en.sk1}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 1px"><span style="font-weight: 600">Languages</span><span>Go, Python, SQL, TypeScript</span></div></sc-if>
+<sc-if value="{{en.sk2}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 1px"><span style="font-weight: 600">Infrastructure</span><span>Postgres, Kafka, Kubernetes, Terraform</span></div></sc-if>
+<sc-if value="{{en.sk3}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 1px"><span style="font-weight: 600">Practices</span><span>API design, observability, incident response</span></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{s.isEdu}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 1px">
+<span style="font-weight: 600">College of Engineering, Pune</span>
+<span>B.Tech <span style="color: #45453F">in</span> Computer Science</span>
+<span style="font-size: 8.75px; color: #45453F">2015 – 2019 · CGPA 8.4 / 10</span>
+</div>
+</sc-if>
+
+<sc-if value="{{s.isTalks}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 12px">
+<div><span style="font-weight: 600">Idempotency keys, in practice</span><span style="color: #45453F"> — Bengaluru Go meetup</span></div>
+<div style="font-size: 8.75px; color: #45453F; white-space: nowrap">2024</div>
+</div>
+</sc-if>
+</section>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"en":{"editor":null,"tsType":"object"},"current":{"editor":"boolean","default":true},"mode":{"editor":"enum","default":"default","options":["default","active","render"]},"$preview":{"width":612,"height":792}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var p = this.props;
+    var self = this;
+    var st = this.state || {};
+    var D = {header:true, phone:false, summary:true, exp:true, parcel:true, b1:true, b1a:true, b1b:false, b2:true, b3:true, kite:true, k1:true, k2:true, projects:true, skills:true, sk1:true, sk2:true, sk3:true, edu:true, talks:true};
+    var en = Object.assign({}, D, p.en || {});
+    var EMPTY = { projects: true };
+    var T = { summary: 'Summary', exp: 'Experience', projects: 'Projects', skills: 'Skills', edu: 'Education', talks: 'Talks' };
+    var L = st.layout || { top: ['summary'], side: ['skills', 'edu'], main: ['exp', 'projects', 'talks'] };
+    var mode = p.mode || 'default';
+    var render = mode === 'render';
+    var sel = render ? null : (st.sel !== undefined ? st.sel : (mode === 'active' ? 'talks' : null));
+    var dragging = !!sel;
+    var cur = p.current === undefined ? true : !!p.current;
+    var zoneOf = function (id) { return ['top', 'side', 'main'].filter(function (z) { return L[z].indexOf(id) > -1; })[0]; };
+    var act = function (id, a) {
+      var l = { top: L.top.slice(), side: L.side.slice(), main: L.main.slice() };
+      var z = zoneOf(id); var arr = l[z]; var i = arr.indexOf(id);
+      if (a === 'up') {
+        if (i > 0) { arr[i] = arr[i - 1]; arr[i - 1] = id; }
+        else if (z !== 'top') { arr.splice(i, 1); l.top.push(id); }
+      } else if (a === 'down') {
+        if (i < arr.length - 1) { arr[i] = arr[i + 1]; arr[i + 1] = id; }
+        else if (z === 'top') { arr.splice(i, 1); l.main.unshift(id); }
+      } else if (a === 'left' && z === 'main') { arr.splice(i, 1); l.side.push(id); }
+      else if (a === 'right' && z === 'side') { arr.splice(i, 1); l.main.push(id); }
+      self.setState({ layout: l });
+    };
+    var build = function (z) {
+      return L[z].filter(function (id) { return !render || (en[id] && !EMPTY[id]); }).map(function (id, i, list) {
+        var empty = !!EMPTY[id];
+        var dis = !en[id];
+        var ghost = empty || dis;
+        var s = sel === id;
+        var last = i === list.length - 1;
+        var upDis = i === 0 && z === 'top';
+        var downDis = last && z !== 'top';
+        var leftDis = z !== 'main';
+        var rightDis = z !== 'side';
+        return {
+          title: T[id], ghost: ghost, tag: dis ? 'Disabled' : 'Empty',
+          op: ghost ? '0.4' : '1',
+          hb: ghost ? '0.75px dashed #BDBDB6' : '0.75px solid #D6D6D0',
+          sel: s, pressed: s ? 'true' : 'false',
+          outline: s ? '1.5px solid #17784A' : '0 solid transparent',
+          lift: s ? '0 0 0 6px #FFFFFF, 0 10px 24px 6px rgba(0,0,0,0.12)' : 'none',
+          gripColor: s ? '#FFFFFF' : '#A3A39C',
+          gripBg: s ? '#17784A' : '#FFFFFF',
+          gl: '-26px',
+          gr: 'auto',
+          gt: '-4px',
+          pos: (i + 1) + ' of ' + list.length,
+          showGrip: !render && (!dragging || s),
+          upDis: upDis, downDis: downDis, leftDis: leftDis, rightDis: rightDis,
+          upOp: upDis ? '0.3' : '1', downOp: downDis ? '0.3' : '1',
+          leftOp: leftDis ? '0.3' : '1', rightOp: rightDis ? '0.3' : '1',
+          pick: function () { self.setState({ sel: s ? null : id }); },
+          up: function () { act(id, 'up'); },
+          down: function () { act(id, 'down'); },
+          left: function () { act(id, 'left'); },
+          right: function () { act(id, 'right'); },
+          isSummary: !ghost && id === 'summary',
+          isExp: !ghost && id === 'exp',
+          isSkills: !ghost && id === 'skills',
+          isEdu: !ghost && id === 'edu',
+          isTalks: !ghost && id === 'talks'
+        };
+      });
+    };
+    return {
+      en: en,
+      headerGhost: !en.header && !render,
+      showPin: !render && !dragging,
+      endLabel: cur ? 'Present' : '[END DATE]',
+      zoneOutline: dragging ? '1px dashed #9CC8B1' : '0 solid transparent',
+      zones: [
+        { span: '1 / -1', isTop: true, sections: build('top') },
+        { span: '1 / 2', isTop: false, sections: build('side') },
+        { span: '2 / 3', isTop: false, sections: build('main') }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
