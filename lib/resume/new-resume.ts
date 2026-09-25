@@ -4,6 +4,7 @@ import {
   SCHEMA_VERSION,
   type Resume,
 } from "./types";
+import { emptyContact, FIXED_CONTACT_KINDS } from "./empty-entry";
 
 type Options = {
   now?: Date;
@@ -12,7 +13,7 @@ type Options = {
 
 /**
  * Builds a new Resume with the six Default Sections, all Empty and Enabled,
- * the Header Pinned. Pure apart from the clock and id generator, which
+ * the Header Pinned and holding its Empty email, phone and location items. Pure apart from the clock and id generator, which
  * callers can pass in.
  */
 export function newResume({
@@ -40,7 +41,7 @@ export function newResume({
           pinned: true,
           name: "",
           headline: "",
-          entries: [],
+          entries: FIXED_CONTACT_KINDS.map((kind) => emptyContact(kind, newId())),
         },
         { id: newId(), type: "summary", title: "Summary", enabled: true, entries: [] },
         { id: newId(), type: "experience", title: "Experience", enabled: true, entries: [] },

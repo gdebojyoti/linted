@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { newResume } from "./new-resume";
+import { renderableView } from "./renderable-view";
 import { DEFAULT_RESUME_TITLE, DEFAULT_THEME_ID, SCHEMA_VERSION } from "./types";
 
 const now = new Date("2026-09-24T10:00:00.000Z");
@@ -26,10 +27,19 @@ describe("newResume", () => {
   test("every starting Section is Empty and Enabled", () => {
     const resume = newResume({ now, newId: sequentialIds() });
 
-    for (const section of resume.content.sections) {
-      expect(section.enabled).toBe(true);
-      expect(section.entries).toEqual([]);
-    }
+    expect(resume.content.sections.every((section) => section.enabled)).toBe(true);
+    expect(renderableView(resume).sections).toEqual([]);
+  });
+
+  test("only the Header starts with Entries: an Empty, Enabled email, phone and location", () => {
+    const [header, ...others] = newResume({ now, newId: sequentialIds() }).content.sections;
+
+    expect(header.entries).toEqual([
+      { id: expect.any(String), enabled: true, kind: "email", value: "" },
+      { id: expect.any(String), enabled: true, kind: "phone", value: "" },
+      { id: expect.any(String), enabled: true, kind: "location", value: "" },
+    ]);
+    for (const section of others) expect(section.entries).toEqual([]);
   });
 
   test("the Header is Pinned, with an Empty name and headline", () => {
@@ -56,11 +66,11 @@ describe("newResume", () => {
     ]);
   });
 
-  test("the Resume and each Section get distinct ids", () => {
+  test("the Resume, each Section and each Entry get distinct ids", () => {
     const resume = newResume({ now, newId: sequentialIds() });
     const ids = [
       resume.metadata.id,
-      ...resume.content.sections.map((s) => s.id),
+      ...resume.content.sections.flatMap((s) => [s.id, ...s.entries.map((e) => e.id)]),
     ];
 
     expect(new Set(ids).size).toBe(ids.length);
