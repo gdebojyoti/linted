@@ -1,4 +1,6 @@
 // A labelled single-line text input, styled as in the editor design.
+//
+// NOTE: This may be replaced with shadcn/ui's Input (and Label) in the future.
 
 export function TextField({
   label,
