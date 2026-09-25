@@ -32,8 +32,9 @@ export type RenderableView = {
 /**
  * Turns a Resume into only the Content a Theme should draw. A Section, Entry,
  * Bullet, Skill or contact item is kept only if it and all its ancestors are
- * Enabled and it is not Empty. Unfilled fields of kept items come out as "".
- * Section order is the Content's; placing Sections is the Theme's job (ADR 0005).
+ * Enabled and it is not Empty. Text is trimmed, and unfilled fields of kept
+ * items come out as "". Section order is the Content's; placing Sections is
+ * the Theme's job (ADR 0005).
  */
 export function renderableView(resume: Resume): RenderableView {
   return { sections: dropNulls(resume.content.sections.map(renderSection)) };
@@ -45,8 +46,8 @@ function renderSection(section: Section): RenderedSection | null {
   switch (section.type) {
     case "header": {
       const entries = dropNulls(section.entries.map(renderContactEntry));
-      const name = emptyIfUnfilled(section.name);
-      const headline = emptyIfUnfilled(section.headline);
+      const name = trimmed(section.name);
+      const headline = trimmed(section.headline);
       if (name === "" && headline === "" && entries.length === 0) return null;
       return {
         id: section.id,
@@ -87,24 +88,24 @@ function withEntries<S extends Section, E>(
 function renderContactEntry(entry: ContactEntry): Rendered<ContactEntry> | null {
   if (!entry.enabled) return null;
   if (entry.kind === "link") {
-    const rendered = { id: entry.id, kind: entry.kind, label: emptyIfUnfilled(entry.label), value: emptyIfUnfilled(entry.value) };
+    const rendered = { id: entry.id, kind: entry.kind, label: trimmed(entry.label), value: trimmed(entry.value) };
     return rendered.label !== "" || rendered.value !== "" ? rendered : null;
   }
-  return isFilled(entry.value) ? { id: entry.id, kind: entry.kind, value: entry.value } : null;
+  return isFilled(entry.value) ? { id: entry.id, kind: entry.kind, value: trimmed(entry.value) } : null;
 }
 
 function renderSummaryEntry(entry: SummaryEntry): Rendered<SummaryEntry> | null {
   if (!entry.enabled || !isFilled(entry.text)) return null;
-  return { id: entry.id, text: entry.text };
+  return { id: entry.id, text: trimmed(entry.text) };
 }
 
 function renderExperienceEntry(entry: ExperienceEntry): Rendered<ExperienceEntry> | null {
   if (!entry.enabled) return null;
   const rendered = {
     id: entry.id,
-    company: emptyIfUnfilled(entry.company),
-    role: emptyIfUnfilled(entry.role),
-    location: emptyIfUnfilled(entry.location),
+    company: trimmed(entry.company),
+    role: trimmed(entry.role),
+    location: trimmed(entry.location),
     dates: entry.dates,
     bullets: renderBullets(entry.bullets),
   };
@@ -115,9 +116,9 @@ function renderProjectEntry(entry: ProjectEntry): Rendered<ProjectEntry> | null 
   if (!entry.enabled) return null;
   const rendered = {
     id: entry.id,
-    name: emptyIfUnfilled(entry.name),
-    link: emptyIfUnfilled(entry.link),
-    techStack: emptyIfUnfilled(entry.techStack),
+    name: trimmed(entry.name),
+    link: trimmed(entry.link),
+    techStack: trimmed(entry.techStack),
     dates: entry.dates,
     bullets: renderBullets(entry.bullets),
   };
@@ -129,20 +130,20 @@ function renderSkillsEntry(entry: SkillsEntry): Rendered<SkillsEntry> | null {
   if (!entry.enabled) return null;
   const skills = entry.skills
     .filter((skill) => skill.enabled && isFilled(skill.name))
-    .map((skill) => ({ id: skill.id, name: skill.name }));
+    .map((skill) => ({ id: skill.id, name: trimmed(skill.name) }));
   if (skills.length === 0) return null;
-  return { id: entry.id, label: emptyIfUnfilled(entry.label), skills };
+  return { id: entry.id, label: trimmed(entry.label), skills };
 }
 
 function renderEducationEntry(entry: EducationEntry): Rendered<EducationEntry> | null {
   if (!entry.enabled) return null;
   const rendered = {
     id: entry.id,
-    institution: emptyIfUnfilled(entry.institution),
-    degree: emptyIfUnfilled(entry.degree),
-    location: emptyIfUnfilled(entry.location),
+    institution: trimmed(entry.institution),
+    degree: trimmed(entry.degree),
+    location: trimmed(entry.location),
     dates: entry.dates,
-    results: emptyIfUnfilled(entry.results),
+    results: trimmed(entry.results),
     bullets: renderBullets(entry.bullets),
   };
   return anyFilled(rendered, [rendered.institution, rendered.degree, rendered.location, rendered.results])
@@ -154,8 +155,8 @@ function renderCustomEntry(entry: CustomEntry): Rendered<CustomEntry> | null {
   if (!entry.enabled) return null;
   const rendered = {
     id: entry.id,
-    title: emptyIfUnfilled(entry.title),
-    subtitle: emptyIfUnfilled(entry.subtitle),
+    title: trimmed(entry.title),
+    subtitle: trimmed(entry.subtitle),
     dates: entry.dates,
     bullets: renderBullets(entry.bullets),
   };
@@ -180,7 +181,7 @@ function renderBullets(bullets: Bullet[]): Rendered<Bullet>[] {
       if (!bullet.enabled) return null;
       const children = renderBullets(bullet.children);
       if (!isFilled(bullet.text) && children.length === 0) return null;
-      return { id: bullet.id, text: emptyIfUnfilled(bullet.text), children };
+      return { id: bullet.id, text: trimmed(bullet.text), children };
     }),
   );
 }
@@ -193,9 +194,12 @@ function isFilled(text: string): boolean {
   return text.trim() !== "";
 }
 
-/** Whitespace-only text becomes "", so a Theme only has to check for "". */
-function emptyIfUnfilled(text: string): string {
-  return isFilled(text) ? text : "";
+/**
+ * Text as drawn: trimmed, so whitespace-only text becomes "" and a Theme only
+ * has to check for "". It is stored as typed; only the view trims it.
+ */
+function trimmed(text: string): string {
+  return text.trim();
 }
 
 function dropNulls<T>(items: (T | null)[]): T[] {
