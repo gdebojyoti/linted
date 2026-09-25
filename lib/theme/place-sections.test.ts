@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import type { RenderedSection } from "@/lib/resume/renderable-view";
 import { placeSections, type DefaultLayout } from "./place-sections";
 
-const twoColumns: DefaultLayout = {
+const headerAside: DefaultLayout = {
   header: "header",
   summary: "main",
   experience: "main",
@@ -31,7 +31,7 @@ describe("placeSections", () => {
         section("experience", "experience"),
         section("education", "education"),
       ],
-      twoColumns,
+      headerAside,
     );
 
     expect(ids(zones.header)).toEqual(["header"]);
@@ -40,11 +40,11 @@ describe("placeSections", () => {
   });
 
   test("a Pinned Section comes first in its Zone, wherever it sits in the Content", () => {
-    const oneColumn: DefaultLayout = { ...twoColumns, header: "main", skills: "main", education: "main" };
+    const allInMain: DefaultLayout = { ...headerAside, header: "main", skills: "main", education: "main" };
 
     const zones = placeSections(
       [section("summary", "summary"), section("skills", "skills"), section("header", "header")],
-      oneColumn,
+      allInMain,
     );
 
     expect(ids(zones.main)).toEqual(["header", "summary", "skills"]);
@@ -53,7 +53,7 @@ describe("placeSections", () => {
   test("Custom Sections are placed by the Custom type, in Content order", () => {
     const zones = placeSections(
       [section("talks", "custom"), section("summary", "summary"), section("volunteering", "custom")],
-      { ...twoColumns, custom: "footer" },
+      { ...headerAside, custom: "footer" },
     );
 
     expect(ids(zones.footer)).toEqual(["talks", "volunteering"]);
@@ -61,7 +61,7 @@ describe("placeSections", () => {
   });
 
   test("Zones with no Sections are empty", () => {
-    const zones = placeSections([section("summary", "summary")], twoColumns);
+    const zones = placeSections([section("summary", "summary")], headerAside);
 
     expect(zones.header).toEqual([]);
     expect(zones["aside-right"]).toEqual([]);

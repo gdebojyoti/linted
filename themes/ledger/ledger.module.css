@@ -145,7 +145,7 @@
   gap: 2pt;
 }
 
-.skillsRow {
+.skillsEntry {
   display: flex;
   gap: 10pt;
 }

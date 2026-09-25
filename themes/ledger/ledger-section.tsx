@@ -5,7 +5,7 @@ import { ExperienceEntry } from "./experience-entry";
 import { HeaderSection } from "./header-section";
 import styles from "./ledger.module.css";
 import { ProjectEntry } from "./project-entry";
-import { SkillsRow } from "./skills-row";
+import { SkillsEntry } from "./skills-entry";
 
 export function LedgerSection({ section }: { section: RenderedSection }) {
   if (section.type === "header") return <HeaderSection header={section} />;
@@ -19,7 +19,7 @@ export function LedgerSection({ section }: { section: RenderedSection }) {
       {section.type === "skills" && (
         <div className={styles.skills}>
           {section.entries.map((entry) => (
-            <SkillsRow key={entry.id} entry={entry} />
+            <SkillsEntry key={entry.id} entry={entry} />
           ))}
         </div>
       )}

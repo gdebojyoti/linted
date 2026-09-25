@@ -4,7 +4,7 @@ import type { ExperienceEntry as StoredExperienceEntry } from "@/lib/resume/type
 import { BulletList } from "./bullet-list";
 import { EntryLine } from "./entry-line";
 import styles from "./ledger.module.css";
-import { meta } from "./meta";
+import { joinMeta } from "./join-meta";
 
 // "Senior Backend Engineer, Paystream        London · Mar 2022 – Present"
 export function ExperienceEntry({ entry }: { entry: Rendered<StoredExperienceEntry> }) {
@@ -14,7 +14,7 @@ export function ExperienceEntry({ entry }: { entry: Rendered<StoredExperienceEnt
         strong={entry.role}
         rest={entry.company}
         separator=", "
-        meta={meta(entry.location, formatDateRange(entry.dates))}
+        meta={joinMeta(entry.location, formatDateRange(entry.dates))}
       />
       <BulletList bullets={entry.bullets} />
     </div>

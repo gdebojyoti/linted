@@ -8,12 +8,12 @@ import styles from "./ledger.module.css";
 export function EntryLine({
   strong,
   rest,
-  separator,
+  separator = "",
   meta,
 }: {
   strong: string;
   rest?: ReactNode;
-  separator: string;
+  separator?: string;
   meta?: ReactNode;
 }) {
   return (

@@ -1,6 +1,6 @@
 import type { Rendered } from "@/lib/resume/renderable-view";
 import type { HeaderSection as StoredHeaderSection } from "@/lib/resume/types";
-import { ContactItem } from "./contact-item";
+import { ContactEntry } from "./contact-entry";
 import styles from "./ledger.module.css";
 
 export function HeaderSection({ header }: { header: Rendered<StoredHeaderSection> }) {
@@ -12,7 +12,7 @@ export function HeaderSection({ header }: { header: Rendered<StoredHeaderSection
         <ul className={styles.contacts}>
           {header.entries.map((entry) => (
             <li key={entry.id}>
-              <ContactItem entry={entry} />
+              <ContactEntry entry={entry} />
             </li>
           ))}
         </ul>
