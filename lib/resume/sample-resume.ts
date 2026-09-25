@@ -5,7 +5,7 @@ import { DEFAULT_THEME_ID, SCHEMA_VERSION, type Resume, type ResumeDate } from "
 //
 // Besides realistic content, it deliberately includes the cases the UI must
 // handle: every Section type (Custom included), Disabled items at each level
-// (Section, Entry, Bullet, Skill, contact item), Empty Entries, Current
+// (Section, Entry, Bullet, contact item), Empty Entries, Current
 // Entries, dates at year / month / day precision, nested Bullets, and Prose
 // with bold, italic and links.
 //
@@ -229,33 +229,19 @@ export const sampleResume: Resume = {
             id: "skills-languages",
             enabled: true,
             label: "Languages",
-            skills: [
-              { id: "skill-go", enabled: true, name: "Go" },
-              { id: "skill-python", enabled: true, name: "Python" },
-              { id: "skill-sql", enabled: true, name: "SQL" },
-              { id: "skill-typescript", enabled: true, name: "TypeScript" },
-              { id: "skill-php", enabled: false, name: "PHP" },
-            ],
+            skills: "Go, Python, SQL, TypeScript",
           },
           {
             id: "skills-infra",
             enabled: true,
             label: "Infrastructure",
-            skills: [
-              { id: "skill-postgres", enabled: true, name: "Postgres" },
-              { id: "skill-kafka", enabled: true, name: "Kafka" },
-              { id: "skill-kubernetes", enabled: true, name: "Kubernetes" },
-              { id: "skill-aws", enabled: true, name: "AWS" },
-            ],
+            skills: "Postgres, Kafka, Kubernetes, AWS",
           },
           {
             id: "skills-frontend",
             enabled: false,
             label: "Front end",
-            skills: [
-              { id: "skill-react", enabled: true, name: "React" },
-              { id: "skill-htmx", enabled: true, name: "HTMX" },
-            ],
+            skills: "React, HTMX",
           },
         ],
       },

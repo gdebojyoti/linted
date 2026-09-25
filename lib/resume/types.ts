@@ -80,10 +80,6 @@ export type Bullet = Enableable & {
   children: Bullet[];
 };
 
-export type Skill = Enableable & {
-  name: string;
-};
-
 // Entries, per Section type
 
 export type ContactKind = "email" | "phone" | "location" | "link";
@@ -115,9 +111,10 @@ export type ProjectEntry = Enableable & {
   bullets: Bullet[];
 };
 
+/** Enabled or Disabled as a whole: its Skills are one line of text, e.g. "Go, Python, SQL". */
 export type SkillsEntry = Enableable & {
   label: string;
-  skills: Skill[];
+  skills: string;
 };
 
 export type EducationEntry = Enableable & {
