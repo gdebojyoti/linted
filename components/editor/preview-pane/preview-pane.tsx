@@ -4,8 +4,8 @@ import { placeSections } from "@/lib/theme/place-sections";
 import { themeFor } from "@/themes/theme-for";
 
 // The preview area belongs to the app; everything inside the page belongs to
-// the Theme. The page itself stays at its real A4 size, so the preview and the
-// printed PDF share one layout; only the wrapper shrinks it on screen.
+// the Theme. The page is shown at its real A4 size, so the preview and the
+// printed PDF share one layout.
 //
 // Drawn straight from the Resume it is given, so it updates whenever that
 // Resume changes. The Layout is always null in v1, so the Theme's default
@@ -21,7 +21,7 @@ export function PreviewPane({ resume }: { resume: Resume }) {
         <span className="text-[13px] font-semibold">Preview</span>
       </div>
       <div className="flex grow justify-center overflow-auto p-6">
-        <div className="h-fit shrink-0 shadow-page [zoom:0.75]">
+        <div className="h-fit shrink-0 shadow-page">
           <Page zones={zones} />
         </div>
       </div>
