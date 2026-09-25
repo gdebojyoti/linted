@@ -9,8 +9,8 @@
   --ledger-ink: #1f1f1d;
   --ledger-ink-muted: #45453f;
   --ledger-rule: #d6d6d0;
-  /* Peter River (docs/design/NOTES.md), for headings and links. */
-  --ledger-accent: #3498db;
+  /* Green Sea (docs/design/NOTES.md), for headings and links. */
+  --ledger-accent: #16a085;
 
   box-sizing: border-box;
   width: 210mm;
