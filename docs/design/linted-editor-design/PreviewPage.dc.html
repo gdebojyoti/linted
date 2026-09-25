@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Editor preview page with Layout controls</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 612px; height: 792px; box-sizing: border-box; padding: 46px 48px 42px; background: #FFFFFF; font-family: 'Source Serif 4', Georgia, serif; font-size: 9.5px; line-height: 1.42; color: #1F1F1D; overflow: hidden">
+<div style="position: relative; display: flex; flex-direction: column; gap: 14px; outline: {{zoneOutline}}; outline-offset: 12px; border-radius: 2px">
+
+<div style="position: relative">
+<sc-if value="{{showPin}}" hint-placeholder-val="{{ true }}"><span title="Pinned: always first" style="position: absolute; left: -26px; top: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #9A9A93"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Pinned"><path d="M9 4h6l-1 5 3 3H7l3-3-1-5z"></path><path d="M12 12v8"></path></svg></span></sc-if>
+<sc-if value="{{en.header}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 22.8px; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em">Asha Rao</div>
+<div style="font-size: 10.6px; color: #45453F">Backend engineer · Payments and distributed systems</div>
+<div style="display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 8.75px; color: #45453F; margin-top: 3px">
+<span>asha@asharao.dev</span>
+<span>Bengaluru, India</span>
+<sc-if value="{{en.phone}}" hint-placeholder-val="{{ false }}"><span>[PHONE]</span></sc-if>
+<span style="color: #17784A">github.com/asharao</span>
+<span style="color: #17784A">asharao.dev</span>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{headerGhost}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: flex-end; gap: 8px; border-bottom: 0.75px dashed #BDBDB6; padding-bottom: 3px; opacity: 0.4">
+<span style="font-size: 8.55px; font-weight: 600; color: #17784A; text-transform: uppercase; letter-spacing: 0.12em">Header</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 8px; color: #1F1F1D; border: 1px solid #A3A39C; border-radius: 3px; padding: 0 4px">Disabled</span>
+</div>
+</sc-if>
+</div>
+
+<sc-for list="{{sections}}" as="s" hint-placeholder-count="6">
+<section style="position: relative; display: flex; flex-direction: column; gap: 5px; outline: {{s.outline}}; outline-offset: 6px; border-radius: 2px; background: #FFFFFF; box-shadow: {{s.lift}}">
+<sc-if value="{{s.showGrip}}" hint-placeholder-val="{{ true }}"><button onClick="{{s.pick}}" aria-label="Arrange {{s.title}}" aria-pressed="{{s.pressed}}" style="position: absolute; left: -26px; top: -4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 5px; background: {{s.gripBg}}; color: {{s.gripColor}}; cursor: grab; padding: 0"><svg width="9" height="13" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></button></sc-if>
+<sc-if value="{{s.sel}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; right: -8px; top: -38px; height: 26px; display: flex; align-items: center; gap: 2px; padding: 0 3px 0 8px; background: #FFFFFF; border: 1px solid #D9D9D3; border-radius: 6px; box-shadow: 0 3px 10px rgba(0,0,0,0.10); font-family: 'Geist', sans-serif; z-index: 2">
+<span style="font-family: 'Geist Mono', monospace; font-size: 10px; color: #5F5F58; padding-right: 6px">{{s.pos}}</span>
+<span style="width: 1px; height: 16px; background: #E3E3DE"></span>
+<button onClick="{{s.up}}" disabled="{{s.first}}" aria-label="Move {{s.title}} up" style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 4px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{s.upOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></button>
+<button onClick="{{s.down}}" disabled="{{s.last}}" aria-label="Move {{s.title}} down" style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 4px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{s.downOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M6 13l6 6 6-6"></path></svg></button>
+</div>
+</sc-if>
+<div style="display: flex; align-items: flex-end; gap: 8px; border-bottom: {{s.hb}}; padding-bottom: 3px; opacity: {{s.op}}">
+<h2 style="margin: 0; font-size: 8.55px; font-weight: 600; color: #17784A; text-transform: uppercase; letter-spacing: 0.12em">{{s.title}}</h2>
+<sc-if value="{{s.ghost}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 8px; color: #1F1F1D; border: 1px solid #A3A39C; border-radius: 3px; padding: 0 4px">{{s.tag}}</span></sc-if>
+</div>
+
+<sc-if value="{{s.isSummary}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0">Backend engineer with six years building payment and ledger services in Go and Postgres. I like boring, observable systems and APIs that are hard to misuse.</p>
+</sc-if>
+
+<sc-if value="{{s.isExp}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 3px">
+<sc-if value="{{en.parcel}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 3px; border-radius: 2px; background: {{hlBg}}; box-shadow: {{hlRing}}">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<div><span style="font-weight: 600">Senior Backend Engineer</span><span style="color: #45453F">, Parcelwise</span></div>
+<div style="font-size: 8.75px; color: #45453F; white-space: nowrap">Bengaluru · Mar 2022 – {{endLabel}}</div>
+</div>
+<ul style="margin: 0; padding-left: 14px; display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.b1}}" hint-placeholder-val="{{ true }}">
+<li>Led the move of the order ledger from a single Postgres instance to a sharded cluster, with <b>no customer-facing downtime</b>.
+<ul style="margin: 2px 0 0; padding-left: 14px; list-style-type: circle; display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.b1a}}" hint-placeholder-val="{{ true }}"><li>Wrote the dual-write and backfill tooling, reviewed by three teams before rollout.</li></sc-if>
+<sc-if value="{{en.b1b}}" hint-placeholder-val="{{ false }}"><li>Built dashboards for replication lag and reconciliation drift.</li></sc-if>
+</ul>
+</li>
+</sc-if>
+<sc-if value="{{en.b2}}" hint-placeholder-val="{{ true }}"><li>Designed the idempotency layer for the public payouts API, now used by every write endpoint.</li></sc-if>
+<sc-if value="{{en.b3}}" hint-placeholder-val="{{ true }}"><li>Mentor two engineers and run the fortnightly backend design review.</li></sc-if>
+</ul>
+</div>
+</sc-if>
+<sc-if value="{{en.kite}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 3px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<div><span style="font-weight: 600">Software Engineer</span><span style="color: #45453F">, Kitefin</span></div>
+<div style="font-size: 8.75px; color: #45453F; white-space: nowrap">Pune · Jul 2019 – Feb 2022</div>
+</div>
+<ul style="margin: 0; padding-left: 14px; display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.k1}}" hint-placeholder-val="{{ true }}"><li>Built the webhook delivery service in Go, with retries, request signing and a replay tool for support.</li></sc-if>
+<sc-if value="{{en.k2}}" hint-placeholder-val="{{ true }}"><li>Moved hot account-search queries to a read replica and added the indexes they were missing.</li></sc-if>
+</ul>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{s.isSkills}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.sk1}}" hint-placeholder-val="{{ true }}"><div style="display: flex; gap: 10px"><span style="width: 88px; flex-shrink: 0; font-weight: 600">Languages</span><span>Go, Python, SQL, TypeScript</span></div></sc-if>
+<sc-if value="{{en.sk2}}" hint-placeholder-val="{{ true }}"><div style="display: flex; gap: 10px"><span style="width: 88px; flex-shrink: 0; font-weight: 600">Infrastructure</span><span>Postgres, Kafka, Kubernetes, Terraform</span></div></sc-if>
+<sc-if value="{{en.sk3}}" hint-placeholder-val="{{ true }}"><div style="display: flex; gap: 10px"><span style="width: 88px; flex-shrink: 0; font-weight: 600">Practices</span><span>API design, observability, incident response</span></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{s.isEdu}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<span style="font-weight: 600">College of Engineering, Pune</span>
+<span style="font-size: 8.75px; color: #45453F; white-space: nowrap">2015 – 2019</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<span>B.Tech <span style="color: #45453F">in</span> Computer Science</span>
+<span style="font-size: 8.75px; color: #45453F; white-space: nowrap">CGPA 8.4 / 10</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{s.isTalks}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<div><span style="font-weight: 600">Idempotency keys, in practice</span><span style="color: #45453F"> — Bengaluru Go meetup</span></div>
+<div style="font-size: 8.75px; color: #45453F; white-space: nowrap">2024</div>
+</div>
+</sc-if>
+</section>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"en":{"editor":null,"tsType":"object"},"order":{"editor":null,"tsType":"string[]"},"sel":{"editor":null,"tsType":"string"},"select":{"editor":null,"tsType":"(id: string) => void"},"move":{"editor":null,"tsType":"(id: string, dir: number) => void"},"current":{"editor":"boolean","default":true},"highlight":{"editor":"boolean","default":false},"$preview":{"width":612,"height":792}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var p = this.props;
+    var self = this;
+    var st = this.state || {};
+    var D = {header:true, phone:false, summary:true, exp:true, parcel:true, b1:true, b1a:true, b1b:false, b2:true, b3:true, kite:true, k1:true, k2:true, projects:true, skills:true, sk1:true, sk2:true, sk3:true, edu:true, talks:true};
+    var en = Object.assign({}, D, p.en || {});
+    var EMPTY = { projects: true };
+    var T = { summary: 'Summary', exp: 'Experience', projects: 'Projects', skills: 'Skills', edu: 'Education', talks: 'Talks' };
+    var order = p.order || st.order || ['summary', 'exp', 'projects', 'skills', 'edu', 'talks'];
+    var sel = p.sel !== undefined ? p.sel : (st.sel !== undefined ? st.sel : 'skills');
+    var select = p.select || function (id) { self.setState({ sel: sel === id ? null : id }); };
+    var move = p.move || function (id, dir) {
+      var o = order.slice(); var i = o.indexOf(id); var j = i + dir;
+      if (j < 0 || j >= o.length) return;
+      o[i] = o[j]; o[j] = id; self.setState({ order: o });
+    };
+    var hl = !!p.highlight;
+    var dragging = !!sel;
+    var cur = p.current === undefined ? true : !!p.current;
+    return {
+      en: en,
+      headerGhost: !en.header,
+      showPin: !dragging,
+      zoneOutline: dragging ? '1px dashed #9CC8B1' : '0 solid transparent',
+      endLabel: cur ? 'Present' : '[END DATE]',
+      hlBg: hl ? 'rgba(23, 120, 74, 0.06)' : 'transparent',
+      hlRing: hl ? '0 0 0 4px rgba(23, 120, 74, 0.06)' : 'none',
+      sections: order.map(function (id, i) {
+        var empty = !!EMPTY[id];
+        var dis = !en[id];
+        var ghost = empty || dis;
+        var s = sel === id;
+        return {
+          title: T[id], ghost: ghost, tag: dis ? 'Disabled' : 'Empty',
+          op: ghost ? '0.4' : '1',
+          hb: ghost ? '0.75px dashed #BDBDB6' : '0.75px solid #D6D6D0',
+          sel: s, pressed: s ? 'true' : 'false',
+          outline: s ? '1.5px solid #17784A' : '0 solid transparent',
+          gripColor: s ? '#FFFFFF' : '#A3A39C',
+          gripBg: s ? '#17784A' : 'transparent',
+          pos: (i + 1) + ' of ' + order.length,
+          showGrip: !dragging || s,
+          lift: s ? '0 0 0 6px #FFFFFF, 0 10px 24px 6px rgba(0,0,0,0.12)' : 'none',
+          first: i === 0, last: i === order.length - 1,
+          upOp: i === 0 ? '0.3' : '1', downOp: i === order.length - 1 ? '0.3' : '1',
+          pick: function () { select(id); },
+          up: function () { move(id, -1); },
+          down: function () { move(id, 1); },
+          isSummary: !ghost && id === 'summary',
+          isExp: !ghost && id === 'exp',
+          isSkills: !ghost && id === 'skills',
+          isEdu: !ghost && id === 'edu',
+          isTalks: !ghost && id === 'talks'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

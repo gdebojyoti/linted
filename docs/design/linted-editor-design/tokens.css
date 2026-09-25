@@ -1,0 +1,69 @@
+/* Linted — design tokens pulled from the "Linted — desktop editor" canvas. */
+/* Fonts: https://fonts.google.com/specimen/Geist, Geist Mono, Source Serif 4 (resume theme "Ledger") */
+
+:root {
+  /* Type */
+  --font-ui: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-resume: 'Source Serif 4', Georgia, serif;
+
+  /* Surfaces */
+  --bg-app: #F6F6F3;          /* app background, toolbar strips */
+  --bg-surface: #FFFFFF;      /* panes, cards, inputs */
+  --bg-preview: #EDEDE9;      /* area behind the resume page */
+  --bg-subtle: #F2F2EE;       /* tags, menu hover, icon-button fill */
+  --bg-segment: #EFEFEB;      /* segmented-control track */
+  --bg-entry-open: #FCFCFA;   /* expanded entry card */
+
+  /* Lines */
+  --line: #E3E3DE;            /* default border */
+  --line-soft: #EFEFEA;       /* dividers inside cards */
+  --line-input: #D9D9D3;      /* inputs, secondary buttons */
+  --line-dashed: #C9C9C2;     /* "Add section" button */
+
+  /* Text */
+  --text: #1A1A18;
+  --text-muted: #5F5F58;      /* labels, secondary copy */
+  --text-meta: #6B6B64;       /* mono meta ("2 entries") */
+  --text-disabled: #8F8F88;   /* Disabled rows */
+  --icon-muted: #A3A39C;      /* drag handles */
+
+  /* Accent (Pine) */
+  --accent: #17784A;
+  --accent-strong: #0F5E39;   /* text on tint, hover */
+  --accent-tint: #E8F3ED;     /* focus rings, "Current" pill */
+  --accent-border: #9CC8B1;   /* open entry border, zone outline while dragging */
+  --danger: #B42318;          /* "Delete section" */
+
+  /* Resume page (Letter at 72dpi: 612 × 792) */
+  --page-w: 612px;
+  --page-h: 792px;
+  --page-pad: 46px 48px 42px;
+  --resume-text: #1F1F1D;
+  --resume-muted: #45453F;
+  --resume-rule: #D6D6D0;
+  --resume-base: 9.5px;       /* heading 8.55 · small 8.75 · headline 10.6 · name 22.8 */
+  --ghost-opacity: 0.4;       /* Ghosted section title */
+  --two-col-sidebar: 164px;
+  --two-col-gap: 28px;
+
+  /* Radii */
+  --r-xs: 4px;  --r-sm: 6px;  --r-md: 7px;  --r-lg: 8px;  --r-xl: 10px;
+
+  /* Elevation */
+  --shadow-page: 0 1px 2px rgba(0,0,0,.06), 0 10px 30px rgba(0,0,0,.08);
+  --shadow-pop: 0 3px 10px rgba(0,0,0,.10);            /* move toolbar */
+  --shadow-menu: 0 8px 24px rgba(0,0,0,.12);           /* section menu */
+  --shadow-lift: 0 0 0 6px #fff, 0 10px 24px 6px rgba(0,0,0,.12); /* section being dragged */
+  --ring-focus: 0 0 0 3px var(--accent-tint);
+
+  /* Sizes */
+  --header-h: 56px;
+  --pane-toolbar-h: 44px;
+  --content-pane-w: 640px;
+  --row-h: 48px;              /* section row */
+  --input-h: 36px;
+  --btn-h: 34px;
+  --icon-btn: 32px;
+  --handle-offset: -26px;     /* drag handle / pin, left of section */
+}
