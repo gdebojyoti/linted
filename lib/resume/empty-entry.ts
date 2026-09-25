@@ -1,15 +1,9 @@
-import type { ContactEntry, DateRange, SectionType } from "./types";
-import type { Entry } from "./edit-sections";
-
-/** The contact items every Header has exactly one of. Links are the only ones added and deleted. */
-export const FIXED_CONTACT_KINDS = ["email", "phone", "location"] as const;
-
-type FixedContactKind = (typeof FIXED_CONTACT_KINDS)[number];
+import type { DateRange, Entry, FixedContactEntry, FixedContactKind, SectionType } from "./types";
 
 const noDates: DateRange = { start: null, current: false, end: null };
 
 /** An Empty, Enabled email, phone or location item. */
-export function emptyContact(kind: FixedContactKind, id: string): ContactEntry {
+export function emptyContact(kind: FixedContactKind, id: string): FixedContactEntry {
   return { id, enabled: true, kind, value: "" };
 }
 
@@ -44,9 +38,4 @@ export function emptyEntry(type: SectionType, id: string): Entry {
     case "custom":
       return { id, enabled, title: "", subtitle: "", dates: noDates, bullets: [] };
   }
-}
-
-/** Whether this is one of the Header's email, phone and location items, which can't be deleted. */
-export function isFixedContact(entry: Entry): boolean {
-  return "kind" in entry && entry.kind !== "link";
 }

@@ -1,6 +1,6 @@
 import { editEntry, editSections, withEntries, type EditOptions } from "./edit-sections";
-import { emptyEntry, isFixedContact } from "./empty-entry";
-import type { Resume } from "./types";
+import { emptyEntry } from "./empty-entry";
+import type { Entry, Resume } from "./types";
 
 // Entry operations that work the same in every Section. Editing an Entry's
 // own fields is per type (updateContact, updateSkillsEntry).
@@ -48,6 +48,11 @@ export function deleteEntry(
     },
     options,
   );
+}
+
+/** Whether this is one of the Header's email, phone and location items, which can't be deleted. */
+function isFixedContact(entry: Entry): boolean {
+  return "kind" in entry && entry.kind !== "link";
 }
 
 /** The Resume with the Entry Enabled or Disabled. */

@@ -1,9 +1,7 @@
-import type { ContactEntry } from "@/lib/resume/types";
+import type { FixedContactEntry } from "@/lib/resume/types";
 import type { ContactChanges } from "@/lib/resume/update-contact";
 import { TextField } from "@/components/common/text-field";
 import { EntryRow } from "./entry-row";
-
-type FixedContact = Exclude<ContactEntry, { kind: "link" }>;
 
 const fields = {
   email: { label: "Email", type: "email" },
@@ -17,7 +15,7 @@ export function ContactRow({
   onUpdate,
   onEnabledChange,
 }: {
-  entry: FixedContact;
+  entry: FixedContactEntry;
   onUpdate: (changes: ContactChanges) => void;
   onEnabledChange: (enabled: boolean) => void;
 }) {

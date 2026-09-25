@@ -1,4 +1,4 @@
-import type { Resume, Section } from "@/lib/resume/types";
+import type { ResumeEdit, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
 import { HeaderFields } from "./header-fields";
 import { SectionRow } from "./section-row";
@@ -12,7 +12,7 @@ export function ContentPane({
   onEdit,
 }: {
   sections: Section[];
-  onEdit: (edit: (resume: Resume) => Resume) => void;
+  onEdit: (edit: ResumeEdit) => void;
 }) {
   return (
     <aside

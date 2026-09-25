@@ -1,10 +1,8 @@
-import type { Resume, Section } from "./types";
+import type { Entry, Resume, Section } from "./types";
 
 export type EditOptions = {
   now?: Date;
 };
-
-export type Entry = Section["entries"][number];
 
 /**
  * The Resume with each Section passed through `edit`, and last-edited-at set

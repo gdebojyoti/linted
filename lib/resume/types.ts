@@ -82,13 +82,18 @@ export type Bullet = Enableable & {
 
 // Entries, per Section type
 
-export type ContactKind = "email" | "phone" | "location" | "link";
+/** The contact items every Header has exactly one of. Links are the only ones added and deleted. */
+export const FIXED_CONTACT_KINDS = ["email", "phone", "location"] as const;
 
-export type ContactEntry = Enableable &
-  (
-    | { kind: Exclude<ContactKind, "link">; value: string }
-    | { kind: "link"; label: string; value: string }
-  );
+export type FixedContactKind = (typeof FIXED_CONTACT_KINDS)[number];
+
+export type ContactKind = FixedContactKind | "link";
+
+export type ContactEntry = FixedContactEntry | LinkEntry;
+
+export type FixedContactEntry = Enableable & { kind: FixedContactKind; value: string };
+
+export type LinkEntry = Enableable & { kind: "link"; label: string; value: string };
 
 export type SummaryEntry = Enableable & {
   /** Prose, stored as Markdown source (ADR 0004). */
@@ -167,3 +172,9 @@ export type Section =
   | CustomSection;
 
 export type SectionType = Section["type"];
+
+/** An Entry of any Section type. */
+export type Entry = Section["entries"][number];
+
+/** A change to a Resume, made with a Resume module function. */
+export type ResumeEdit = (resume: Resume) => Resume;

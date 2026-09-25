@@ -1,18 +1,15 @@
 import { useState } from "react";
-import { Trash2 } from "lucide-react";
-import type { ContactEntry } from "@/lib/resume/types";
+import type { LinkEntry } from "@/lib/resume/types";
 import type { ContactChanges } from "@/lib/resume/update-contact";
 import { linkHref } from "@/lib/format/link-href";
 import { TextField } from "@/components/common/text-field";
-import { Button } from "@/components/ui/button";
+import { DeleteEntryButton } from "./delete-entry-button";
 import { EntryRow } from "./entry-row";
-
-type LinkContact = Extract<ContactEntry, { kind: "link" }>;
 
 /**
  * A link in the Header. The URL box keeps what the user typed, even when the
- * Resume module saves a broken link as empty, and explains why once the user
- * leaves the box.
+ * Resume module saves a broken link as empty. The error shows only once the
+ * user leaves the box, and goes as soon as the link is fixed.
  */
 export function LinkRow({
   entry,
@@ -21,15 +18,14 @@ export function LinkRow({
   onDelete,
   autoFocus,
 }: {
-  entry: LinkContact;
+  entry: LinkEntry;
   onUpdate: (changes: ContactChanges) => void;
   onEnabledChange: (enabled: boolean) => void;
   onDelete: () => void;
   autoFocus?: boolean;
 }) {
   const [url, setUrl] = useState(entry.value);
-  const [left, setLeft] = useState(false);
-  const broken = url.trim() !== "" && linkHref(url) === null;
+  const [errorShown, setErrorShown] = useState(false);
   const label = entry.label.trim();
   const name = label ? `${label} link` : "Link";
 
@@ -38,11 +34,7 @@ export function LinkRow({
       name={name}
       enabled={entry.enabled}
       onEnabledChange={onEnabledChange}
-      action={
-        <Button variant="ghost" size="icon" onClick={onDelete} aria-label={label ? `Delete ${label} link` : "Delete link"}>
-          <Trash2 aria-hidden="true" />
-        </Button>
-      }
+      action={<DeleteEntryButton label={label ? `Delete ${label} link` : "Delete link"} onClick={onDelete} />}
     >
       <TextField
         label="Label"
@@ -58,11 +50,17 @@ export function LinkRow({
         value={url}
         onChange={(value) => {
           setUrl(value);
+          if (!isBroken(value)) setErrorShown(false);
           onUpdate({ value });
         }}
-        onBlur={() => setLeft(true)}
-        error={left && broken ? "Start with http://, https:// or mailto:" : undefined}
+        onBlur={() => setErrorShown(isBroken(url))}
+        error={errorShown ? "Start with http://, https:// or mailto:" : undefined}
       />
     </EntryRow>
   );
+}
+
+/** Text the link rule would save as empty. Empty text isn't broken, just unfilled. */
+function isBroken(url: string): boolean {
+  return url.trim() !== "" && linkHref(url) === null;
 }

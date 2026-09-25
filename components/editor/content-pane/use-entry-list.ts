@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import type { Resume } from "@/lib/resume/types";
+import type { ResumeEdit } from "@/lib/resume/types";
 import { addEntry, deleteEntry, setEntryEnabled } from "@/lib/resume/entries";
 
 /**
@@ -7,7 +7,7 @@ import { addEntry, deleteEntry, setEntryEnabled } from "@/lib/resume/entries";
  * gets focus (its row checks `addedId`), and after a delete focus moves to
  * the add button (`addButtonRef`), so keyboard users don't lose their place.
  */
-export function useEntryList(sectionId: string, onEdit: (edit: (resume: Resume) => Resume) => void) {
+export function useEntryList(sectionId: string, onEdit: (edit: ResumeEdit) => void) {
   const [addedId, setAddedId] = useState<string | null>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
 

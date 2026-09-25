@@ -2,9 +2,10 @@ import {
   DEFAULT_RESUME_TITLE,
   DEFAULT_THEME_ID,
   SCHEMA_VERSION,
+  FIXED_CONTACT_KINDS,
   type Resume,
 } from "./types";
-import { emptyContact, FIXED_CONTACT_KINDS } from "./empty-entry";
+import { emptyContact } from "./empty-entry";
 
 type Options = {
   now?: Date;
@@ -13,8 +14,8 @@ type Options = {
 
 /**
  * Builds a new Resume with the six Default Sections, all Empty and Enabled,
- * the Header Pinned and holding its Empty email, phone and location items. Pure apart from the clock and id generator, which
- * callers can pass in.
+ * the Header Pinned and holding its Empty email, phone and location items.
+ * Pure apart from the clock and id generator, which callers can pass in.
  */
 export function newResume({
   now = new Date(),

@@ -1,7 +1,6 @@
-import { Plus } from "lucide-react";
-import type { Resume, SkillsSection } from "@/lib/resume/types";
+import type { ResumeEdit, SkillsSection } from "@/lib/resume/types";
 import { updateSkillsEntry } from "@/lib/resume/update-skills-entry";
-import { Button } from "@/components/ui/button";
+import { AddEntryButton } from "./add-entry-button";
 import { SkillsEntryRow } from "./skills-entry-row";
 import { useEntryList } from "./use-entry-list";
 
@@ -11,7 +10,7 @@ export function SkillsFields({
   onEdit,
 }: {
   section: SkillsSection;
-  onEdit: (edit: (resume: Resume) => Resume) => void;
+  onEdit: (edit: ResumeEdit) => void;
 }) {
   const { addedId, addButtonRef, add, remove, setEnabled } = useEntryList(section.id, onEdit);
 
@@ -31,10 +30,9 @@ export function SkillsFields({
           ))}
         </ul>
       )}
-      <Button ref={addButtonRef} variant="outline" size="sm" onClick={add} className="self-start">
-        <Plus aria-hidden="true" />
+      <AddEntryButton ref={addButtonRef} onClick={add}>
         Add group
-      </Button>
+      </AddEntryButton>
     </div>
   );
 }

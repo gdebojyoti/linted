@@ -1,8 +1,7 @@
-import { Trash2 } from "lucide-react";
 import type { SkillsEntry } from "@/lib/resume/types";
 import type { SkillsEntryChanges } from "@/lib/resume/update-skills-entry";
 import { TextField } from "@/components/common/text-field";
-import { Button } from "@/components/ui/button";
+import { DeleteEntryButton } from "./delete-entry-button";
 import { EntryRow } from "./entry-row";
 
 /** A Skills Entry: its label and its Skills as one line of text. */
@@ -20,23 +19,15 @@ export function SkillsEntryRow({
   autoFocus?: boolean;
 }) {
   const label = entry.label.trim();
+  const name = label ? `${label} group` : "Group";
 
   return (
     <EntryRow
-      name={label ? `${label} group` : "Group"}
+      name={name}
       enabled={entry.enabled}
       onEnabledChange={onEnabledChange}
       columns="grid-cols-[1fr_2fr]"
-      action={
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onDelete}
-          aria-label={label ? `Delete ${label} group` : "Delete group"}
-        >
-          <Trash2 aria-hidden="true" />
-        </Button>
-      }
+      action={<DeleteEntryButton label={label ? `Delete ${label} group` : "Delete group"} onClick={onDelete} />}
     >
       <TextField
         label="Label"

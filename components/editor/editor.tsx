@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Resume } from "@/lib/resume/types";
+import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { ContentPane } from "./content-pane/content-pane";
 import { PreviewPane } from "./preview-pane/preview-pane";
 import { TopBar } from "./top-bar/top-bar";
@@ -14,7 +14,7 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
   const [resume, setResume] = useState(initialResume);
 
   // Every edit is a Resume module function, applied to the latest Resume.
-  function handleEdit(edit: (resume: Resume) => Resume) {
+  function handleEdit(edit: ResumeEdit) {
     setResume(edit);
   }
 

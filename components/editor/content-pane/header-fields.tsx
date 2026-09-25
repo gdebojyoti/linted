@@ -1,9 +1,8 @@
-import { Plus } from "lucide-react";
-import type { HeaderSection, Resume } from "@/lib/resume/types";
+import type { HeaderSection, ResumeEdit } from "@/lib/resume/types";
 import { updateContact, type ContactChanges } from "@/lib/resume/update-contact";
 import { updateHeader } from "@/lib/resume/update-header";
 import { TextField } from "@/components/common/text-field";
-import { Button } from "@/components/ui/button";
+import { AddEntryButton } from "./add-entry-button";
 import { ContactRow } from "./contact-row";
 import { LinkRow } from "./link-row";
 import { useEntryList } from "./use-entry-list";
@@ -16,7 +15,7 @@ export function HeaderFields({
   onEdit,
 }: {
   header: HeaderSection;
-  onEdit: (edit: (resume: Resume) => Resume) => void;
+  onEdit: (edit: ResumeEdit) => void;
 }) {
   const { addedId, addButtonRef, add, remove, setEnabled } = useEntryList(header.id, onEdit);
 
@@ -51,10 +50,9 @@ export function HeaderFields({
             );
           })}
         </ul>
-        <Button ref={addButtonRef} variant="outline" size="sm" onClick={add} className="self-start">
-          <Plus aria-hidden="true" />
+        <AddEntryButton ref={addButtonRef} onClick={add}>
           Add link
-        </Button>
+        </AddEntryButton>
       </div>
     </div>
   );
