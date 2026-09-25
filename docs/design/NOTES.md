@@ -21,5 +21,8 @@
 - The v1 Theme is called **Ledger**.
 - v1 uses the **one-column** page (`PreviewPage.dc.html`). The two-column boards are reference for a later version.
 - The header bar's **"Saved"** indicator and a disabled **"Duplicate — coming soon"** button are fine to keep.
+- **Export PDF** stays disabled until Export works (#20).
 - **A "…" menu appears only when it has more than one option.** A single action gets its own button. For example, a Custom Section's menu has Rename and Delete. A Default Section can't be deleted, so it gets just a rename button and no menu.
+- **App accent: Amethyst** (`#9b59b6`), in place of the design's Pine green. This is the app only; a Theme's colours are its own.
+- **Ledger accent: Peter River** (`#3498db`), in place of the design's Pine green, for the Theme's headings and links. Set in the Theme's own variables (#15), separate from the app accent.
 - **Font: Open Sans** for now, in place of the design's fonts (Geist, Geist Mono, Source Serif 4).
