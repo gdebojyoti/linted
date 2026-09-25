@@ -8,7 +8,7 @@ export const SCHEMA_VERSION = 1;
 export const DEFAULT_RESUME_TITLE = "Untitled Resume";
 
 /** v1 ships exactly one Theme. */
-export const DEFAULT_THEME_ID = "classic";
+export const DEFAULT_THEME_ID = "ledger";
 
 export type Resume = {
   schemaVersion: typeof SCHEMA_VERSION;

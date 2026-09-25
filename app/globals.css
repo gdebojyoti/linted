@@ -1,5 +1,52 @@
 @import "tailwindcss";
 
+/*
+ * App tokens: the website and editor UI (docs/design/linted-editor-design/tokens.css).
+ * Resume Themes keep their own variables, scoped to the page they render, so
+ * changing a Theme never changes the app. Never use Theme variables here, and
+ * never use these inside a Theme.
+ */
+
+@theme inline {
+  --font-sans: var(--font-open-sans), system-ui, sans-serif;
+}
+
+@theme {
+  /* Surfaces */
+  --color-app: #f6f6f3;
+  --color-surface: #ffffff;
+  --color-preview: #edede9;
+  --color-subtle: #f2f2ee;
+
+  /* Lines */
+  --color-line: #e3e3de;
+  --color-line-soft: #efefea;
+  --color-line-input: #d9d9d3;
+
+  /* Text */
+  --color-ink: #1a1a18;
+  --color-ink-muted: #5f5f58;
+  --color-ink-meta: #6b6b64;
+  --color-ink-disabled: #8f8f88;
+
+  /* Accent (Pine) */
+  --color-accent: #17784a;
+  --color-accent-strong: #0f5e39;
+  --color-accent-tint: #e8f3ed;
+  --color-danger: #b42318;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 7px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+
+  /* Elevation */
+  --shadow-page: 0 1px 2px rgb(0 0 0 / 0.06), 0 10px 30px rgb(0 0 0 / 0.08);
+}
+
+/* Left over from the Next.js starter page (app/page.tsx). */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -8,19 +55,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-app);
+  color: var(--color-ink);
 }

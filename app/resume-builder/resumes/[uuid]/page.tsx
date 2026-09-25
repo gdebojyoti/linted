@@ -1,14 +1,7 @@
-export default async function ResumeEditorPage({
-  params,
-}: PageProps<"/resume-builder/resumes/[uuid]">) {
-  const { uuid } = await params;
+import { Editor } from "@/components/editor/editor";
+import { sampleResume } from "@/lib/resume/sample-resume";
 
-  return (
-    <main className="p-8">
-      <h1 className="text-2xl font-semibold">Resume editor</h1>
-      <p className="text-zinc-600">
-        Editing Resume <code className="font-mono">{uuid}</code>
-      </p>
-    </main>
-  );
+// Shows the sample Resume for any id until Resumes can be loaded (#8, #10).
+export default function ResumeEditorPage() {
+  return <Editor resume={sampleResume} />;
 }
