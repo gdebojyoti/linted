@@ -9,10 +9,10 @@ import { SectionRow } from "./section-row";
 
 export function ContentPane({
   sections,
-  onHeaderChange,
+  onHeaderUpdate,
 }: {
   sections: Section[];
-  onHeaderChange: (changes: HeaderChanges) => void;
+  onHeaderUpdate: (changes: HeaderChanges) => void;
 }) {
   return (
     <aside
@@ -27,7 +27,7 @@ export function ContentPane({
         {sections.map((section) =>
           section.type === "header" ? (
             <SectionRow key={section.id} section={section} defaultExpanded>
-              <HeaderFields header={section} onChange={onHeaderChange} />
+              <HeaderFields header={section} onUpdate={onHeaderUpdate} />
             </SectionRow>
           ) : (
             <SectionRow key={section.id} section={section} />

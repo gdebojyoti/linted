@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { sampleResume } from "./sample-resume";
 import type { HeaderSection, Resume } from "./types";
-import { updateHeader } from "./update-header";
+import { updateHeader, type HeaderChanges } from "./update-header";
 
 const now = new Date("2026-09-26T12:00:00.000Z");
 
@@ -11,13 +11,23 @@ function headerOf(resume: Resume): HeaderSection {
   return header;
 }
 
+function otherSections(resume: Resume) {
+  return resume.content.sections.filter((s) => s.type !== "header");
+}
+
 describe("updateHeader", () => {
   test("sets the name, leaving every other Section as it was", () => {
     const updated = updateHeader(sampleResume, { name: "Maya O." }, { now });
 
     expect(headerOf(updated).name).toBe("Maya O.");
     expect(headerOf(updated).headline).toBe("Senior Backend Engineer");
-    expect(updated.content.sections.slice(1)).toEqual(sampleResume.content.sections.slice(1));
+    expect(otherSections(updated)).toEqual(otherSections(sampleResume));
+  });
+
+  test("the Header can't be renamed, even when a title is passed in", () => {
+    const changes = { name: "Maya O.", title: "Contact" } as HeaderChanges;
+
+    expect(headerOf(updateHeader(sampleResume, changes, { now })).title).toBe("Header");
   });
 
   test("sets the headline, keeping the text exactly as typed", () => {
