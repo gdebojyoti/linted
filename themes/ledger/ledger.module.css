@@ -1,0 +1,157 @@
+/*
+ * Ledger, the v1 Theme (docs/design/linted-editor-design/PreviewPage.dc.html).
+ * The design is drawn on a 612 x 792 page, so its px values are used here as
+ * pt, on an A4 page. Every variable is prefixed --ledger- and set on the page,
+ * so none of them leak into the app.
+ */
+
+.page {
+  --ledger-ink: #1f1f1d;
+  --ledger-ink-muted: #45453f;
+  --ledger-rule: #d6d6d0;
+  /* Pine green (docs/design/NOTES.md), for headings and links. */
+  --ledger-accent: #17784a;
+
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 46pt 48pt 42pt;
+  background: #ffffff;
+  color: var(--ledger-ink);
+  font-size: 9.5pt;
+  line-height: 1.42;
+}
+
+.page * {
+  margin: 0;
+}
+
+.zones {
+  display: flex;
+  flex-direction: column;
+  gap: 14pt;
+}
+
+.muted {
+  color: var(--ledger-ink-muted);
+}
+
+.link {
+  color: var(--ledger-accent);
+  text-decoration: none;
+}
+
+/* Header */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4pt;
+}
+
+.name {
+  font-size: 22.8pt;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.headline {
+  font-size: 10.6pt;
+  color: var(--ledger-ink-muted);
+}
+
+.contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2pt 12pt;
+  margin-top: 3pt;
+  padding: 0;
+  list-style: none;
+  font-size: 8.75pt;
+  color: var(--ledger-ink-muted);
+}
+
+/* Sections */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 5pt;
+}
+
+.sectionTitle {
+  padding-bottom: 3pt;
+  border-bottom: 0.75pt solid var(--ledger-rule);
+  color: var(--ledger-accent);
+  font-size: 8.55pt;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  gap: 8pt;
+  padding-top: 3pt;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 3pt;
+  break-inside: avoid;
+}
+
+/* A line with the main facts on the left and dates or results on the right. */
+.line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12pt;
+}
+
+.strong {
+  font-weight: 600;
+}
+
+.meta {
+  font-size: 8.75pt;
+  color: var(--ledger-ink-muted);
+  white-space: nowrap;
+}
+
+/* Bullets */
+
+.bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 2pt;
+  padding-left: 14pt;
+  list-style-type: disc;
+}
+
+.bullets .bullets {
+  margin-top: 2pt;
+  list-style-type: circle;
+}
+
+/* Skills */
+
+.skills {
+  display: flex;
+  flex-direction: column;
+  gap: 2pt;
+}
+
+.skillsEntry {
+  display: flex;
+  gap: 10pt;
+}
+
+.skillsLabel {
+  flex-shrink: 0;
+  width: 88pt;
+  font-weight: 600;
+}

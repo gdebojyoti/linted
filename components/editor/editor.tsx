@@ -9,7 +9,7 @@ export function Editor({ resume }: { resume: Resume }) {
       <TopBar resumeTitle={resume.metadata.title} />
       <div className="flex min-h-0 grow">
         <ContentPane sections={resume.content.sections} />
-        <PreviewPane />
+        <PreviewPane resume={resume} />
       </div>
     </div>
   );
