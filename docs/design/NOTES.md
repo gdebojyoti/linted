@@ -22,4 +22,4 @@
 - v1 uses the **one-column** page (`PreviewPage.dc.html`). The two-column boards are reference for a later version.
 - The header bar's **"Saved"** indicator and a disabled **"Duplicate — coming soon"** button are fine to keep.
 - **A "…" menu appears only when it has more than one option.** A single action gets its own button. For example, a Custom Section's menu has Rename and Delete. A Default Section can't be deleted, so it gets just a rename button and no menu.
-- **Fonts are to be decided.** Don't take them from the design files.
+- **Font: Open Sans** for now, in place of the design's fonts (Geist, Geist Mono, Source Serif 4).
