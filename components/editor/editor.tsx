@@ -1,7 +1,7 @@
 import type { Resume } from "@/lib/resume/types";
-import { ContentPane } from "./content-pane";
-import { PreviewPane } from "./preview-pane";
-import { TopBar } from "./top-bar";
+import { ContentPane } from "./content-pane/content-pane";
+import { PreviewPane } from "./preview-pane/preview-pane";
+import { TopBar } from "./top-bar/top-bar";
 
 export function Editor({ resume }: { resume: Resume }) {
   return (

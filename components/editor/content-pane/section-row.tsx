@@ -1,6 +1,6 @@
 import type { Section } from "@/lib/resume/types";
-import { Badge } from "./badge";
-import { countOf } from "./count-of";
+import { Badge } from "@/components/common/badge";
+import { formatCount } from "@/lib/format/count";
 
 export function SectionRow({ section }: { section: Section }) {
   return (
@@ -30,12 +30,12 @@ function summarise(section: Section): string {
   const entries = section.entries.length;
   if (section.type === "header") {
     const enabled = section.entries.filter((e) => e.enabled).length;
-    const contacts = `${enabled} of ${countOf(entries, "entry", "entries")}`;
+    const contacts = `${enabled} of ${formatCount(entries, "entry", "entries")}`;
     return section.name ? `${section.name} · ${contacts}` : contacts;
   }
   if (section.type === "skills") {
     const skills = section.entries.reduce((n, e) => n + e.skills.length, 0);
-    return `${countOf(entries, "group", "groups")} · ${countOf(skills, "skill", "skills")}`;
+    return `${formatCount(entries, "group", "groups")} · ${formatCount(skills, "skill", "skills")}`;
   }
-  return entries === 0 ? "No entries" : countOf(entries, "entry", "entries");
+  return entries === 0 ? "No entries" : formatCount(entries, "entry", "entries");
 }
