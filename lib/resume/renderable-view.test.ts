@@ -223,6 +223,25 @@ describe("renderableView", () => {
       ]);
     });
 
+    test("filled text is trimmed, though it is stored as typed", () => {
+      const resume = resumeWith(
+        header({ name: "  Maya Okafor ", headline: "Engineer\n" }),
+        experience([experienceEntry({ company: " Acme ", bullets: [bullet(" Led ", [bullet("\tShipped ")])] })]),
+        skills([skillsEntry(" Languages", [" Go "])]),
+        summary([summaryEntry(" Backend engineer. ")]),
+      );
+
+      const [headerView, experienceView, skillsView, summaryView] = renderableView(resume).sections;
+
+      expect(headerView).toMatchObject({ name: "Maya Okafor", headline: "Engineer" });
+      expect(experienceView.entries[0]).toMatchObject({
+        company: "Acme",
+        bullets: [{ text: "Led", children: [{ text: "Shipped" }] }],
+      });
+      expect(skillsView.entries[0]).toMatchObject({ label: "Languages", skills: [{ name: "Go" }] });
+      expect(summaryView.entries[0]).toMatchObject({ text: "Backend engineer." });
+    });
+
     test("an Entry with only its dates filled renders", () => {
       const dates: DateRange = { start: { year: 2020, month: null, day: null }, current: true, end: null };
       const resume = resumeWith(experience([experienceEntry({ dates })]));
