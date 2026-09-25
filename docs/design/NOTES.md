@@ -24,5 +24,5 @@
 - **Export PDF** stays disabled until Export works (#20).
 - **A "…" menu appears only when it has more than one option.** A single action gets its own button. For example, a Custom Section's menu has Rename and Delete. A Default Section can't be deleted, so it gets just a rename button and no menu.
 - **App accent: Amethyst** (`#9b59b6`), in place of the design's Pine green. This is the app only; a Theme's colours are its own.
-- **Ledger accent: Green Sea** (`#16a085`), in place of the design's Pine green, for the Theme's headings and links. Chosen knowing it is about 3.3:1 on white, below the 4.5:1 guideline for small text. Set in the Theme's own variables (#15), separate from the app accent.
-- **Font: Open Sans** for now, in place of the design's fonts (Geist, Geist Mono, Source Serif 4).
+- **Ledger accent: Pine green** (`#17784a`), as in the design, for the Theme's headings and links (about 5.5:1 on white). Set in the Theme's own variables (#15), separate from the app accent.
+- **Font: Open Sans** for now for the app, in place of the design's Geist and Geist Mono. **Ledger uses Source Serif 4**, as in the design.

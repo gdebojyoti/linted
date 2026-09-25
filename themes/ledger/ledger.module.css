@@ -9,8 +9,8 @@
   --ledger-ink: #1f1f1d;
   --ledger-ink-muted: #45453f;
   --ledger-rule: #d6d6d0;
-  /* Green Sea (docs/design/NOTES.md), for headings and links. */
-  --ledger-accent: #16a085;
+  /* Pine green (docs/design/NOTES.md), for headings and links. */
+  --ledger-accent: #17784a;
 
   box-sizing: border-box;
   width: 210mm;
