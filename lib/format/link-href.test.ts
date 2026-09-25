@@ -8,9 +8,13 @@ describe("linkHref", () => {
     expect(linkHref("mailto:maya@example.com")).toBe("mailto:maya@example.com");
   });
 
-  test("a link typed without a scheme becomes https", () => {
-    expect(linkHref("github.com/maya")).toBe("https://github.com/maya");
-    expect(linkHref("  maya.example.com ")).toBe("https://maya.example.com");
+  test("a link without a scheme is not a link", () => {
+    expect(linkHref("github.com/maya")).toBeNull();
+    expect(linkHref("maya@example.com")).toBeNull();
+  });
+
+  test("surrounding whitespace is ignored", () => {
+    expect(linkHref("  https://maya.example.com ")).toBe("https://maya.example.com");
   });
 
   test("any other scheme is not a link, whatever its case or padding", () => {
