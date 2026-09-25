@@ -29,7 +29,7 @@ export function newResume({
       createdAt: timestamp,
       lastEditedAt: timestamp,
     },
-    themeSettings: { themeId: DEFAULT_THEME_ID },
+    themeSettings: { themeId: DEFAULT_THEME_ID, layout: null },
     content: {
       sections: [
         {

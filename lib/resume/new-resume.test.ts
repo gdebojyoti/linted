@@ -84,10 +84,13 @@ describe("newResume", () => {
     expect(metadata.lastEditedAt).toBe("2026-09-24T10:00:00.000Z");
   });
 
-  test("carries the current schema version and the default Theme", () => {
+  test("carries the current schema version, and the default Theme with its default Layout", () => {
     const resume = newResume({ now, newId: sequentialIds() });
 
     expect(resume.schemaVersion).toBe(SCHEMA_VERSION);
-    expect(resume.themeSettings).toEqual({ themeId: DEFAULT_THEME_ID });
+    expect(resume.themeSettings).toEqual({
+      themeId: DEFAULT_THEME_ID,
+      layout: null,
+    });
   });
 });

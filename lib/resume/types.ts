@@ -29,7 +29,21 @@ export type Metadata = {
 
 export type ThemeSettings = {
   themeId: string;
+  /** null = the Theme's default Layout. Reset to null when the Theme changes. */
+  layout: Layout | null;
 };
+
+/** Every Zone a Theme may define. Each Theme uses some of them. */
+export const ZONES = ["header", "aside-left", "main", "aside-right", "footer"] as const;
+
+export type Zone = (typeof ZONES)[number];
+
+/**
+ * For each Zone, the ids of its Sections in order (ADR 0005). Not a source of
+ * truth for Content: unknown ids are ignored, and Sections missing from it go
+ * where the Theme's default Layout puts their type.
+ */
+export type Layout = Partial<Record<Zone, string[]>>;
 
 export type Content = {
   /** Order is the editor's only; placement on the page is the Layout's (ADR 0005). */
