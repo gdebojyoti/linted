@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export function TopBar({ resumeTitle }: { resumeTitle: string }) {
+export function TopBar({ resumeTitle, onExport }: { resumeTitle: string; onExport: () => void }) {
   return (
     <header className="flex h-14 shrink-0 items-center gap-4 border-b border-line bg-surface px-5">
       <div className="flex items-center gap-2">
@@ -59,9 +59,8 @@ export function TopBar({ resumeTitle }: { resumeTitle: string }) {
         </button>
         <button
           type="button"
-          disabled
-          title="Coming soon"
-          className="flex h-[34px] items-center gap-1.5 rounded-md border border-accent bg-accent px-3.5 text-[13px] font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={onExport}
+          className="flex h-[34px] items-center gap-1.5 rounded-md border border-accent bg-accent px-3.5 text-[13px] font-medium text-white hover:border-accent-strong hover:bg-accent-strong"
         >
           <svg
             width="14"

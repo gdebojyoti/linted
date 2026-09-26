@@ -1,4 +1,5 @@
 import { renderableView } from "@/lib/resume/renderable-view";
+import type { Ref } from "react";
 import type { Resume } from "@/lib/resume/types";
 import { placeSections } from "@/lib/theme/place-sections";
 import { themeFor } from "@/themes/theme-for";
@@ -10,8 +11,11 @@ import { themeFor } from "@/themes/theme-for";
 // Drawn straight from the Resume it is given, so it updates whenever that
 // Resume changes. The Layout is always null in v1, so the Theme's default
 // Layout places every Section (ADR 0005).
+//
+// `pageRef` points at the element holding the Theme's page, which is its only
+// child; Export prints that page.
 
-export function PreviewPane({ resume }: { resume: Resume }) {
+export function PreviewPane({ resume, pageRef }: { resume: Resume; pageRef?: Ref<HTMLDivElement> }) {
   const { Page, defaultLayout } = themeFor(resume.themeSettings.themeId);
   const zones = placeSections(renderableView(resume).sections, defaultLayout);
 
@@ -21,7 +25,7 @@ export function PreviewPane({ resume }: { resume: Resume }) {
         <span className="text-[13px] font-semibold">Preview</span>
       </div>
       <div className="flex grow justify-center overflow-auto p-6">
-        <div className="h-fit shrink-0 shadow-page">
+        <div ref={pageRef} className="h-fit shrink-0 shadow-page">
           <Page zones={zones} />
         </div>
       </div>
