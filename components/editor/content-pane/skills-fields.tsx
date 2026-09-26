@@ -31,7 +31,7 @@ export function SkillsFields({
         </ul>
       )}
       <AddEntryButton ref={addButtonRef} onClick={add}>
-        Add group
+        Add entry
       </AddEntryButton>
     </div>
   );

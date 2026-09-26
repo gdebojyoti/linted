@@ -81,8 +81,5 @@ function summarise(section: Section): string {
     const contacts = `${enabled} of ${formatCount(entries, "entry", "entries")}`;
     return section.name ? `${section.name} · ${contacts}` : contacts;
   }
-  if (section.type === "skills") {
-    return entries === 0 ? "No groups" : formatCount(entries, "group", "groups");
-  }
   return entries === 0 ? "No entries" : formatCount(entries, "entry", "entries");
 }

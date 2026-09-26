@@ -19,7 +19,7 @@ export function SkillsEntryRow({
   autoFocus?: boolean;
 }) {
   const label = entry.label.trim();
-  const name = label ? `${label} group` : "Group";
+  const name = label ? `${label} entry` : "Entry";
 
   return (
     <EntryRow
@@ -27,7 +27,7 @@ export function SkillsEntryRow({
       enabled={entry.enabled}
       onEnabledChange={onEnabledChange}
       columns="grid-cols-[1fr_2fr]"
-      action={<DeleteEntryButton label={label ? `Delete ${label} group` : "Delete group"} onClick={onDelete} />}
+      action={<DeleteEntryButton label={label ? `Delete ${label} entry` : "Delete entry"} onClick={onDelete} />}
     >
       <TextField
         label="Label"
