@@ -155,3 +155,32 @@
   width: 88pt;
   font-weight: 600;
 }
+
+/*
+ * Printing, for Export (ADR 0001). The printed sheet is A4 with no margin of
+ * its own, which also stops browsers adding their date and URL headers; the
+ * page's padding is the margin, repeated on every printed sheet.
+ */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  .page {
+    width: auto;
+    min-height: 0;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .sectionTitle {
+    break-after: avoid;
+  }
+
+  .header,
+  .skillsEntry {
+    break-inside: avoid;
+  }
+}
