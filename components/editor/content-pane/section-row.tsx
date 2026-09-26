@@ -1,6 +1,7 @@
 import { useId, useState, type ReactNode } from "react";
 import type { Section } from "@/lib/resume/types";
 import { Badge } from "@/components/common/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { formatCount } from "@/lib/format/count";
 
 /**
@@ -22,12 +23,11 @@ export function SectionRow({
   return (
     <li className="rounded-lg border border-line bg-surface">
       <div className="flex min-h-12 items-center gap-2.5 pr-2 pl-3">
-        <input
-          type="checkbox"
+        <Checkbox
           checked={section.enabled}
           disabled
           aria-label={`${section.title} enabled`}
-          className="size-4 accent-accent"
+          className="data-disabled:opacity-50"
         />
         <span
           className={`text-sm font-medium ${section.enabled ? "text-ink" : "text-ink-disabled"}`}
@@ -80,10 +80,6 @@ function summarise(section: Section): string {
     const enabled = section.entries.filter((e) => e.enabled).length;
     const contacts = `${enabled} of ${formatCount(entries, "entry", "entries")}`;
     return section.name ? `${section.name} · ${contacts}` : contacts;
-  }
-  if (section.type === "skills") {
-    const skills = section.entries.reduce((n, e) => n + e.skills.length, 0);
-    return `${formatCount(entries, "group", "groups")} · ${formatCount(skills, "skill", "skills")}`;
   }
   return entries === 0 ? "No entries" : formatCount(entries, "entry", "entries");
 }

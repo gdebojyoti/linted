@@ -1,24 +1,59 @@
-import type { HeaderSection } from "@/lib/resume/types";
-import type { HeaderChanges } from "@/lib/resume/update-header";
+import type { HeaderSection, ResumeEdit } from "@/lib/resume/types";
+import { updateContact, type ContactChanges } from "@/lib/resume/update-contact";
+import { updateHeader } from "@/lib/resume/update-header";
 import { TextField } from "@/components/common/text-field";
+import { AddEntryButton } from "./add-entry-button";
+import { ContactRow } from "./contact-row";
+import { LinkRow } from "./link-row";
+import { useEntryList } from "./use-entry-list";
 
-// The Header's own fields. The Header can't be renamed, so it has no title field.
+// The Header's own fields and its contact items. The Header can't be renamed,
+// so it has no title field.
 
 export function HeaderFields({
   header,
-  onUpdate,
+  onEdit,
 }: {
   header: HeaderSection;
-  onUpdate: (changes: HeaderChanges) => void;
+  onEdit: (edit: ResumeEdit) => void;
 }) {
+  const { addedId, addButtonRef, add, remove, setEnabled } = useEntryList(header.id, onEdit);
+
   return (
-    <div className="grid grid-cols-2 gap-3">
-      <TextField label="Name" value={header.name} onChange={(name) => onUpdate({ name })} />
-      <TextField
-        label="Headline"
-        value={header.headline}
-        onChange={(headline) => onUpdate({ headline })}
-      />
+    <div className="flex flex-col gap-5">
+      <div className="grid grid-cols-2 gap-3">
+        <TextField label="Name" value={header.name} onChange={(name) => onEdit((r) => updateHeader(r, { name }))} />
+        <TextField
+          label="Headline"
+          value={header.headline}
+          onChange={(headline) => onEdit((r) => updateHeader(r, { headline }))}
+        />
+      </div>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xs font-semibold text-ink">Contact</h3>
+        <ul className="flex flex-col gap-3">
+          {header.entries.map((entry) => {
+            const onUpdate = (changes: ContactChanges) => onEdit((r) => updateContact(r, entry.id, changes));
+            const onEnabledChange = (enabled: boolean) => setEnabled(entry.id, enabled);
+
+            return entry.kind === "link" ? (
+              <LinkRow
+                key={entry.id}
+                entry={entry}
+                onUpdate={onUpdate}
+                onEnabledChange={onEnabledChange}
+                onDelete={() => remove(entry.id)}
+                autoFocus={entry.id === addedId}
+              />
+            ) : (
+              <ContactRow key={entry.id} entry={entry} onUpdate={onUpdate} onEnabledChange={onEnabledChange} />
+            );
+          })}
+        </ul>
+        <AddEntryButton ref={addButtonRef} onClick={add}>
+          Add link
+        </AddEntryButton>
+      </div>
     </div>
   );
 }

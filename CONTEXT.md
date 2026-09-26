@@ -65,11 +65,11 @@ A single point of text belonging to an Entry. A Bullet can have child Bullets, a
 _Avoid_: Point, line, highlight
 
 **Skill**:
-A single named skill (e.g. "Go") within a Skills Entry, which groups Skills under a label such as "Languages".
+A single named skill (e.g. "Go") within a Skills Entry. A Skills Entry groups Skills under a label such as "Languages" and holds them as one line of text ("Go, Python, SQL"). A single Skill can't be Disabled on its own; its whole Entry can.
 _Avoid_: Tag, keyword
 
 **Enabled / Disabled**:
-Whether a Section, Entry, Bullet or Skill is included in the Export. Disabling a parent hides everything beneath it without changing the children's own Enabled state. A Disabled Section is Ghosted in the preview.
+Whether a Section, Entry, Bullet or contact item is included in the Export. Disabling a parent hides everything beneath it without changing the children's own Enabled state. A Disabled Section is Ghosted in the preview.
 _Avoid_: Hidden, visible, active, checked
 
 **Empty**:

@@ -17,7 +17,6 @@ import type {
   Resume,
   Section,
   SectionType,
-  Skill,
   SkillsEntry,
   SkillsSection,
   SummaryEntry,
@@ -79,12 +78,8 @@ function skills(entries: SkillsEntry[]): SkillsSection {
   return { id: "skills", type: "skills", title: "Skills", enabled: true, entries };
 }
 
-function skillsEntry(label: string, names: string[], overrides: Partial<SkillsEntry> = {}): SkillsEntry {
-  return { id: `skills-${label}`, enabled: true, label, skills: names.map((name) => skill(name)), ...overrides };
-}
-
-function skill(name: string, overrides: Partial<Skill> = {}): Skill {
-  return { id: `skill-${name}`, enabled: true, name, ...overrides };
+function skillsEntry(label: string, skills: string, overrides: Partial<SkillsEntry> = {}): SkillsEntry {
+  return { id: `skills-${label}`, enabled: true, label, skills, ...overrides };
 }
 
 function projects(entries: ProjectEntry[]): ProjectsSection {
@@ -165,7 +160,7 @@ describe("renderableView", () => {
 
   test("Sections keep the Content's order", () => {
     const resume = resumeWith(
-      skills([skillsEntry("Languages", ["Go"])]),
+      skills([skillsEntry("Languages", "Go")]),
       header({ name: "Maya Okafor" }),
       summary([summaryEntry("Backend engineer.")]),
     );
@@ -193,9 +188,6 @@ describe("renderableView", () => {
     expect(ids(paystream.bullets)).toEqual(["exp-paystream-b1", "exp-paystream-b2", "exp-paystream-b3"]);
     expect(ids(paystream.bullets[0].children)).toEqual(["exp-paystream-b1-1"]);
     expect(ids(northwind.bullets)).toEqual(["exp-northwind-b1"]);
-
-    const [languages] = section("skills").entries;
-    expect(languages.skills.map((s) => s.name)).toEqual(["Go", "Python", "SQL", "TypeScript"]);
   });
 
   describe("Empty filtering", () => {
@@ -227,7 +219,7 @@ describe("renderableView", () => {
       const resume = resumeWith(
         header({ name: "  Maya Okafor ", headline: "Engineer\n" }),
         experience([experienceEntry({ company: " Acme ", bullets: [bullet(" Led ", [bullet("\tShipped ")])] })]),
-        skills([skillsEntry(" Languages", [" Go "])]),
+        skills([skillsEntry(" Languages", " Go, SQL ")]),
         summary([summaryEntry(" Backend engineer. ")]),
       );
 
@@ -238,7 +230,7 @@ describe("renderableView", () => {
         company: "Acme",
         bullets: [{ text: "Led", children: [{ text: "Shipped" }] }],
       });
-      expect(skillsView.entries[0]).toMatchObject({ label: "Languages", skills: [{ name: "Go" }] });
+      expect(skillsView.entries[0]).toMatchObject({ label: "Languages", skills: "Go, SQL" });
       expect(summaryView.entries[0]).toMatchObject({ text: "Backend engineer." });
     });
 
@@ -308,31 +300,25 @@ describe("renderableView", () => {
   });
 
   describe("Skills", () => {
-    test("Disabled and Empty Skills are left out", () => {
-      const entry = skillsEntry("Languages", ["Go", " "]);
-      entry.skills.push(skill("PHP", { enabled: false }));
-
-      expect(renderableView(resumeWith(skills([entry]))).sections[0].entries).toEqual([
-        { id: "skills-Languages", label: "Languages", skills: [{ id: "skill-Go", name: "Go" }] },
-      ]);
-    });
-
-    test("a Skills Entry with a label but no renderable Skills is left out", () => {
-      const resume = resumeWith(skills([skillsEntry("Languages", ["", "  "])]));
-
-      expect(renderableView(resume).sections).toEqual([]);
-    });
-
-    test("a Skills Entry with Skills but no label renders with an empty label", () => {
-      const resume = resumeWith(skills([skillsEntry(" ", ["Go"])]));
+    test("a Skills Entry renders when its label or its Skills are filled", () => {
+      const resume = resumeWith(
+        skills([
+          skillsEntry("Languages", "Go, SQL"),
+          skillsEntry("Front end", " "),
+          skillsEntry(" ", "Kafka"),
+          skillsEntry("", "	"),
+        ]),
+      );
 
       expect(renderableView(resume).sections[0].entries).toEqual([
-        { id: "skills- ", label: "", skills: [{ id: "skill-Go", name: "Go" }] },
+        { id: "skills-Languages", label: "Languages", skills: "Go, SQL" },
+        { id: "skills-Front end", label: "Front end", skills: "" },
+        { id: "skills- ", label: "", skills: "Kafka" },
       ]);
     });
 
-    test("a Disabled Skills Entry takes its Enabled Skills with it", () => {
-      const resume = resumeWith(skills([skillsEntry("Languages", ["Go"], { enabled: false })]));
+    test("a Disabled Skills Entry is left out", () => {
+      const resume = resumeWith(skills([skillsEntry("Languages", "Go", { enabled: false })]));
 
       expect(renderableView(resume).sections).toEqual([]);
     });

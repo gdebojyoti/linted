@@ -7,7 +7,7 @@ export function SkillsEntry({ entry }: { entry: Rendered<StoredSkillsEntry> }) {
   return (
     <div className={styles.skillsEntry}>
       <span className={styles.skillsLabel}>{entry.label}</span>
-      <span>{entry.skills.map((skill) => skill.name).join(", ")}</span>
+      <span>{entry.skills}</span>
     </div>
   );
 }

@@ -1,18 +1,18 @@
-import type { Section } from "@/lib/resume/types";
-import type { HeaderChanges } from "@/lib/resume/update-header";
+import type { ResumeEdit, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
 import { HeaderFields } from "./header-fields";
 import { SectionRow } from "./section-row";
+import { SkillsFields } from "./skills-fields";
 
-// Only the Header's name and headline can be edited so far; the other
-// Sections gain their fields in later tickets (#18 onwards).
+// Only the Header and Skills can be edited so far; the other Sections gain
+// their fields in later tickets.
 
 export function ContentPane({
   sections,
-  onHeaderUpdate,
+  onEdit,
 }: {
   sections: Section[];
-  onHeaderUpdate: (changes: HeaderChanges) => void;
+  onEdit: (edit: ResumeEdit) => void;
 }) {
   return (
     <aside
@@ -24,15 +24,24 @@ export function ContentPane({
         <span className="text-xs text-ink-meta">{formatCount(sections.length, "section", "sections")}</span>
       </div>
       <ul className="flex grow flex-col gap-2 overflow-auto px-6 pt-4 pb-8">
-        {sections.map((section) =>
-          section.type === "header" ? (
-            <SectionRow key={section.id} section={section} defaultExpanded>
-              <HeaderFields header={section} onUpdate={onHeaderUpdate} />
-            </SectionRow>
-          ) : (
-            <SectionRow key={section.id} section={section} />
-          ),
-        )}
+        {sections.map((section) => {
+          switch (section.type) {
+            case "header":
+              return (
+                <SectionRow key={section.id} section={section} defaultExpanded>
+                  <HeaderFields header={section} onEdit={onEdit} />
+                </SectionRow>
+              );
+            case "skills":
+              return (
+                <SectionRow key={section.id} section={section}>
+                  <SkillsFields section={section} onEdit={onEdit} />
+                </SectionRow>
+              );
+            default:
+              return <SectionRow key={section.id} section={section} />;
+          }
+        })}
       </ul>
     </aside>
   );

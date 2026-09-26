@@ -31,7 +31,7 @@ export type RenderableView = {
 
 /**
  * Turns a Resume into only the Content a Theme should draw. A Section, Entry,
- * Bullet, Skill or contact item is kept only if it and all its ancestors are
+ * Bullet or contact item is kept only if it and all its ancestors are
  * Enabled and it is not Empty. Text is trimmed, and unfilled fields of kept
  * items come out as "". Section order is the Content's; placing Sections is
  * the Theme's job (ADR 0005).
@@ -125,14 +125,10 @@ function renderProjectEntry(entry: ProjectEntry): Rendered<ProjectEntry> | null 
   return anyFilled(rendered, [rendered.name, rendered.link, rendered.techStack]) ? rendered : null;
 }
 
-/** Needs at least one Skill: a label on its own has nothing to show. */
 function renderSkillsEntry(entry: SkillsEntry): Rendered<SkillsEntry> | null {
   if (!entry.enabled) return null;
-  const skills = entry.skills
-    .filter((skill) => skill.enabled && isFilled(skill.name))
-    .map((skill) => ({ id: skill.id, name: trimmed(skill.name) }));
-  if (skills.length === 0) return null;
-  return { id: entry.id, label: trimmed(entry.label), skills };
+  const rendered = { id: entry.id, label: trimmed(entry.label), skills: trimmed(entry.skills) };
+  return rendered.label !== "" || rendered.skills !== "" ? rendered : null;
 }
 
 function renderEducationEntry(entry: EducationEntry): Rendered<EducationEntry> | null {
