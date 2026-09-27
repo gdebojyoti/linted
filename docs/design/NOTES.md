@@ -26,3 +26,19 @@
 - **App accent: Amethyst** (`#9b59b6`), in place of the design's Pine green. This is the app only; a Theme's colours are its own.
 - **Ledger accent: Pine green** (`#17784a`), as in the design, for the Theme's headings and links (about 5.5:1 on white). Set in the Theme's own variables (#15), separate from the app accent.
 - **Font: Open Sans** for now for the app, in place of the design's Geist and Geist Mono. **Ledger uses Source Serif 4**, as in the design.
+
+## The Library (`linted-library-design/`)
+
+`linted-library-design/` is a second Claude Design export, for the Library at `/resume-builder` (#9). It uses the same tokens as the editor export, and everything above about colours and fonts applies to it too. Where we build something different:
+
+| The design shows | Build this instead |
+|---|---|
+| Pine green buttons, logo and Resume sketches | **Amethyst**, like the rest of the app |
+| Geist, and Geist Mono for the logo and grey meta lines | **Open Sans** everywhere |
+| Buttons 38px (list) and 42px (empty state) tall | shadcn Button's **built-in sizes** only: the default on the list, `lg` on the empty state |
+| A working search box | **Shown but disabled** |
+| A Duplicate button and a "…" menu (Rename, Duplicate, Export PDF, Delete) on each row | **Both shown but disabled**, with no menu. Rename, Duplicate and Delete come in #11–#13 |
+| "all sections empty" when nothing will show | **Always counts**, e.g. "0 of 6 sections" |
+| Only the title opens a Resume | **The whole row** opens it |
+| "Untitled resume" | **"Untitled Resume"**, the code's default |
+| Two wordings of the browser-storage note | **One wording** in both places: "No account needed. Your resumes are saved in this browser only, so clearing site data or switching browser / device will not bring them with you." |
