@@ -56,7 +56,7 @@ export function Library() {
       <LibraryHeader />
       {status.kind === "loading" && <LibraryMessage>Loading…</LibraryMessage>}
       {status.kind === "failed" && (
-        <LibraryMessage>
+        <LibraryMessage role="alert">
           Your resumes couldn&apos;t be read. This browser may be blocking site storage.
         </LibraryMessage>
       )}
