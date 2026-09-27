@@ -6,15 +6,17 @@ import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { ContentPane } from "./content-pane/content-pane";
 import { PreviewPane } from "./preview-pane/preview-pane";
 import { TopBar } from "./top-bar/top-bar";
+import { useAutosave } from "./use-autosave";
 
 /**
  * Holds the Resume being edited. Both panes read this state, so every edit
  * shows in the preview at once; that shared state is why the whole editor is
- * a Client Component. Edits aren't saved yet: autosave is #10.
+ * a Client Component. Every edit is saved automatically, with no Save button.
  */
 export function Editor({ initialResume }: { initialResume: Resume }) {
   const [resume, setResume] = useState(initialResume);
   const pageRef = useRef<HTMLDivElement>(null);
+  useAutosave(resume, initialResume);
 
   /** Every edit is a Resume module function, applied to the latest Resume. */
   function handleEdit(edit: ResumeEdit) {
