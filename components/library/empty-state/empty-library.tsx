@@ -15,7 +15,7 @@ export function EmptyLibrary({ creating, onCreate }: { creating: boolean; onCrea
             choose what each one includes.
           </p>
         </div>
-        <NewResumeButton size="lg" creating={creating} onCreate={onCreate} />
+        <NewResumeButton creating={creating} onCreate={onCreate} />
         <StorageNote className="mt-3 rounded-lg border border-line bg-surface px-3.5 py-3 text-left leading-snug" />
       </div>
     </main>

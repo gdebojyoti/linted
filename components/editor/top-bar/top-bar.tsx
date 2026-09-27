@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Copy, Download } from "lucide-react";
 import { Logo } from "@/components/common/logo";
+import { Button } from "@/components/ui/button";
 
 /**
  * The editor's header bar. Kept separate from the Library's header, although
@@ -23,50 +25,17 @@ export function TopBar({ resumeTitle, onExport }: { resumeTitle: string; onExpor
       <div className="grow" />
 
       <div className="flex items-center gap-2.5">
-        <button
-          type="button"
-          disabled
-          title="Coming soon"
-          className="flex h-[34px] items-center gap-1.5 rounded-md border border-line bg-app px-3 text-[13px] font-medium text-ink-disabled disabled:cursor-not-allowed"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="8" y="8" width="12" height="12" rx="2" />
-            <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
-          </svg>
-          Duplicate
-        </button>
-        <button
-          type="button"
-          onClick={onExport}
-          className="flex h-[34px] items-center gap-1.5 rounded-md border border-accent bg-accent px-3.5 text-[13px] font-medium text-white hover:border-accent-strong hover:bg-accent-strong"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 4v11" />
-            <path d="M7 10l5 5 5-5" />
-            <path d="M5 20h14" />
-          </svg>
+        {/* A disabled Button ignores the pointer, so the tooltip sits on a wrapper. */}
+        <span title="Coming soon">
+          <Button variant="outline" size="lg" disabled>
+            <Copy aria-hidden="true" />
+            Duplicate
+          </Button>
+        </span>
+        <Button size="lg" onClick={onExport}>
+          <Download aria-hidden="true" />
           Export PDF
-        </button>
+        </Button>
       </div>
     </header>
   );

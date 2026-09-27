@@ -34,7 +34,7 @@ export function ResumeList({
           </div>
           <div className="grow" />
           <SearchBox />
-          <NewResumeButton size="default" creating={creating} onCreate={onCreate} />
+          <NewResumeButton creating={creating} onCreate={onCreate} />
         </div>
 
         <div className="overflow-hidden rounded-xl border border-line bg-surface">
