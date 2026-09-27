@@ -1,6 +1,7 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import tailwindCanonicalSpacing from "./eslint-rules/tailwind-canonical-spacing.mjs";
 
 // Import style: "./" for files in the same folder or below it, "@/" for
 // everything else. Climbing up with "../" is never allowed.
@@ -83,6 +84,14 @@ const eslintConfig = defineConfig([
         { object: "globalThis", property: "localStorage", message: useResumeStore },
       ],
     },
+  },
+  // Our own rules, kept in eslint-rules/ rather than installed as packages.
+  // A warning for now: it lists bracketed sizes that have a Tailwind scale
+  // class, without failing `npx eslint` until they're cleaned up.
+  {
+    files: ["**/*.{ts,tsx}"],
+    plugins: { linted: { rules: { "tailwind-canonical-spacing": tailwindCanonicalSpacing } } },
+    rules: { "linted/tailwind-canonical-spacing": "warn" },
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([
