@@ -2,7 +2,7 @@ import { renderableView } from "@/lib/resume/renderable-view";
 import type { Ref } from "react";
 import type { Resume } from "@/lib/resume/types";
 import { placeSections } from "@/lib/theme/place-sections";
-import { themeFor } from "@/themes/theme-for";
+import { useTheme } from "./use-theme";
 
 /**
  * The preview area belongs to the app; everything inside the page belongs to
@@ -13,12 +13,14 @@ import { themeFor } from "@/themes/theme-for";
  * Resume changes. The Layout is always null in v1, so the Theme's default
  * Layout places every Section (ADR 0005).
  *
+ * The Theme loads lazily, and a blank A4 page stands in for it meanwhile.
+ *
  * `pageRef` points at the element holding the Theme's page, which is its only
- * child; Export prints that page.
+ * child; Export prints that page. It is unset while the Theme loads, so a
+ * blank page is never exported.
  */
 export function PreviewPane({ resume, pageRef }: { resume: Resume; pageRef?: Ref<HTMLDivElement> }) {
-  const { Page, defaultLayout } = themeFor(resume.themeSettings.themeId);
-  const zones = placeSections(renderableView(resume).sections, defaultLayout);
+  const theme = useTheme(resume.themeSettings.themeId);
 
   return (
     <main className="flex min-w-0 grow flex-col bg-preview">
@@ -26,9 +28,13 @@ export function PreviewPane({ resume, pageRef }: { resume: Resume; pageRef?: Ref
         <span className="text-[13px] font-semibold">Preview</span>
       </div>
       <div className="flex grow justify-center overflow-auto p-6">
-        <div ref={pageRef} className="h-fit shrink-0 shadow-page">
-          <Page zones={zones} />
-        </div>
+        {theme ? (
+          <div ref={pageRef} className="h-fit shrink-0 shadow-page">
+            <theme.Page zones={placeSections(renderableView(resume).sections, theme.defaultLayout)} />
+          </div>
+        ) : (
+          <div className="h-[297mm] w-[210mm] shrink-0 bg-white shadow-page" />
+        )}
       </div>
     </main>
   );
