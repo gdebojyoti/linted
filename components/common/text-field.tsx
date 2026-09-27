@@ -1,10 +1,11 @@
 import { useId } from "react";
 
-// A labelled single-line text input, styled as in the editor design. An error
-// shows underneath it and is read out with the field.
-//
-// NOTE: This may be replaced with shadcn/ui's Input (and Label) in the future.
-
+/**
+ * A labelled single-line text input, styled as in the editor design. An error
+ * shows underneath it and is read out with the field.
+ *
+ * NOTE: This may be replaced with shadcn/ui's Input (and Label) in the future.
+ */
 export function TextField({
   label,
   value,

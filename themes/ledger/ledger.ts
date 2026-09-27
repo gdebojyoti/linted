@@ -3,7 +3,7 @@ import type { Theme } from "@/themes/theme";
 import { LedgerPage } from "./ledger-page";
 import { LEDGER_ZONES, type LedgerZone } from "./zones";
 
-// Typed to Ledger's own Zones, so a Section can't be sent to a Zone the page never draws.
+/** Typed to Ledger's own Zones, so a Section can't be sent to a Zone the page never draws. */
 const defaultLayout: Record<SectionType, LedgerZone> = {
   header: "header",
   summary: "main",

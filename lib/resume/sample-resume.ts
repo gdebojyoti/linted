@@ -1,16 +1,5 @@
 import { DEFAULT_THEME_ID, SCHEMA_VERSION, type Resume, type ResumeDate } from "./types";
 
-// A filled-in Resume for building and checking the editor and Theme before
-// Resumes can be created and saved. The person is fictional.
-//
-// Besides realistic content, it deliberately includes the cases the UI must
-// handle: every Section type (Custom included), Disabled items at each level
-// (Section, Entry, Bullet, contact item), Empty Entries, Current
-// Entries, dates at year / month / day precision, nested Bullets, and Prose
-// with bold, italic and links.
-//
-// Ids are fixed so the sample is the same on every load.
-
 function year(year: number): ResumeDate {
   return { year, month: null, day: null };
 }
@@ -19,6 +8,18 @@ function month(year: number, month: number): ResumeDate {
   return { year, month, day: null };
 }
 
+/**
+ * A filled-in Resume for building and checking the editor and Theme before
+ * Resumes can be created and saved. The person is fictional.
+ *
+ * Besides realistic content, it deliberately includes the cases the UI must
+ * handle: every Section type (Custom included), Disabled items at each level
+ * (Section, Entry, Bullet, contact item), Empty Entries, Current
+ * Entries, dates at year / month / day precision, nested Bullets, and Prose
+ * with bold, italic and links.
+ *
+ * Ids are fixed so the sample is the same on every load.
+ */
 export const sampleResume: Resume = {
   schemaVersion: SCHEMA_VERSION,
   metadata: {

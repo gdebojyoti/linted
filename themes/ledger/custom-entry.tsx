@@ -5,7 +5,9 @@ import { BulletList } from "./bullet-list";
 import { EntryLine } from "./entry-line";
 import styles from "./ledger.module.css";
 
-// "Idempotency at scale — GopherCon UK        14 Aug 2025"
+/**
+ * "Idempotency at scale — GopherCon UK        14 Aug 2025"
+ */
 export function CustomEntry({ entry }: { entry: Rendered<StoredCustomEntry> }) {
   return (
     <div className={styles.entry}>

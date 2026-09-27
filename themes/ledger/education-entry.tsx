@@ -6,8 +6,10 @@ import { EntryLine } from "./entry-line";
 import styles from "./ledger.module.css";
 import { joinMeta } from "./join-meta";
 
-// "University of Manchester        Manchester · 2013 – 2017"
-// "BSc Computer Science            First-class honours"
+/**
+ * "University of Manchester        Manchester · 2013 – 2017"
+ * "BSc Computer Science            First-class honours"
+ */
 export function EducationEntry({ entry }: { entry: Rendered<StoredEducationEntry> }) {
   const firstLine = joinMeta(entry.location, formatDateRange(entry.dates));
 
