@@ -86,12 +86,12 @@ const eslintConfig = defineConfig([
     },
   },
   // Our own rules, kept in eslint-rules/ rather than installed as packages.
-  // A warning for now: it lists bracketed sizes that have a Tailwind scale
-  // class, without failing `npx eslint` until they're cleaned up.
+  // tailwind-canonical-spacing fails on a bracketed size that has a Tailwind
+  // scale class, e.g. "h-[34px]" where "h-8.5" is the same.
   {
     files: ["**/*.{ts,tsx}"],
     plugins: { linted: { rules: { "tailwind-canonical-spacing": tailwindCanonicalSpacing } } },
-    rules: { "linted/tailwind-canonical-spacing": "warn" },
+    rules: { "linted/tailwind-canonical-spacing": "error" },
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([
