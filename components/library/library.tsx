@@ -14,10 +14,10 @@ import { ResumeList } from "./resume-list/resume-list";
 // is safe during the server render too.
 const library = resumeLibrary(localStorageResumeStore());
 
-type Loaded =
-  | { state: "loading" }
-  | { state: "failed" }
-  | { state: "ready"; resumes: Resume[]; now: Date };
+type Status =
+  | { kind: "loading" }
+  | { kind: "failed" }
+  | { kind: "ready"; resumes: Resume[]; now: Date };
 
 /**
  * The Library page. Resumes live in this browser (ADR 0002), so the server
@@ -25,14 +25,14 @@ type Loaded =
  */
 export function Library() {
   const router = useRouter();
-  const [loaded, setLoaded] = useState<Loaded>({ state: "loading" });
+  const [status, setStatus] = useState<Status>({ kind: "loading" });
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     let current = true;
     library.list().then(
-      (resumes) => current && setLoaded({ state: "ready", resumes, now: new Date() }),
-      () => current && setLoaded({ state: "failed" }),
+      (resumes) => current && setStatus({ kind: "ready", resumes, now: new Date() }),
+      () => current && setStatus({ kind: "failed" }),
     );
     return () => {
       current = false;
@@ -47,26 +47,26 @@ export function Library() {
       router.push(`/resume-builder/resumes/${resume.metadata.id}`);
     } catch {
       setCreating(false);
-      setLoaded({ state: "failed" });
+      setStatus({ kind: "failed" });
     }
   }
 
   return (
     <div className="flex min-h-screen flex-col">
       <LibraryHeader />
-      {loaded.state === "loading" && <LibraryMessage>Loading…</LibraryMessage>}
-      {loaded.state === "failed" && (
+      {status.kind === "loading" && <LibraryMessage>Loading…</LibraryMessage>}
+      {status.kind === "failed" && (
         <LibraryMessage>
           Your resumes couldn&apos;t be read. This browser may be blocking site storage.
         </LibraryMessage>
       )}
-      {loaded.state === "ready" &&
-        (loaded.resumes.length === 0 ? (
+      {status.kind === "ready" &&
+        (status.resumes.length === 0 ? (
           <EmptyLibrary creating={creating} onCreate={handleCreate} />
         ) : (
           <ResumeList
-            resumes={loaded.resumes}
-            now={loaded.now}
+            resumes={status.resumes}
+            now={status.now}
             creating={creating}
             onCreate={handleCreate}
           />

@@ -6,9 +6,7 @@ import { sectionSummary } from "@/lib/resume/section-summary";
 import type { Resume } from "@/lib/resume/types";
 import { themeName } from "@/lib/theme/theme-name";
 import { ResumeThumbnail } from "./resume-thumbnail";
-
-/** The column widths every row and the list's column headings share. */
-export const LIBRARY_COLUMNS = "grid grid-cols-[minmax(0,1fr)_190px_190px_112px] items-center";
+import { LIBRARY_COLUMNS } from "./utils";
 
 /**
  * One Resume in the Library. Clicking anywhere on the row opens it in the
@@ -34,8 +32,15 @@ export function ResumeRow({ resume, now }: { resume: Resume; now: Date }) {
           </span>
         </span>
       </Link>
-      <span className="text-[13px] text-ink">{formatLastEdited(lastEditedAt, now)}</span>
-      <span className="text-[13px] text-ink-muted">{formatDay(createdAt)}</span>
+      {/* The column headings sit apart from the rows, so screen readers get each label here. */}
+      <span className="text-[13px] text-ink">
+        <span className="sr-only">Last edited </span>
+        {formatLastEdited(lastEditedAt, now)}
+      </span>
+      <span className="text-[13px] text-ink-muted">
+        <span className="sr-only">Created </span>
+        {formatDay(createdAt)}
+      </span>
       {/* Above the stretched link, so a click on a button never opens the Resume. */}
       <div className="relative z-10 flex justify-end gap-0.5">
         <Button variant="ghost" size="icon" disabled aria-label={`Duplicate ${title}`}>

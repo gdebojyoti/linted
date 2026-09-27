@@ -3,8 +3,9 @@ import { formatCount } from "@/lib/format/count";
 import type { Resume } from "@/lib/resume/types";
 import { NewResumeButton } from "@/components/library/new-resume-button";
 import { StorageNote } from "@/components/library/storage-note";
-import { LIBRARY_COLUMNS, ResumeRow } from "./resume-row";
+import { ResumeRow } from "./resume-row";
 import { SearchBox } from "./search-box";
+import { LIBRARY_COLUMNS } from "./utils";
 
 /**
  * The Library's Resumes, the most recently edited first (already sorted by
@@ -38,6 +39,7 @@ export function ResumeList({
 
         <div className="overflow-hidden rounded-xl border border-line bg-surface">
           <div
+            aria-hidden="true"
             className={`${LIBRARY_COLUMNS} h-10 border-b border-line-soft pr-3 pl-5 text-xs font-medium text-ink-muted`}
           >
             <span>Resume title</span>
