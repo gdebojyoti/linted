@@ -2,7 +2,7 @@ import { useId, useState, type ReactNode } from "react";
 import type { Section } from "@/lib/resume/types";
 import { Badge } from "@/components/common/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { formatCount } from "@/lib/format/count";
+import { entrySummary } from "@/lib/resume/section-summary";
 
 /**
  * One Section in the Content pane. When it has fields to edit (`children`),
@@ -35,7 +35,7 @@ export function SectionRow({
           {section.title}
         </span>
         {section.type === "custom" && <Badge>Custom</Badge>}
-        <span className="text-xs text-ink-meta">{summarise(section)}</span>
+        <span className="text-xs text-ink-meta">{entrySummary(section)}</span>
         <span className="grow" />
         {section.type === "header" && section.pinned && <Badge>Pinned</Badge>}
         {children && (
@@ -71,15 +71,4 @@ export function SectionRow({
       )}
     </li>
   );
-}
-
-/** The short description next to a Section's title, e.g. "2 entries". */
-function summarise(section: Section): string {
-  const entries = section.entries.length;
-  if (section.type === "header") {
-    const enabled = section.entries.filter((e) => e.enabled).length;
-    const contacts = `${enabled} of ${formatCount(entries, "entry", "entries")}`;
-    return section.name ? `${section.name} · ${contacts}` : contacts;
-  }
-  return entries === 0 ? "No entries" : formatCount(entries, "entry", "entries");
 }
