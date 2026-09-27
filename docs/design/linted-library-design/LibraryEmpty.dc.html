@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Library — empty</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:'Geist',system-ui,sans-serif;color:#1A1A18;background:#F6F6F3}
+a{color:#17784A}a:hover{color:#0F5E39}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1440px; height: 940px; display: flex; flex-direction: column; background: #F6F6F3; font-family: 'Geist', system-ui, sans-serif; color: #1A1A18; overflow: hidden">
+
+<header style="height: 56px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 16px; padding: 0 20px; background: #FFFFFF; border-bottom: 1px solid #E3E3DE">
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 24px; height: 24px; border-radius: 6px; background: #17784A; display: flex; align-items: center; justify-content: center; color: #FFFFFF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></div>
+<span style="font-family: 'Geist Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: -0.02em">linted</span>
+</div>
+<div style="width: 1px; height: 20px; background: #E3E3DE"></div>
+<span style="font-size: 13px; font-weight: 600">Library</span>
+<span style="flex-grow: 1"></span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #5F5F58"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg>Saved in this browser</span>
+</header>
+
+<main style="flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-bottom: 56px">
+<div style="width: 520px; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center">
+<div style="position: relative; width: 120px; height: 140px">
+<div style="position: absolute; left: 22px; top: 6px; width: 92px; height: 120px; background: #FFFFFF; border: 1px solid #E3E3DE; border-radius: 4px; transform: rotate(6deg)"></div>
+<div style="position: absolute; left: 10px; top: 12px; width: 92px; height: 120px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #D9D9D3; border-radius: 4px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 14px 12px; display: flex; flex-direction: column; gap: 6px">
+<span style="height: 5px; width: 44px; background: #1A1A18; border-radius: 2px"></span>
+<span style="height: 3px; width: 60px; background: #D9D9D3; border-radius: 2px"></span>
+<span style="height: 3px; width: 22px; background: #17784A; border-radius: 2px; margin-top: 8px"></span>
+<span style="height: 3px; width: 66px; border: 1px dashed #C9C9C2; border-radius: 2px"></span>
+<span style="height: 3px; width: 56px; border: 1px dashed #C9C9C2; border-radius: 2px"></span>
+<span style="height: 3px; width: 22px; background: #17784A; border-radius: 2px; margin-top: 8px"></span>
+<span style="height: 3px; width: 62px; border: 1px dashed #C9C9C2; border-radius: 2px"></span>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.02em">No resumes yet</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.55; color: #45453F">Start a resume and fill in only what you want. Keep several for different roles, and choose what each one includes.</p>
+</div>
+<button style="height: 42px; padding: 0 20px; display: flex; align-items: center; gap: 8px; border: 1px solid #17784A; background: #17784A; border-radius: 8px; font-size: 14px; font-weight: 500; color: #FFFFFF; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>New resume</button>
+<div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 12px; padding: 12px 14px; border: 1px solid #E3E3DE; border-radius: 8px; background: #FFFFFF; font-size: 12.5px; line-height: 1.45; color: #45453F; text-align: left">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>
+<span>No account needed. Resumes are saved in this browser only, so clearing site data or switching device will not bring them with you.</span>
+</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
