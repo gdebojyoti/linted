@@ -24,7 +24,7 @@ export function ResumeList({
 }) {
   return (
     <main className="flex grow justify-center px-16 pt-10 pb-10">
-      <div className="flex w-[1120px] max-w-full flex-col gap-5">
+      <div className="flex w-280 max-w-full flex-col gap-5">
         <div className="flex items-end gap-4">
           <div className="flex flex-col gap-1.5">
             <h1 className="text-[26px] font-semibold tracking-tight">Library</h1>

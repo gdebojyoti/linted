@@ -2,13 +2,13 @@
 export function ResumeThumbnail() {
   return (
     <span
-      className="flex h-9 w-7 shrink-0 flex-col gap-0.5 rounded-[3px] border border-line-input bg-surface px-1 py-[5px]"
+      className="flex h-9 w-7 shrink-0 flex-col gap-0.5 rounded-[3px] border border-line-input bg-surface px-1 py-1.25"
       aria-hidden="true"
     >
-      <span className="h-[3px] w-3 rounded-[1px] bg-ink" />
+      <span className="h-0.75 w-3 rounded-[1px] bg-ink" />
       <span className="h-0.5 w-4 rounded-[1px] bg-line-input" />
       <span className="mt-0.5 h-0.5 w-2 rounded-[1px] bg-accent" />
-      <span className="h-0.5 w-[18px] rounded-[1px] bg-line" />
+      <span className="h-0.5 w-4.5 rounded-[1px] bg-line" />
       <span className="h-0.5 w-3.5 rounded-[1px] bg-line" />
     </span>
   );
