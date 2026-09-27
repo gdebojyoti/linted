@@ -85,6 +85,14 @@ function withEntries<S extends Section, E>(
     : null;
 }
 
+/**
+ * Whether this contact item is drawn when its Header is: it is Enabled and
+ * not Empty. Uses the same rule as the rendering itself, so the two can't differ.
+ */
+export function isContactShown(entry: ContactEntry): boolean {
+  return renderContactEntry(entry) !== null;
+}
+
 function renderContactEntry(entry: ContactEntry): Rendered<ContactEntry> | null {
   if (!entry.enabled) return null;
   if (entry.kind === "link") {

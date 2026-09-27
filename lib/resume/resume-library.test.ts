@@ -3,6 +3,7 @@ import { memoryResumeStore } from "@/lib/storage/memory-resume-store";
 import { newResume } from "./new-resume";
 import { resumeLibrary } from "./resume-library";
 import type { Resume } from "./types";
+import { updateHeader } from "./update-header";
 
 const at = (time: string) => new Date(`2026-09-27T${time}:00.000Z`);
 
@@ -28,6 +29,16 @@ describe("resumeLibrary", () => {
 
     expect(created.metadata.createdAt).toBe(at("10:00").toISOString());
     expect(await library.get(created.metadata.id)).toEqual(created);
+  });
+
+  test("save stores the Resume with its text trimmed", async () => {
+    const library = resumeLibrary(memoryResumeStore());
+    const created = await library.create();
+    const now = at("11:00");
+
+    await library.save(updateHeader(created, { name: " Maya O. " }, { now }));
+
+    expect(await library.get(created.metadata.id)).toEqual(updateHeader(created, { name: "Maya O." }, { now }));
   });
 
   test("get returns null for an unknown id", async () => {

@@ -9,8 +9,7 @@ function month(year: number, month: number): ResumeDate {
 }
 
 /**
- * A filled-in Resume for building and checking the editor and Theme before
- * Resumes can be created and saved. The person is fictional.
+ * A filled-in Resume for tests. The person is fictional.
  *
  * Besides realistic content, it deliberately includes the cases the UI must
  * handle: every Section type (Custom included), Disabled items at each level

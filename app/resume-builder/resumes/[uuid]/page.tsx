@@ -1,7 +1,7 @@
-import { Editor } from "@/components/editor/editor";
-import { sampleResume } from "@/lib/resume/sample-resume";
+import { EditorLoader } from "@/components/editor/editor-loader";
 
-/** Shows the sample Resume for any id until Resumes can be loaded (#8, #10). */
-export default function ResumeEditorPage() {
-  return <Editor initialResume={sampleResume} />;
+/** The editor for the Resume with this id. Keyed by it, so opening another Resume starts afresh. */
+export default async function ResumeEditorPage({ params }: PageProps<"/resume-builder/resumes/[uuid]">) {
+  const { uuid } = await params;
+  return <EditorLoader key={uuid} id={uuid} />;
 }

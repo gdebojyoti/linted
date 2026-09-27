@@ -2,17 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { resumeLibrary } from "@/lib/resume/resume-library";
+import { browserLibrary as library } from "@/lib/resume/browser-library";
 import type { Resume } from "@/lib/resume/types";
-import { localStorageResumeStore } from "@/lib/storage/local-storage-resume-store";
 import { EmptyLibrary } from "./empty-state/empty-library";
 import { LibraryHeader } from "./header/library-header";
 import { LibraryMessage } from "./library-message";
 import { ResumeList } from "./resume-list/resume-list";
-
-// The store only reaches localStorage when a method runs, so creating it here
-// is safe during the server render too.
-const library = resumeLibrary(localStorageResumeStore());
 
 type Status =
   | { kind: "loading" }
