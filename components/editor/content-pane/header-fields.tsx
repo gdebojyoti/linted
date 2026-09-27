@@ -7,9 +7,10 @@ import { ContactRow } from "./contact-row";
 import { LinkRow } from "./link-row";
 import { useEntryList } from "./use-entry-list";
 
-// The Header's own fields and its contact items. The Header can't be renamed,
-// so it has no title field.
-
+/**
+ * The Header's own fields and its contact items. The Header can't be renamed,
+ * so it has no title field.
+ */
 export function HeaderFields({
   header,
   onEdit,

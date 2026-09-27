@@ -6,7 +6,9 @@ import { EntryLine } from "./entry-line";
 import styles from "./ledger.module.css";
 import { TextLink } from "./text-link";
 
-// "Ledgerly — Go, Postgres, HTMX        ledgerly.example.com · Jan 2024 – Present"
+/**
+ * "Ledgerly — Go, Postgres, HTMX        ledgerly.example.com · Jan 2024 – Present"
+ */
 export function ProjectEntry({ entry }: { entry: Rendered<StoredProjectEntry> }) {
   const dates = formatDateRange(entry.dates);
   const meta = (entry.link || dates) && (

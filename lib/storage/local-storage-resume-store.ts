@@ -26,9 +26,11 @@ export function localStorageResumeStore(injected?: StringStorage): ResumeStore {
     return found;
   }
 
-  // A stored value that isn't valid JSON, has an unknown schema version or
-  // holds a different Resume's id than its key is treated as missing but left
-  // in place, so a later migration or a manual fix can recover it.
+  /**
+   * A stored value that isn't valid JSON, has an unknown schema version or
+   * holds a different Resume's id than its key is treated as missing but left
+   * in place, so a later migration or a manual fix can recover it.
+   */
   function read(key: string): Resume | null {
     const json = storage().getItem(key);
     if (json === null) return null;

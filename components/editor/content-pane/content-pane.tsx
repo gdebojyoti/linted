@@ -4,9 +4,10 @@ import { HeaderFields } from "./header-fields";
 import { SectionRow } from "./section-row";
 import { SkillsFields } from "./skills-fields";
 
-// Only the Header and Skills can be edited so far; the other Sections gain
-// their fields in later tickets.
-
+/**
+ * Only the Header and Skills can be edited so far; the other Sections gain
+ * their fields in later tickets.
+ */
 export function ContentPane({
   sections,
   onEdit,
