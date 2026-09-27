@@ -1,5 +1,6 @@
 import type { ResumeStore } from "@/lib/storage/resume-store";
 import { newResume } from "./new-resume";
+import { trimText } from "./trim-text";
 import type { Resume } from "./types";
 
 /**
@@ -31,6 +32,11 @@ export function resumeLibrary(store: ResumeStore, { clock = () => new Date() }: 
       const resume = newResume({ now: clock() });
       await store.save(resume);
       return resume;
+    },
+
+    /** Stores the Resume with its text trimmed, replacing the saved one with the same id. */
+    async save(resume: Resume): Promise<void> {
+      await store.save(trimText(resume));
     },
 
     /** The Resume with this id, or null if there is none. */
