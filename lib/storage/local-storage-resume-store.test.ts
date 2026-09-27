@@ -34,6 +34,13 @@ describe("localStorageResumeStore", () => {
     expect(storage.getItem(`linted:resume:${resume.metadata.id}`)).toBeNull();
   });
 
+  test("doesn't reach for localStorage until it's used", async () => {
+    // Node has no window, as on the server or when a browser blocks storage.
+    const store = localStorageResumeStore();
+
+    await expect(store.list()).rejects.toThrow();
+  });
+
   test("ignores keys that aren't Resumes", async () => {
     const storage = fakeStorage({ theme: "dark", "linted:other": "{}" });
     const store = localStorageResumeStore(storage);
@@ -46,6 +53,7 @@ describe("localStorageResumeStore", () => {
     ["an unknown schema version", JSON.stringify({ ...newResume(), schemaVersion: 99 })],
     ["no schema version", JSON.stringify({ metadata: { id: "bad" } })],
     ["a non-object", "42"],
+    ["an id that doesn't match its key", JSON.stringify(newResume())],
   ])("an entry with %s", (_, value) => {
     const unreadable = () => fakeStorage({ "linted:resume:bad": value });
 
