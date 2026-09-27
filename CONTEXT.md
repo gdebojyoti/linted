@@ -10,6 +10,10 @@ A resume builder for tech job seekers. Users write and keep several resumes, cho
 A standalone unit made of three parts: its Content, its Theme Settings, and its Metadata. Resumes are independent: nothing links one resume to another.
 _Avoid_: CV, document, profile
 
+**Library**:
+All of the user's Resumes, kept on their device. New Resumes are created in it, and it lists them with the most recently edited first.
+_Avoid_: Collection, workspace, account
+
 **Content**:
 Everything the user writes in a Resume (Sections, Entries, Bullets) plus whether each piece is Enabled.
 _Avoid_: Data, body
