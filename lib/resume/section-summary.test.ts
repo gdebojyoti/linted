@@ -21,8 +21,8 @@ function filled({ headerEnabled = true, summaryEnabled = true } = {}): Resume {
 }
 
 describe("sectionSummary", () => {
-  test("a new Resume has all sections empty", () => {
-    expect(sectionSummary(newResume())).toBe("all sections empty");
+  test("a new Resume shows none of its Sections", () => {
+    expect(sectionSummary(newResume())).toBe("0 of 6 sections");
   });
 
   test("counts the Sections that will be shown out of all Sections", () => {

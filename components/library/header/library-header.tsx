@@ -1,7 +1,11 @@
 import { Monitor } from "lucide-react";
 import { Logo } from "@/components/common/logo";
 
-/** The Library's header bar: the logo, the page name, and where Resumes are saved. */
+/**
+ * The Library's header bar: the logo, the page name, and where Resumes are
+ * saved. Kept separate from the editor's TopBar, although they look alike,
+ * because the two headers are expected to differ more over time.
+ */
 export function LibraryHeader() {
   return (
     <header className="flex h-14 shrink-0 items-center gap-4 border-b border-line bg-surface px-5">

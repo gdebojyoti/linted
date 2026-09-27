@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { Logo } from "@/components/common/logo";
 
+/**
+ * The editor's header bar. Kept separate from the Library's header, although
+ * they look alike, because the two headers are expected to differ more over time.
+ */
 export function TopBar({ resumeTitle, onExport }: { resumeTitle: string; onExport: () => void }) {
   return (
     <header className="flex h-14 shrink-0 items-center gap-4 border-b border-line bg-surface px-5">

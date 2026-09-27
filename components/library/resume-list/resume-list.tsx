@@ -1,7 +1,8 @@
-import { ArrowDown, Info } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { formatCount } from "@/lib/format/count";
 import type { Resume } from "@/lib/resume/types";
 import { NewResumeButton } from "@/components/library/new-resume-button";
+import { StorageNote } from "@/components/library/storage-note";
 import { LIBRARY_COLUMNS, ResumeRow } from "./resume-row";
 import { SearchBox } from "./search-box";
 
@@ -35,7 +36,7 @@ export function ResumeList({
           <NewResumeButton size="default" creating={creating} onCreate={onCreate} />
         </div>
 
-        <div className="rounded-xl border border-line bg-surface">
+        <div className="overflow-hidden rounded-xl border border-line bg-surface">
           <div
             className={`${LIBRARY_COLUMNS} h-10 border-b border-line-soft pr-3 pl-5 text-xs font-medium text-ink-muted`}
           >
@@ -54,11 +55,7 @@ export function ResumeList({
           </ul>
         </div>
 
-        <p className="flex items-center gap-2.5 text-[12.5px] text-ink-muted">
-          <Info className="size-4 shrink-0" aria-hidden="true" />
-          Your resumes are saved in this browser only. Clearing site data, or switching browser or
-          device, will not bring them with you.
-        </p>
+        <StorageNote />
       </div>
     </main>
   );
