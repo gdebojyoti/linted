@@ -17,7 +17,7 @@ export function localStorageResumeStore(injected?: StringStorage): ResumeStore {
     return injected ?? window.localStorage;
   }
 
-  function keys() {
+  function resumeKeys() {
     const found: string[] = [];
     for (let i = 0; i < storage().length; i++) {
       const key = storage().key(i);
@@ -26,9 +26,9 @@ export function localStorageResumeStore(injected?: StringStorage): ResumeStore {
     return found;
   }
 
-  // An entry that isn't valid JSON, has an unknown schema version or holds a
-  // different Resume's id than its key is treated as missing but left in
-  // place, so a later migration or a manual fix can recover it.
+  // A stored value that isn't valid JSON, has an unknown schema version or
+  // holds a different Resume's id than its key is treated as missing but left
+  // in place, so a later migration or a manual fix can recover it.
   function read(key: string): Resume | null {
     const json = storage().getItem(key);
     if (json === null) return null;
@@ -57,7 +57,7 @@ export function localStorageResumeStore(injected?: StringStorage): ResumeStore {
       return read(KEY_PREFIX + id);
     },
     async list() {
-      return keys().flatMap((key) => read(key) ?? []);
+      return resumeKeys().flatMap((key) => read(key) ?? []);
     },
     async delete(id) {
       storage().removeItem(KEY_PREFIX + id);

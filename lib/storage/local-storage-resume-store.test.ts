@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 import { newResume } from "@/lib/resume/new-resume";
-import { SCHEMA_VERSION } from "@/lib/resume/types";
 import { fakeStorage } from "./fake-storage";
 import { localStorageResumeStore } from "./local-storage-resume-store";
 import { resumeStoreContract } from "./resume-store-contract";
@@ -8,7 +7,7 @@ import { resumeStoreContract } from "./resume-store-contract";
 resumeStoreContract("localStorageResumeStore", () => localStorageResumeStore(fakeStorage()));
 
 describe("localStorageResumeStore", () => {
-  test("keeps each Resume as JSON under its own key, with its schema version", async () => {
+  test("keeps each Resume as JSON under its own key", async () => {
     const storage = fakeStorage();
     const store = localStorageResumeStore(storage);
     const first = newResume();
@@ -20,7 +19,6 @@ describe("localStorageResumeStore", () => {
     expect(storage.length).toBe(2);
     const stored = JSON.parse(storage.getItem(`linted:resume:${first.metadata.id}`)!);
     expect(stored).toEqual(first);
-    expect(stored.schemaVersion).toBe(SCHEMA_VERSION);
   });
 
   test("delete removes the Resume's key", async () => {
@@ -54,7 +52,7 @@ describe("localStorageResumeStore", () => {
     ["no schema version", JSON.stringify({ metadata: { id: "bad" } })],
     ["a non-object", "42"],
     ["an id that doesn't match its key", JSON.stringify(newResume())],
-  ])("an entry with %s", (_, value) => {
+  ])("a stored value with %s", (_, value) => {
     const unreadable = () => fakeStorage({ "linted:resume:bad": value });
 
     test("is left out of the list", async () => {

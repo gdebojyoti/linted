@@ -13,6 +13,8 @@ const noParentImports = {
   message: 'Use "@/..." instead of "../". Relative imports are only for the same folder or below.',
 };
 
+const useResumeStore = "Go through a ResumeStore (lib/storage/) instead.";
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -74,17 +76,11 @@ const eslintConfig = defineConfig([
     files: ["**/*.{ts,tsx}"],
     ignores: ["lib/storage/local-storage-resume-store.ts"],
     rules: {
-      "no-restricted-globals": [
-        "error",
-        { name: "localStorage", message: "Go through a ResumeStore (lib/storage/) instead." },
-      ],
+      "no-restricted-globals": ["error", { name: "localStorage", message: useResumeStore }],
       "no-restricted-properties": [
         "error",
-        {
-          object: "window",
-          property: "localStorage",
-          message: "Go through a ResumeStore (lib/storage/) instead.",
-        },
+        { object: "window", property: "localStorage", message: useResumeStore },
+        { object: "globalThis", property: "localStorage", message: useResumeStore },
       ],
     },
   },
