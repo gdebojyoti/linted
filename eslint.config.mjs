@@ -68,6 +68,26 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  // Only the localStorage Resume store may touch localStorage (ADR 0002), so
+  // swapping it for IndexedDB later changes one file.
+  {
+    files: ["**/*.{ts,tsx}"],
+    ignores: ["lib/storage/local-storage-resume-store.ts"],
+    rules: {
+      "no-restricted-globals": [
+        "error",
+        { name: "localStorage", message: "Go through a ResumeStore (lib/storage/) instead." },
+      ],
+      "no-restricted-properties": [
+        "error",
+        {
+          object: "window",
+          property: "localStorage",
+          message: "Go through a ResumeStore (lib/storage/) instead.",
+        },
+      ],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
