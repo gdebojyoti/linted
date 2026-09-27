@@ -1,26 +1,10 @@
 import Link from "next/link";
+import { Logo } from "@/components/common/logo";
 
 export function TopBar({ resumeTitle, onExport }: { resumeTitle: string; onExport: () => void }) {
   return (
     <header className="flex h-14 shrink-0 items-center gap-4 border-b border-line bg-surface px-5">
-      <div className="flex items-center gap-2">
-        <div className="flex size-6 items-center justify-center rounded-sm bg-accent text-white">
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M5 12l5 5 9-10" />
-          </svg>
-        </div>
-        <span className="text-[15px] font-semibold tracking-tight">linted</span>
-      </div>
+      <Logo />
 
       <div className="h-5 w-px bg-line" />
 
