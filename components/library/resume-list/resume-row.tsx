@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { formatDay, formatLastEdited } from "@/lib/format/timestamp";
 import { sectionSummary } from "@/lib/resume/section-summary";
 import type { Resume } from "@/lib/resume/types";
@@ -11,9 +9,8 @@ import { LIBRARY_COLUMNS } from "./utils";
 
 /**
  * One Resume in the Library. Clicking anywhere on the row opens it in the
- * editor: the title's link stretches over the whole row. Duplicate and the
- * "…" menu (Rename, Duplicate) pass their button along, so focus can return
- * to it.
+ * editor: the title's link stretches over the whole row. Its "…" menu
+ * (Rename, Duplicate) passes its button along, so focus can return to it.
  */
 export function ResumeRow({
   resume,
@@ -54,15 +51,7 @@ export function ResumeRow({
         {formatDay(createdAt)}
       </span>
       {/* Above the stretched link, so a click on a button never opens the Resume. */}
-      <div className="relative z-10 flex justify-end gap-0.5">
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label={`Duplicate ${title}`}
-          onClick={(event) => onDuplicate(resume, event.currentTarget)}
-        >
-          <Copy aria-hidden="true" />
-        </Button>
+      <div className="relative z-10 flex justify-end">
         <RowMenu
           title={title}
           onRename={(opener) => onRename(resume, opener)}

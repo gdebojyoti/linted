@@ -37,7 +37,7 @@
 | Geist, and Geist Mono for the logo and grey meta lines | **Open Sans** everywhere |
 | Buttons 38px (list) and 42px (empty state) tall | shadcn Button's **built-in sizes** only: `lg` (36px) for New resume in both places, the same height as the search box. The editor's top-bar buttons use `lg` too |
 | A working search box | **Shown but disabled** |
-| A Duplicate button and a "…" menu (Rename, Duplicate, Export PDF, Delete) on each row | **Duplicate works** (#12), and the **"…" menu holds Rename (#11) and Duplicate**, both opening the title dialog below. Export PDF isn't in it, and Delete joins it in #13 |
+| A Duplicate button and a "…" menu (Rename, Duplicate, Export PDF, Delete) on each row | The **"…" menu holds Rename (#11) and Duplicate (#12)**, both opening the title dialog below. There's **no separate Duplicate button** on the row. Export PDF isn't in the menu, and Delete joins it in #13 |
 | "all sections empty" when nothing will show | **Always counts**, e.g. "0 of 6 sections" |
 | Only the title opens a Resume | **The whole row** opens it |
 | "Untitled resume" | **"Untitled Resume"**, the code's default |
