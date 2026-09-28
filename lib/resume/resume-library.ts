@@ -51,6 +51,11 @@ export function resumeLibrary(store: ResumeStore, { clock = () => new Date() }: 
       await store.save(trimText(resume));
     },
 
+    /** Deletes the Resume with this id for good (there's no backend to recover it from). An unknown id does nothing. */
+    async delete(id: string): Promise<void> {
+      await store.delete(id);
+    },
+
     /** The Resume with this id, or null if there is none. */
     async get(id: string): Promise<Resume | null> {
       return store.get(id);
