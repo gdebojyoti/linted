@@ -39,6 +39,31 @@ describe("resumeLibrary", () => {
     expect((await library.get(created.metadata.id))?.metadata.title).toBe("Stripe backend v2");
   });
 
+  test("duplicate saves a copy with the given title and leaves the original as it was", async () => {
+    const library = resumeLibrary(memoryResumeStore(), { clock: () => at("11:00") });
+    const original = await library.create("Stripe backend v2");
+
+    const copy = await library.duplicate(original, "Stripe backend v3");
+
+    expect(copy.metadata.id).not.toBe(original.metadata.id);
+    expect(await library.get(copy.metadata.id)).toEqual(copy);
+    expect(copy.metadata.title).toBe("Stripe backend v3");
+    expect(await library.get(original.metadata.id)).toEqual(original);
+    expect(await library.list()).toHaveLength(2);
+  });
+
+  test("duplicate copies edits that aren't saved yet, with their text trimmed", async () => {
+    const library = resumeLibrary(memoryResumeStore());
+    const original = await library.create();
+    const unsaved = updateHeader(original, { name: " Maya O. " });
+
+    const copy = await library.duplicate(unsaved);
+
+    const header = (await library.get(copy.metadata.id))?.content.sections.find((s) => s.type === "header");
+    expect(header && "name" in header && header.name).toBe("Maya O.");
+    expect(copy.metadata.title).toBe("Untitled Resume (copy)");
+  });
+
   test("save stores the Resume with its text trimmed", async () => {
     const library = resumeLibrary(memoryResumeStore());
     const created = await library.create();
