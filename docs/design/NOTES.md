@@ -9,7 +9,7 @@
 | 1 | A US Letter page (612 × 792) | An **A4** page (#1, #15, #20) |
 | 2 | Ghosted Sections: Empty or Disabled Sections shown as faded titles in the preview, with "Ghosted" tags in the Content pane | **None in v1.** The preview shows only Enabled, non-Empty Content (#1 "Out of Scope") |
 | 3 | Moving Sections in the preview: handles, a move toolbar, Zone outlines, and the "Arrange sections in the preview" hint | **None in v1.** The Theme always uses its default Layout (ADR 0005, #1 "Out of Scope") |
-| 4 | Drag handles on Entries and Bullets | **Simple controls** for reordering, with no drag-and-drop (#1, #24) |
+| 4 | Drag handles on Entries and Bullets | **No reordering in v1.** It comes later, with drag and drop (#1) |
 | 5 | A rich-text Bullet editor with B / I / link buttons | Prose edited as **Markdown source**, rendered by the Prose renderer (ADR 0004, #16) |
 | 6 | One "Month Year" text field per date, with no day | A **year, an optional month and an optional day** (#21, #23) |
 | 7 | "Current — no end date, shown as 'Present'" on every Entry | **Per-type labels:** "I currently work here" (Experience), "I currently study here" (Education), "Ongoing" elsewhere (#1, #23) |
