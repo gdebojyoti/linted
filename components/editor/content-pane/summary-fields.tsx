@@ -15,7 +15,7 @@ export function SummaryFields({
   section: SummarySection;
   onEdit: (edit: ResumeEdit) => void;
 }) {
-  const { addedId, addButtonRef, add, remove, setEnabled, move } = useEntryList(section.id, onEdit);
+  const { addedId, addButtonRef, add, remove, setEnabled } = useEntryList(section.id, onEdit);
 
   return (
     <div className="flex flex-col gap-3">
@@ -26,10 +26,8 @@ export function SummaryFields({
               key={entry.id}
               entry={entry}
               index={index}
-              count={section.entries.length}
               onTextChange={(text) => onEdit((r) => updateSummaryEntry(r, entry.id, text))}
               onEnabledChange={(enabled) => setEnabled(entry.id, enabled)}
-              onMove={(direction) => move(entry.id, direction)}
               onDelete={() => remove(entry.id)}
               autoFocus={entry.id === addedId}
             />

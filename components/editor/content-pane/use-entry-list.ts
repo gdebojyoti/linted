@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import type { ResumeEdit } from "@/lib/resume/types";
-import { addEntry, deleteEntry, moveEntry, setEntryEnabled } from "@/lib/resume/entries";
+import { addEntry, deleteEntry, setEntryEnabled } from "@/lib/resume/entries";
 
 /**
- * Adding, deleting, moving and Enabling/Disabling a Section's Entries. A new Entry
+ * Adding, deleting and Enabling/Disabling a Section's Entries. A new Entry
  * gets focus (its row checks `addedId`), and after a delete focus moves to
  * the add button (`addButtonRef`), so keyboard users don't lose their place.
  */
@@ -25,9 +25,6 @@ export function useEntryList(sectionId: string, onEdit: (edit: ResumeEdit) => vo
     },
     setEnabled(entryId: string, enabled: boolean) {
       onEdit((resume) => setEntryEnabled(resume, sectionId, entryId, enabled));
-    },
-    move(entryId: string, direction: "up" | "down") {
-      onEdit((resume) => moveEntry(resume, sectionId, entryId, direction));
     },
   };
 }
