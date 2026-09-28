@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Copy, Download } from "lucide-react";
 import { Logo } from "@/components/common/logo";
 import { Button } from "@/components/ui/button";
+import { ResumeTitleEditor } from "./resume-title-editor";
 
 /**
  * The editor's header bar. Kept separate from the Library's header, although
@@ -9,10 +10,12 @@ import { Button } from "@/components/ui/button";
  */
 export function TopBar({
   resumeTitle,
+  onRename,
   onDuplicate,
   onExport,
 }: {
   resumeTitle: string;
+  onRename: (title: string) => void;
   /** Gets the Duplicate button, so focus can return to it. */
   onDuplicate: (opener: HTMLElement) => void;
   onExport: () => void;
@@ -28,7 +31,7 @@ export function TopBar({
           Resumes
         </Link>
         <span className="text-ink-disabled">/</span>
-        <span className="font-semibold">{resumeTitle}</span>
+        <ResumeTitleEditor title={resumeTitle} onRename={onRename} />
       </nav>
 
       <div className="grow" />

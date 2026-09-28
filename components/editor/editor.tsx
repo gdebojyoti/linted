@@ -6,6 +6,7 @@ import { CHANGE_LATER_HINT, ResumeTitleDialog } from "@/components/common/title-
 import { printElement } from "@/lib/export/print-element";
 import { browserLibrary as library } from "@/lib/resume/browser-library";
 import { copyTitle } from "@/lib/resume/duplicate-resume";
+import { renameResume } from "@/lib/resume/rename-resume";
 import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { ContentPane } from "./content-pane/content-pane";
 import { PreviewPane } from "./preview-pane/preview-pane";
@@ -63,7 +64,12 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      <TopBar resumeTitle={resume.metadata.title} onDuplicate={openDuplicate} onExport={handleExport} />
+      <TopBar
+        resumeTitle={resume.metadata.title}
+        onRename={(title) => handleEdit((current) => renameResume(current, title))}
+        onDuplicate={openDuplicate}
+        onExport={handleExport}
+      />
       <div className="flex min-h-0 grow">
         <ContentPane sections={resume.content.sections} onEdit={handleEdit} />
         <PreviewPane resume={resume} pageRef={pageRef} />

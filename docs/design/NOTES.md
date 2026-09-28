@@ -20,7 +20,7 @@
 
 - The v1 Theme is called **Ledger**.
 - v1 uses the **one-column** page (`PreviewPage.dc.html`). The two-column boards are reference for a later version.
-- The header bar's **"Saved"** indicator is fine to keep. Its **Duplicate** button works (#12): it opens the same dialog as the Library's Duplicate.
+- The header bar's **"Saved"** indicator is fine to keep. Its **Duplicate** button works (#12): it opens the same dialog as the Library's Duplicate. The **"Rename resume"** pencil next to the title works (#11), and so does clicking the title: it's renamed in place, with Enter or clicking away to save and Esc to cancel.
 - **Export PDF** stays disabled until Export works (#20).
 - **A "…" menu appears only when it has more than one option.** A single action gets its own button. For example, a Custom Section's menu has Rename and Delete. A Default Section can't be deleted, so it gets just a rename button and no menu.
 - **App accent: Amethyst** (`#9b59b6`), in place of the design's Pine green. This is the app only; a Theme's colours are its own.
@@ -37,7 +37,7 @@
 | Geist, and Geist Mono for the logo and grey meta lines | **Open Sans** everywhere |
 | Buttons 38px (list) and 42px (empty state) tall | shadcn Button's **built-in sizes** only: `lg` (36px) for New resume in both places, the same height as the search box. The editor's top-bar buttons use `lg` too |
 | A working search box | **Shown but disabled** |
-| A Duplicate button and a "…" menu (Rename, Duplicate, Export PDF, Delete) on each row | **Duplicate works** (#12) and opens the title dialog below. The **"…" menu is shown but disabled**, with no menu. Rename and Delete come in #11 and #13 |
+| A Duplicate button and a "…" menu (Rename, Duplicate, Export PDF, Delete) on each row | **Duplicate works** (#12), and the **"…" menu holds Rename (#11) and Duplicate**, both opening the title dialog below. Export PDF isn't in it, and Delete joins it in #13 |
 | "all sections empty" when nothing will show | **Always counts**, e.g. "0 of 6 sections" |
 | Only the title opens a Resume | **The whole row** opens it |
 | "Untitled resume" | **"Untitled Resume"**, the code's default |
@@ -45,7 +45,7 @@
 
 ## The New resume dialog (`linted-new-resume-dialog/`)
 
-`linted-new-resume-dialog/` is a third Claude Design export: the dialog that **New resume** opens in the Library, to name the Resume before it's created. The same dialog names a Duplicate (#12): headed "Duplicate resume", with a **Duplicate** button, starting from "<title> (copy)" selected. Its `Library.dc.html` is only the backdrop, the same design as in the Library export. Everything above about colours and fonts applies. Where we build something different:
+`linted-new-resume-dialog/` is a third Claude Design export: the dialog that **New resume** opens in the Library, to name the Resume before it's created. The same dialog names a Duplicate (#12): headed "Duplicate resume", with a **Duplicate** button, starting from "<title> (copy)" selected. It also renames a Resume from the Library (#11): headed "Rename resume", with a **Rename** button, starting from the current title selected, and no footer hint. Its `Library.dc.html` is only the backdrop, the same design as in the Library export. Everything above about colours and fonts applies. Where we build something different:
 
 | The design shows | Build this instead |
 |---|---|
