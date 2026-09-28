@@ -1,3 +1,4 @@
+import { parseProse } from "@/lib/prose/parse-prose";
 import type { RenderedSection } from "@/lib/resume/renderable-view";
 import { CustomEntry } from "./custom-entry";
 import { EducationEntry } from "./education-entry";
@@ -5,6 +6,7 @@ import { ExperienceEntry } from "./experience-entry";
 import { HeaderSection } from "./header-section";
 import styles from "./ledger.module.css";
 import { ProjectEntry } from "./project-entry";
+import { ProseText } from "./prose-text";
 import { SkillsEntry } from "./skills-entry";
 
 export function LedgerSection({ section }: { section: RenderedSection }) {
@@ -14,8 +16,11 @@ export function LedgerSection({ section }: { section: RenderedSection }) {
     <section className={styles.section}>
       <h2 className={styles.sectionTitle}>{section.title}</h2>
       {section.type === "summary" &&
-        // Prose shows as its Markdown source until the Prose renderer (#16).
-        section.entries.map((entry) => <p key={entry.id}>{entry.text}</p>)}
+        section.entries.map((entry) => (
+          <p key={entry.id}>
+            <ProseText nodes={parseProse(entry.text)} />
+          </p>
+        ))}
       {section.type === "skills" && (
         <div className={styles.skills}>
           {section.entries.map((entry) => (
