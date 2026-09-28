@@ -7,7 +7,16 @@ import { Button } from "@/components/ui/button";
  * The editor's header bar. Kept separate from the Library's header, although
  * they look alike, because the two headers are expected to differ more over time.
  */
-export function TopBar({ resumeTitle, onExport }: { resumeTitle: string; onExport: () => void }) {
+export function TopBar({
+  resumeTitle,
+  onDuplicate,
+  onExport,
+}: {
+  resumeTitle: string;
+  /** Gets the Duplicate button, so focus can return to it. */
+  onDuplicate: (opener: HTMLElement) => void;
+  onExport: () => void;
+}) {
   return (
     <header className="flex h-14 shrink-0 items-center gap-4 border-b border-line bg-surface px-5">
       <Logo />
@@ -25,13 +34,10 @@ export function TopBar({ resumeTitle, onExport }: { resumeTitle: string; onExpor
       <div className="grow" />
 
       <div className="flex items-center gap-2.5">
-        {/* A disabled Button ignores the pointer, so the tooltip sits on a wrapper. */}
-        <span title="Coming soon">
-          <Button variant="outline" size="lg" disabled>
-            <Copy aria-hidden="true" />
-            Duplicate
-          </Button>
-        </span>
+        <Button variant="outline" size="lg" onClick={(event) => onDuplicate(event.currentTarget)}>
+          <Copy aria-hidden="true" />
+          Duplicate
+        </Button>
         <Button size="lg" onClick={onExport}>
           <Download aria-hidden="true" />
           Export PDF
