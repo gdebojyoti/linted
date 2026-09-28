@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ResumeTitleForm } from "./resume-title-form";
 
+/** The footer hint for dialogs that set a title the user may want to change later. */
+export const CHANGE_LATER_HINT = "You can change the title later.";
+
 /**
  * A dialog that asks for a Resume Title, e.g. before a new Resume is created.
  * The heading, button label and starting title come from the caller, so a
@@ -18,6 +21,7 @@ export function ResumeTitleDialog({
   onOpenChange,
   heading,
   submitLabel,
+  footerHint,
   initialTitle,
   submitting,
   onSubmit,
@@ -27,6 +31,7 @@ export function ResumeTitleDialog({
   onOpenChange: (open: boolean) => void;
   heading: string;
   submitLabel: string;
+  footerHint?: string;
   initialTitle: string;
   submitting: boolean;
   onSubmit: (title: string) => void;
@@ -44,6 +49,7 @@ export function ResumeTitleDialog({
         <ResumeTitleForm
           initialTitle={initialTitle}
           submitLabel={submitLabel}
+          footerHint={footerHint}
           submitting={submitting}
           onSubmit={onSubmit}
         />
