@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { addEntry, deleteEntry, setEntryEnabled } from "./entries";
+import { addEntry, deleteEntry, moveEntry, setEntryEnabled } from "./entries";
 import { renderableView } from "./renderable-view";
 import { sampleResume } from "./sample-resume";
 import type { Resume, Section } from "./types";
@@ -118,4 +118,43 @@ test("the Resume passed in is never changed", () => {
   setEntryEnabled(sampleResume, "header", "contact-email", false, { now });
 
   expect(sampleResume).toEqual(before);
+});
+
+describe("moveEntry", () => {
+  test("moves an Entry one place up or down, and updates last-edited-at", () => {
+    const down = moveEntry(sampleResume, "summary", "summary-backend", "down", { now });
+    expect(entryIds(down, "summary")).toEqual(["summary-fullstack", "summary-backend"]);
+    expect(down.metadata.lastEditedAt).toBe(now.toISOString());
+
+    const up = moveEntry(down, "summary", "summary-backend", "up", { now });
+    expect(entryIds(up, "summary")).toEqual(["summary-backend", "summary-fullstack"]);
+  });
+
+  test("the preview follows the new order", () => {
+    let resume = setEntryEnabled(sampleResume, "summary", "summary-fullstack", true, { now });
+    resume = moveEntry(resume, "summary", "summary-fullstack", "up", { now });
+    const shown = renderableView(resume).sections.find((s) => s.type === "summary")!.entries;
+
+    expect(shown.map((e) => e.id)).toEqual(["summary-fullstack", "summary-backend"]);
+  });
+
+  test("works in any Section but the Header", () => {
+    const [first, second] = entryIds(sampleResume, "skills");
+    expect(entryIds(moveEntry(sampleResume, "skills", second, "up", { now }), "skills").slice(0, 2)).toEqual([second, first]);
+    expect(moveEntry(sampleResume, "header", "contact-phone", "up", { now })).toBe(sampleResume);
+  });
+
+  test("changes nothing at either end or for an unknown Entry", () => {
+    expect(moveEntry(sampleResume, "summary", "summary-backend", "up", { now })).toBe(sampleResume);
+    expect(moveEntry(sampleResume, "summary", "summary-fullstack", "down", { now })).toBe(sampleResume);
+    expect(moveEntry(sampleResume, "summary", "no-such-entry", "up", { now })).toBe(sampleResume);
+  });
+
+  test("does not change the given Resume", () => {
+    const before = structuredClone(sampleResume);
+
+    moveEntry(sampleResume, "summary", "summary-backend", "down", { now });
+
+    expect(sampleResume).toEqual(before);
+  });
 });

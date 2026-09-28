@@ -80,6 +80,11 @@
   gap: 5pt;
 }
 
+/* A Summary keeps the line breaks the user typed. */
+.summary {
+  white-space: pre-line;
+}
+
 .sectionTitle {
   padding-bottom: 3pt;
   border-bottom: 0.75pt solid var(--ledger-rule);

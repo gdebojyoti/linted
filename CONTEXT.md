@@ -65,7 +65,7 @@ Free-text Content that supports inline formatting (bold, italic, links): Summari
 _Avoid_: Rich text, description
 
 **Bullet**:
-A single point of text belonging to an Entry. A Bullet can have child Bullets, at most two levels deep. The user decides the order of Entries and Bullets.
+A single point of text belonging to an Entry. A Bullet can have child Bullets, at most two levels deep. Entries and Bullets keep the order they were added in; reordering them comes after v1.
 _Avoid_: Point, line, highlight
 
 **Skill**:
