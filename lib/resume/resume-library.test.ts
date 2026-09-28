@@ -31,6 +31,14 @@ describe("resumeLibrary", () => {
     expect(await library.get(created.metadata.id)).toEqual(created);
   });
 
+  test("create saves the Resume with the given title", async () => {
+    const library = resumeLibrary(memoryResumeStore());
+
+    const created = await library.create("Stripe backend v2");
+
+    expect((await library.get(created.metadata.id))?.metadata.title).toBe("Stripe backend v2");
+  });
+
   test("save stores the Resume with its text trimmed", async () => {
     const library = resumeLibrary(memoryResumeStore());
     const created = await library.create();

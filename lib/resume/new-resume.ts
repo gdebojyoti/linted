@@ -10,6 +10,8 @@ import { emptyContact } from "./empty-entry";
 type Options = {
   now?: Date;
   newId?: () => string;
+  /** The Resume Title, trimmed. Empty or only spaces means the default, "Untitled Resume". */
+  title?: string;
 };
 
 /**
@@ -20,6 +22,7 @@ type Options = {
 export function newResume({
   now = new Date(),
   newId = () => crypto.randomUUID(),
+  title = DEFAULT_RESUME_TITLE,
 }: Options = {}): Resume {
   const timestamp = now.toISOString();
 
@@ -27,7 +30,7 @@ export function newResume({
     schemaVersion: SCHEMA_VERSION,
     metadata: {
       id: newId(),
-      title: DEFAULT_RESUME_TITLE,
+      title: title.trim() || DEFAULT_RESUME_TITLE,
       createdAt: timestamp,
       lastEditedAt: timestamp,
     },
