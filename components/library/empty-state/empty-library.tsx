@@ -3,7 +3,13 @@ import { StorageNote } from "@/components/library/storage-note";
 import { StackedPages } from "./stacked-pages";
 
 /** What the Library shows before the user has any Resumes. */
-export function EmptyLibrary({ creating, onCreate }: { creating: boolean; onCreate: () => void }) {
+export function EmptyLibrary({
+  creating,
+  onCreate,
+}: {
+  creating: boolean;
+  onCreate: (opener: HTMLElement) => void;
+}) {
   return (
     <main className="flex grow items-center justify-center px-4 pb-14">
       <div className="flex w-130 max-w-full flex-col items-center gap-5 text-center">

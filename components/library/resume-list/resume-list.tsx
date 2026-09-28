@@ -20,7 +20,7 @@ export function ResumeList({
   resumes: Resume[];
   now: Date;
   creating: boolean;
-  onCreate: () => void;
+  onCreate: (opener: HTMLElement) => void;
 }) {
   return (
     <main className="flex grow justify-center px-16 pt-10 pb-10">

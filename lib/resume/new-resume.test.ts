@@ -94,6 +94,15 @@ describe("newResume", () => {
     expect(metadata.lastEditedAt).toBe("2026-09-24T10:00:00.000Z");
   });
 
+  test("takes a Resume Title, trimmed", () => {
+    expect(newResume({ title: "  Backend — payments v3 " }).metadata.title).toBe("Backend — payments v3");
+  });
+
+  test("an empty or blank title falls back to the default", () => {
+    expect(newResume({ title: "" }).metadata.title).toBe(DEFAULT_RESUME_TITLE);
+    expect(newResume({ title: "   " }).metadata.title).toBe(DEFAULT_RESUME_TITLE);
+  });
+
   test("carries the current schema version, and the default Theme with its default Layout", () => {
     const resume = newResume({ now, newId: sequentialIds() });
 

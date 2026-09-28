@@ -27,9 +27,9 @@ type Options = {
  */
 export function resumeLibrary(store: ResumeStore, { clock = () => new Date() }: Options = {}) {
   return {
-    /** Saves a new, Empty Resume and returns it. */
-    async create(): Promise<Resume> {
-      const resume = newResume({ now: clock() });
+    /** Saves a new, Empty Resume with this title (see newResume) and returns it. */
+    async create(title?: string): Promise<Resume> {
+      const resume = newResume({ now: clock(), title });
       await store.save(resume);
       return resume;
     },
