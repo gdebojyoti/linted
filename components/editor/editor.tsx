@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { ResumeTitleDialog } from "@/components/common/title-dialog/resume-title-dialog";
+import { CHANGE_LATER_HINT, ResumeTitleDialog } from "@/components/common/title-dialog/resume-title-dialog";
 import { printElement } from "@/lib/export/print-element";
 import { browserLibrary as library } from "@/lib/resume/browser-library";
 import { copyTitle } from "@/lib/resume/duplicate-resume";
@@ -73,6 +73,7 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
         onOpenChange={(open) => !duplicating && setNaming(open)}
         heading="Duplicate resume"
         submitLabel="Duplicate"
+        footerHint={CHANGE_LATER_HINT}
         initialTitle={copyTitle(resume.metadata.title)}
         submitting={duplicating}
         onSubmit={handleDuplicate}

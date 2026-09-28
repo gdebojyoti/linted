@@ -12,11 +12,14 @@ import { DialogClose } from "@/components/ui/dialog";
 export function ResumeTitleForm({
   initialTitle,
   submitLabel,
+  footerHint,
   submitting,
   onSubmit,
 }: {
   initialTitle: string;
   submitLabel: string;
+  /** A short note at the footer's left, e.g. "You can change the title later."; none when left out. */
+  footerHint?: string;
   submitting: boolean;
   onSubmit: (title: string) => void;
 }) {
@@ -54,7 +57,7 @@ export function ResumeTitleForm({
       </div>
 
       <div className="flex items-center gap-2 rounded-b-2xl border-t border-line-soft bg-surface-soft py-3.5 pr-4 pl-6">
-        <p className="grow text-[11.5px] text-ink-meta">You can change the title later.</p>
+        <p className="grow text-[11.5px] text-ink-meta">{footerHint}</p>
         <DialogClose render={<Button variant="outline" size="lg" />}>Cancel</DialogClose>
         <Button type="submit" size="lg" disabled={!canSubmit}>
           {submitLabel}

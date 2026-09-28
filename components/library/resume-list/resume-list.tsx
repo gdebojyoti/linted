@@ -16,12 +16,14 @@ export function ResumeList({
   now,
   creating,
   onCreate,
+  onRename,
   onDuplicate,
 }: {
   resumes: Resume[];
   now: Date;
   creating: boolean;
   onCreate: (opener: HTMLElement) => void;
+  onRename: (resume: Resume, opener: HTMLElement) => void;
   onDuplicate: (resume: Resume, opener: HTMLElement) => void;
 }) {
   return (
@@ -54,7 +56,13 @@ export function ResumeList({
           </div>
           <ul>
             {resumes.map((resume) => (
-              <ResumeRow key={resume.metadata.id} resume={resume} now={now} onDuplicate={onDuplicate} />
+              <ResumeRow
+                key={resume.metadata.id}
+                resume={resume}
+                now={now}
+                onRename={onRename}
+                onDuplicate={onDuplicate}
+              />
             ))}
           </ul>
         </div>
