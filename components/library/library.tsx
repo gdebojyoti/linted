@@ -7,6 +7,7 @@ import { browserLibrary as library } from "@/lib/resume/browser-library";
 import { copyTitle } from "@/lib/resume/duplicate-resume";
 import { renameResume } from "@/lib/resume/rename-resume";
 import { DEFAULT_RESUME_TITLE, type Resume } from "@/lib/resume/types";
+import { DeleteResumeDialog } from "./delete-dialog/delete-resume-dialog";
 import { EmptyLibrary } from "./empty-state/empty-library";
 import { LibraryHeader } from "./header/library-header";
 import { LibraryMessage } from "./library-message";
@@ -56,6 +57,11 @@ export function Library() {
   const [request, setRequest] = useState<Request>({ kind: "new" });
   /** The button that opened the dialog, which gets focus back when it closes. */
   const openerRef = useRef<HTMLElement>(null);
+  const [confirming, setConfirming] = useState(false);
+  /** The Resume the delete confirmation is for, kept while the dialog fades out. */
+  const [toDelete, setToDelete] = useState<Resume | null>(null);
+  /** Where focus goes after a delete, since the deleted row's "…" button is gone. */
+  const newResumeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     let current = true;
@@ -102,6 +108,31 @@ export function Library() {
 
   const openNew = (opener: HTMLElement) => openDialog(opener, { kind: "new" });
 
+  function openDelete(resume: Resume, opener: HTMLElement) {
+    openerRef.current = opener;
+    setToDelete(resume);
+    setConfirming(true);
+  }
+
+  // The list is read again, so the deleted Resume's row goes (or the empty
+  // state shows). A failed delete closes the dialog; telling the user
+  // properly is #49.
+  async function handleDelete() {
+    if (!toDelete) return;
+    setSaving(true);
+    try {
+      await library.delete(toDelete.metadata.id);
+      setStatus({ kind: "ready", resumes: await library.list(), now: new Date() });
+    } catch {
+      setStatus({ kind: "failed" });
+    }
+    setSaving(false);
+    setConfirming(false);
+  }
+
+  /** The "…" button that opened the dialog while its row is still there, else New resume. */
+  const focusAfterDelete = () => (openerRef.current?.isConnected ? openerRef.current : newResumeRef.current);
+
   return (
     <div className="flex min-h-screen flex-col">
       <LibraryHeader />
@@ -113,7 +144,7 @@ export function Library() {
       )}
       {status.kind === "ready" &&
         (status.resumes.length === 0 ? (
-          <EmptyLibrary creating={saving} onCreate={openNew} />
+          <EmptyLibrary creating={saving} onCreate={openNew} newResumeRef={newResumeRef} />
         ) : (
           <ResumeList
             resumes={status.resumes}
@@ -122,8 +153,18 @@ export function Library() {
             onCreate={openNew}
             onRename={(resume, opener) => openDialog(opener, { kind: "rename", resume })}
             onDuplicate={(resume, opener) => openDialog(opener, { kind: "duplicate", resume })}
+            onDelete={openDelete}
+            newResumeRef={newResumeRef}
           />
         ))}
+      <DeleteResumeDialog
+        open={confirming}
+        onOpenChange={(open) => !saving && setConfirming(open)}
+        title={toDelete?.metadata.title ?? ""}
+        deleting={saving}
+        onConfirm={handleDelete}
+        returnFocusTo={focusAfterDelete}
+      />
       <ResumeTitleDialog
         {...dialogText(request)}
         open={naming}
