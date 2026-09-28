@@ -2,13 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { ResumeTitleDialog } from "@/components/common/title-dialog/resume-title-dialog";
 import { browserLibrary as library } from "@/lib/resume/browser-library";
+import { copyTitle } from "@/lib/resume/duplicate-resume";
 import { DEFAULT_RESUME_TITLE, type Resume } from "@/lib/resume/types";
 import { EmptyLibrary } from "./empty-state/empty-library";
 import { LibraryHeader } from "./header/library-header";
 import { LibraryMessage } from "./library-message";
 import { ResumeList } from "./resume-list/resume-list";
-import { ResumeTitleDialog } from "./title-dialog/resume-title-dialog";
 
 type Status =
   | { kind: "loading" }
@@ -24,7 +25,12 @@ export function Library() {
   const [status, setStatus] = useState<Status>({ kind: "loading" });
   const [creating, setCreating] = useState(false);
   const [naming, setNaming] = useState(false);
-  /** The New resume button that opened the dialog, which gets focus back when it closes. */
+  /**
+   * The Resume being duplicated, or null for a new one. Kept after the
+   * dialog closes, so its wording doesn't change while it fades out.
+   */
+  const [source, setSource] = useState<Resume | null>(null);
+  /** The button that opened the dialog, which gets focus back when it closes. */
   const openerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -41,10 +47,10 @@ export function Library() {
   // Saved first, so the editor always opens a Resume that exists. The dialog
   // stays open, its button disabled, until the editor replaces the page.
   // A failed save closes it; telling the user properly is #49.
-  async function handleCreate(title: string) {
+  async function handleSubmit(title: string) {
     setCreating(true);
     try {
-      const resume = await library.create(title);
+      const resume = source ? await library.duplicate(source, title) : await library.create(title);
       router.push(`/resume-builder/resumes/${resume.metadata.id}`);
     } catch {
       setCreating(false);
@@ -53,10 +59,13 @@ export function Library() {
     }
   }
 
-  function openDialog(opener: HTMLElement) {
+  function openDialog(opener: HTMLElement, resume: Resume | null) {
     openerRef.current = opener;
+    setSource(resume);
     setNaming(true);
   }
+
+  const openNew = (opener: HTMLElement) => openDialog(opener, null);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -69,23 +78,24 @@ export function Library() {
       )}
       {status.kind === "ready" &&
         (status.resumes.length === 0 ? (
-          <EmptyLibrary creating={creating} onCreate={openDialog} />
+          <EmptyLibrary creating={creating} onCreate={openNew} />
         ) : (
           <ResumeList
             resumes={status.resumes}
             now={status.now}
             creating={creating}
-            onCreate={openDialog}
+            onCreate={openNew}
+            onDuplicate={(resume, opener) => openDialog(opener, resume)}
           />
         ))}
       <ResumeTitleDialog
         open={naming}
         onOpenChange={(open) => !creating && setNaming(open)}
-        heading="New resume"
-        submitLabel="Create resume"
-        initialTitle={DEFAULT_RESUME_TITLE}
+        heading={source ? "Duplicate resume" : "New resume"}
+        submitLabel={source ? "Duplicate" : "Create resume"}
+        initialTitle={source ? copyTitle(source.metadata.title) : DEFAULT_RESUME_TITLE}
         submitting={creating}
-        onSubmit={handleCreate}
+        onSubmit={handleSubmit}
         returnFocusTo={openerRef}
       />
     </div>

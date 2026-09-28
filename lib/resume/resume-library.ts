@@ -1,4 +1,5 @@
 import type { ResumeStore } from "@/lib/storage/resume-store";
+import { duplicateResume } from "./duplicate-resume";
 import { newResume } from "./new-resume";
 import { trimText } from "./trim-text";
 import type { Resume } from "./types";
@@ -32,6 +33,17 @@ export function resumeLibrary(store: ResumeStore, { clock = () => new Date() }: 
       const resume = newResume({ now: clock(), title });
       await store.save(resume);
       return resume;
+    },
+
+    /**
+     * Saves a Duplicate of the Resume (see duplicateResume) with its text
+     * trimmed, and returns it. Takes the Resume itself rather than its id, so
+     * the editor can copy edits that aren't saved yet.
+     */
+    async duplicate(resume: Resume, title?: string): Promise<Resume> {
+      const copy = trimText(duplicateResume(resume, { now: clock(), title }));
+      await store.save(copy);
+      return copy;
     },
 
     /** Stores the Resume with its text trimmed, replacing the saved one with the same id. */

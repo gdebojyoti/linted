@@ -10,10 +10,19 @@ import { LIBRARY_COLUMNS } from "./utils";
 
 /**
  * One Resume in the Library. Clicking anywhere on the row opens it in the
- * editor: the title's link stretches over the whole row. Duplicate and
- * the "…" menu are shown but disabled until #11–#13 build them.
+ * editor: the title's link stretches over the whole row. Duplicate passes
+ * itself along, so focus can return to it. The "…" menu is shown but
+ * disabled until #11 and #13 build Rename and Delete.
  */
-export function ResumeRow({ resume, now }: { resume: Resume; now: Date }) {
+export function ResumeRow({
+  resume,
+  now,
+  onDuplicate,
+}: {
+  resume: Resume;
+  now: Date;
+  onDuplicate: (resume: Resume, opener: HTMLElement) => void;
+}) {
   const { id, title, lastEditedAt, createdAt } = resume.metadata;
 
   return (
@@ -43,7 +52,12 @@ export function ResumeRow({ resume, now }: { resume: Resume; now: Date }) {
       </span>
       {/* Above the stretched link, so a click on a button never opens the Resume. */}
       <div className="relative z-10 flex justify-end gap-0.5">
-        <Button variant="ghost" size="icon" disabled aria-label={`Duplicate ${title}`}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={`Duplicate ${title}`}
+          onClick={(event) => onDuplicate(resume, event.currentTarget)}
+        >
           <Copy aria-hidden="true" />
         </Button>
         <Button variant="ghost" size="icon" disabled aria-label={`More actions for ${title}`}>

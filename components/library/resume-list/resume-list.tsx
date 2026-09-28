@@ -16,11 +16,13 @@ export function ResumeList({
   now,
   creating,
   onCreate,
+  onDuplicate,
 }: {
   resumes: Resume[];
   now: Date;
   creating: boolean;
   onCreate: (opener: HTMLElement) => void;
+  onDuplicate: (resume: Resume, opener: HTMLElement) => void;
 }) {
   return (
     <main className="flex grow justify-center px-16 pt-10 pb-10">
@@ -52,7 +54,7 @@ export function ResumeList({
           </div>
           <ul>
             {resumes.map((resume) => (
-              <ResumeRow key={resume.metadata.id} resume={resume} now={now} />
+              <ResumeRow key={resume.metadata.id} resume={resume} now={now} onDuplicate={onDuplicate} />
             ))}
           </ul>
         </div>
