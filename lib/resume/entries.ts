@@ -50,6 +50,33 @@ export function deleteEntry(
   );
 }
 
+/**
+ * The Resume with the Entry moved one place up (towards the start) or down.
+ * Nothing changes at either end, or in the Header, whose contact items keep
+ * a fixed order in v1.
+ */
+export function moveEntry(
+  resume: Resume,
+  sectionId: string,
+  entryId: string,
+  direction: "up" | "down",
+  options: EditOptions = {},
+): Resume {
+  return editSections(
+    resume,
+    (section) => {
+      if (section.id !== sectionId || section.type === "header") return section;
+      const from = section.entries.findIndex((e) => e.id === entryId);
+      const to = direction === "up" ? from - 1 : from + 1;
+      if (from === -1 || to < 0 || to >= section.entries.length) return section;
+      const entries = [...section.entries];
+      [entries[from], entries[to]] = [entries[to], entries[from]];
+      return withEntries(section, entries);
+    },
+    options,
+  );
+}
+
 /** Whether this is one of the Header's email, phone and location items, which can't be deleted. */
 function isFixedContact(entry: Entry): boolean {
   return "kind" in entry && entry.kind !== "link";
