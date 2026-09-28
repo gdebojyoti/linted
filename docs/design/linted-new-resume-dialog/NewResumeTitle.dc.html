@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>New resume — title only</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:'Geist',system-ui,sans-serif;color:#1A1A18;background:#F6F6F3}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="position: relative; width: 1440px; height: 940px; overflow: hidden; font-family: 'Geist', system-ui, sans-serif; color: #1A1A18">
+<dc-import name="Library" open-menu="{{noMenu}}" hint-size="1440px,940px"></dc-import>
+<div style="position: absolute; inset: 0; background: rgba(26, 26, 24, 0.38); display: flex; align-items: center; justify-content: center">
+<div role="dialog" aria-modal="true" aria-labelledby="nr-title" style="width: 460px; box-sizing: border-box; background: #FFFFFF; border-radius: 12px; box-shadow: 0 24px 64px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.04); display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; padding: 20px 16px 0 24px">
+<h2 id="nr-title" style="margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; flex-grow: 1">New resume</h2>
+<button aria-label="Close" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg></button>
+</div>
+<div style="padding: 16px 24px 24px; display: flex; flex-direction: column; gap: 8px">
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; font-weight: 500">Resume title
+<input type="text" defaultValue="Backend — payments v3" style="height: 40px; box-sizing: border-box; width: 100%; border: 1px solid #17784A; box-shadow: 0 0 0 3px #E8F3ED; border-radius: 7px; padding: 0 12px; font-family: inherit; font-size: 14px; color: #1A1A18; background: #FFFFFF; outline: none">
+</label>
+<span style="font-size: 12.5px; line-height: 1.45; color: #5F5F58">Only you see this. It tells your resumes apart; it isn't the name printed on the page.</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 14px 16px 14px 24px; border-top: 1px solid #EFEFEA; background: #FAFAF8; border-radius: 0 0 12px 12px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11.5px; color: #6B6B64; flex-grow: 1">Enter to create · Esc to close</span>
+<button style="height: 36px; padding: 0 14px; border: 1px solid #D9D9D3; background: #FFFFFF; border-radius: 7px; font-size: 13px; font-weight: 500; color: #1A1A18; cursor: pointer">Cancel</button>
+<button style="height: 36px; padding: 0 14px; border: 1px solid #17784A; background: #17784A; border-radius: 7px; font-size: 13px; font-weight: 500; color: #FFFFFF; cursor: pointer">Create resume</button>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { noMenu: -1 };
+  }
+}
+</script>
+</body>
+</html>

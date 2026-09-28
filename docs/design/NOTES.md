@@ -42,3 +42,17 @@
 | Only the title opens a Resume | **The whole row** opens it |
 | "Untitled resume" | **"Untitled Resume"**, the code's default |
 | Two wordings of the browser-storage note | **One wording** in both places: "No account needed. Your resumes are saved in this browser only, so clearing site data or switching browser / device will not bring them with you." |
+
+## The New resume dialog (`linted-new-resume-dialog/`)
+
+`linted-new-resume-dialog/` is a third Claude Design export: the dialog that **New resume** opens in the Library, to name the Resume before it's created. The same dialog will later name a Duplicate. Its `Library.dc.html` is only the backdrop, the same design as in the Library export. Everything above about colours and fonts applies. Where we build something different:
+
+| The design shows | Build this instead |
+|---|---|
+| A hand-built dialog | **shadcn's Dialog** (Base UI), styled to the design |
+| Pine green Create button and focus ring | **Amethyst**, like the rest of the app |
+| Geist, and Geist Mono for the footer hint | **Open Sans** everywhere |
+| Two starting values to choose from (empty, or "Untitled resume" selected) | **"Untitled Resume" prefilled and selected**, so typing replaces it and Enter creates straight away |
+| Hand-sized buttons | shadcn Button's **built-in sizes** (`lg`, 36px, as in the design) |
+| The footer hint "Enter to create · Esc to close" | **"You can change all of this later."** Enter and Esc still work as the design describes |
+| An error under the field when saving fails | **Not yet.** Failed saves are #49; until then a failed create behaves as it does today |
