@@ -83,12 +83,20 @@ body {
   color: var(--color-ink);
 }
 
-/* Tailwind's reset gives buttons the default cursor; anything clickable in the app shows a pointer. */
+/*
+ * Tailwind's reset gives buttons the default cursor; anything clickable in
+ * the app shows a pointer. A utility class beats this base rule, so shadcn
+ * components that set `cursor-default` (menu items) are changed in their own
+ * files too.
+ */
 @layer base {
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   input[type="checkbox"]:not(:disabled),
-  [role="checkbox"]:not([aria-disabled="true"]) {
+  [role="checkbox"]:not([aria-disabled="true"]),
+  [role="menuitem"]:not([aria-disabled="true"]),
+  [role="menuitemcheckbox"]:not([aria-disabled="true"]),
+  [role="menuitemradio"]:not([aria-disabled="true"]) {
     cursor: pointer;
   }
 
