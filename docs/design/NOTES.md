@@ -54,5 +54,5 @@
 | Geist, and Geist Mono for the footer hint | **Open Sans** everywhere |
 | Two starting values to choose from (empty, or "Untitled resume" selected) | **"Untitled Resume" prefilled and selected**, so typing replaces it and Enter creates straight away |
 | Hand-sized buttons | shadcn Button's **built-in sizes** (`lg`, 36px, as in the design) |
-| The footer hint "Enter to create · Esc to close" | **"You can change all of this later."** Enter and Esc still work as the design describes |
+| The footer hint "Enter to create · Esc to close" | **"You can change the title later."** Enter and Esc still work as the design describes |
 | An error under the field when saving fails | **Not yet.** Failed saves are #49; until then a failed create behaves as it does today |
