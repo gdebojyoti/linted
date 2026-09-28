@@ -1,4 +1,5 @@
 import { ArrowDown } from "lucide-react";
+import type { Ref } from "react";
 import { formatCount } from "@/lib/format/count";
 import type { Resume } from "@/lib/resume/types";
 import { NewResumeButton } from "@/components/library/new-resume-button";
@@ -18,6 +19,8 @@ export function ResumeList({
   onCreate,
   onRename,
   onDuplicate,
+  onDelete,
+  newResumeRef,
 }: {
   resumes: Resume[];
   now: Date;
@@ -25,6 +28,8 @@ export function ResumeList({
   onCreate: (opener: HTMLElement) => void;
   onRename: (resume: Resume, opener: HTMLElement) => void;
   onDuplicate: (resume: Resume, opener: HTMLElement) => void;
+  onDelete: (resume: Resume, opener: HTMLElement) => void;
+  newResumeRef: Ref<HTMLButtonElement>;
 }) {
   return (
     <main className="flex grow justify-center px-16 pt-10 pb-10">
@@ -38,7 +43,7 @@ export function ResumeList({
           </div>
           <div className="grow" />
           <SearchBox />
-          <NewResumeButton creating={creating} onCreate={onCreate} />
+          <NewResumeButton ref={newResumeRef} creating={creating} onCreate={onCreate} />
         </div>
 
         <div className="overflow-hidden rounded-xl border border-line bg-surface">
@@ -62,6 +67,7 @@ export function ResumeList({
                 now={now}
                 onRename={onRename}
                 onDuplicate={onDuplicate}
+                onDelete={onDelete}
               />
             ))}
           </ul>

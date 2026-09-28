@@ -74,6 +74,26 @@ describe("resumeLibrary", () => {
     expect(await library.get(created.metadata.id)).toEqual(updateHeader(created, { name: "Maya O." }, { now }));
   });
 
+  test("delete removes only that Resume", async () => {
+    const library = resumeLibrary(memoryResumeStore());
+    const kept = await library.create("Kept");
+    const deleted = await library.create("Deleted");
+
+    await library.delete(deleted.metadata.id);
+
+    expect(await library.get(deleted.metadata.id)).toBeNull();
+    expect(await library.list()).toEqual([kept]);
+  });
+
+  test("deleting an unknown id changes nothing", async () => {
+    const library = resumeLibrary(memoryResumeStore());
+    const kept = await library.create();
+
+    await library.delete("missing");
+
+    expect(await library.list()).toEqual([kept]);
+  });
+
   test("get returns null for an unknown id", async () => {
     expect(await resumeLibrary(memoryResumeStore()).get("missing")).toBeNull();
   });

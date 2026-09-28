@@ -10,18 +10,20 @@ import { LIBRARY_COLUMNS } from "./utils";
 /**
  * One Resume in the Library. Clicking anywhere on the row opens it in the
  * editor: the title's link stretches over the whole row. Its "…" menu
- * (Rename, Duplicate) passes its button along, so focus can return to it.
+ * (Rename, Duplicate, Delete) passes its button along, so focus can return to it.
  */
 export function ResumeRow({
   resume,
   now,
   onRename,
   onDuplicate,
+  onDelete,
 }: {
   resume: Resume;
   now: Date;
   onRename: (resume: Resume, opener: HTMLElement) => void;
   onDuplicate: (resume: Resume, opener: HTMLElement) => void;
+  onDelete: (resume: Resume, opener: HTMLElement) => void;
 }) {
   const { id, title, lastEditedAt, createdAt } = resume.metadata;
 
@@ -56,6 +58,7 @@ export function ResumeRow({
           title={title}
           onRename={(opener) => onRename(resume, opener)}
           onDuplicate={(opener) => onDuplicate(resume, opener)}
+          onDelete={(opener) => onDelete(resume, opener)}
         />
       </div>
     </li>

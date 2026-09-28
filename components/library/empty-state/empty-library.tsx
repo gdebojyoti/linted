@@ -1,3 +1,4 @@
+import type { Ref } from "react";
 import { NewResumeButton } from "@/components/library/new-resume-button";
 import { StorageNote } from "@/components/library/storage-note";
 import { StackedPages } from "./stacked-pages";
@@ -6,9 +7,11 @@ import { StackedPages } from "./stacked-pages";
 export function EmptyLibrary({
   creating,
   onCreate,
+  newResumeRef,
 }: {
   creating: boolean;
   onCreate: (opener: HTMLElement) => void;
+  newResumeRef: Ref<HTMLButtonElement>;
 }) {
   return (
     <main className="flex grow items-center justify-center px-4 pb-14">
@@ -21,7 +24,7 @@ export function EmptyLibrary({
             choose what each one includes.
           </p>
         </div>
-        <NewResumeButton creating={creating} onCreate={onCreate} />
+        <NewResumeButton ref={newResumeRef} creating={creating} onCreate={onCreate} />
         <StorageNote className="mt-3 rounded-lg border border-line bg-surface px-3.5 py-3 text-left leading-snug" />
       </div>
     </main>

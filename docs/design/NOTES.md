@@ -37,7 +37,7 @@
 | Geist, and Geist Mono for the logo and grey meta lines | **Open Sans** everywhere |
 | Buttons 38px (list) and 42px (empty state) tall | shadcn Button's **built-in sizes** only: `lg` (36px) for New resume in both places, the same height as the search box. The editor's top-bar buttons use `lg` too |
 | A working search box | **Shown but disabled** |
-| A Duplicate button and a "…" menu (Rename, Duplicate, Export PDF, Delete) on each row | The **"…" menu holds Rename (#11) and Duplicate (#12)**, both opening the title dialog below. There's **no separate Duplicate button** on the row. Export PDF isn't in the menu, and Delete joins it in #13 |
+| A Duplicate button and a "…" menu (Rename, Duplicate, Export PDF, Delete) on each row | The **"…" menu holds Rename (#11), Duplicate (#12) and, after a divider, a red "Delete resume" (#13)**. Rename and Duplicate open the title dialog below. There's **no separate Duplicate button** on the row, and Export PDF isn't in the menu |
 | "all sections empty" when nothing will show | **Always counts**, e.g. "0 of 6 sections" |
 | Only the title opens a Resume | **The whole row** opens it |
 | "Untitled resume" | **"Untitled Resume"**, the code's default |
@@ -56,3 +56,7 @@
 | Hand-sized buttons | shadcn Button's **built-in sizes** (`lg`, 36px, as in the design) |
 | The footer hint "Enter to create · Esc to close" | **"You can change the title later."** Enter and Esc still work as the design describes |
 | An error under the field when saving fails | **Not yet.** Failed saves are #49; until then a failed create behaves as it does today |
+
+## The delete confirmation (no design yet)
+
+"Delete resume" in a row's "…" menu (#13) asks first, in shadcn's **Alert Dialog** styled like the title dialog: same width, radius, shadow and footer strip. It reads "Delete resume?" and "“<title>” will be deleted from this browser. This can't be undone.", with **Cancel** and a red **Delete resume** button. Focus starts on Cancel, and clicking outside doesn't close it. Replace this with a Claude Design export when there is one.
