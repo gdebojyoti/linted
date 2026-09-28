@@ -17,7 +17,7 @@ export function LedgerSection({ section }: { section: RenderedSection }) {
       <h2 className={styles.sectionTitle}>{section.title}</h2>
       {section.type === "summary" &&
         section.entries.map((entry) => (
-          <p key={entry.id}>
+          <p key={entry.id} className={styles.summary}>
             <ProseText nodes={parseProse(entry.text)} />
           </p>
         ))}

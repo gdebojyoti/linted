@@ -3,9 +3,10 @@ import { formatCount } from "@/lib/format/count";
 import { HeaderFields } from "./header-fields";
 import { SectionRow } from "./section-row";
 import { SkillsFields } from "./skills-fields";
+import { SummaryFields } from "./summary-fields";
 
 /**
- * Only the Header and Skills can be edited so far; the other Sections gain
+ * Only the Header, Summary and Skills can be edited so far; the other Sections gain
  * their fields in later tickets.
  */
 export function ContentPane({
@@ -31,6 +32,12 @@ export function ContentPane({
               return (
                 <SectionRow key={section.id} section={section} defaultExpanded>
                   <HeaderFields header={section} onEdit={onEdit} />
+                </SectionRow>
+              );
+            case "summary":
+              return (
+                <SectionRow key={section.id} section={section}>
+                  <SummaryFields section={section} onEdit={onEdit} />
                 </SectionRow>
               );
             case "skills":
