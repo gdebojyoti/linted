@@ -5,7 +5,7 @@ import type { Entry, Resume } from "./types";
 // Entry operations that work the same in every Section. Editing an Entry's
 // own fields is per type (updateContact, updateSkillsEntry).
 
-type AddOptions = EditOptions & {
+export type AddOptions = EditOptions & {
   newId?: () => string;
 };
 
