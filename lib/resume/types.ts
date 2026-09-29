@@ -73,7 +73,10 @@ type Enableable = {
   enabled: boolean;
 };
 
-/** A point of Prose. Children are at most two levels deep (enforced by the Resume module). */
+/**
+ * A point of Prose. Bullets go two levels deep: a child Bullet has no
+ * children of its own (enforced by the Resume module).
+ */
 export type Bullet = Enableable & {
   /** Prose, stored as Markdown source (ADR 0004). */
   text: string;
