@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { INPUT_CLASS } from "./input-class";
 
 /**
  * A labelled single-line text input, styled as in the editor design. An error
@@ -43,7 +44,7 @@ export function TextField({
         autoFocus={autoFocus}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className="h-9 w-full rounded-sm border border-line-input bg-surface px-2.5 text-[13px] font-normal text-ink placeholder:text-ink-meta focus:border-accent focus:outline-2 focus:outline-accent-tint aria-invalid:border-danger"
+        className={INPUT_CLASS}
       />
       {error && (
         <p id={errorId} className="text-xs text-danger">
