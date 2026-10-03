@@ -11,9 +11,9 @@ import { LinkField } from "./link-field";
 
 /**
  * A Project Entry. Its card's header line shows the name and tech stack,
- * and "Current" or its dates; the card holds its name, link label, link,
- * tech stack, dates and Bullets, one under another. A new Entry has focus
- * on Name.
+ * and "Current" or its dates; the card holds its name, its link's label and
+ * URL side by side (as in the Header), its tech stack, dates and Bullets.
+ * A new Entry has focus on Name.
  */
 export function ProjectEntryCard({
   entry,
@@ -67,17 +67,19 @@ export function ProjectEntryCard({
           onChange={(name) => onEdit((r) => updateProjectEntry(r, entry.id, { name }))}
           autoFocus={isNew}
         />
-        <TextField
-          label="Link label"
-          placeholder="e.g. Live demo"
-          value={entry.linkLabel}
-          onChange={(linkLabel) => onEdit((r) => updateProjectEntry(r, entry.id, { linkLabel }))}
-        />
-        <LinkField
-          label="Link URL"
-          value={entry.link}
-          onChange={(link) => onEdit((r) => updateProjectEntry(r, entry.id, { link }))}
-        />
+        <div className="grid grid-cols-2 gap-3">
+          <TextField
+            label="Label"
+            placeholder="e.g. Live demo"
+            value={entry.linkLabel}
+            onChange={(linkLabel) => onEdit((r) => updateProjectEntry(r, entry.id, { linkLabel }))}
+          />
+          <LinkField
+            label="URL"
+            value={entry.link}
+            onChange={(link) => onEdit((r) => updateProjectEntry(r, entry.id, { link }))}
+          />
+        </div>
         <TextField
           label="Tech stack"
           placeholder="e.g. Go, Postgres, HTMX"
