@@ -7,20 +7,23 @@ import { ExpandButton } from "./expand-button";
 import { isControlClick } from "./is-control-click";
 
 /**
- * One Section in the Content pane. When it has fields to edit (`children`),
- * clicking anywhere on its header line opens or closes them, except on the
- * line's own controls. Keyboard and screen reader users get the chevron
+ * One Section in the Content pane, with its Enabled checkbox. A Disabled
+ * Section's title is grey, and its fields can still be edited. When it has
+ * fields to edit (`children`), clicking anywhere on its header line opens or
+ * closes them, except on the line's own controls. Keyboard and screen reader users get the chevron
  * button. Whether it's open is up to the parent, which keeps one Section
  * open at a time. Closed fields stay on the page, hidden, so nothing typed
  * in them is lost.
  */
 export function SectionRow({
   section,
+  onEnabledChange,
   expanded = false,
   onToggle,
   children,
 }: {
   section: Section;
+  onEnabledChange: (enabled: boolean) => void;
   expanded?: boolean;
   onToggle?: () => void;
   children?: ReactNode;
@@ -36,9 +39,8 @@ export function SectionRow({
       >
         <Checkbox
           checked={section.enabled}
-          disabled
+          onCheckedChange={(checked) => onEnabledChange(checked)}
           aria-label={`${section.title} enabled`}
-          className="data-disabled:opacity-50"
         />
         <span
           className={`text-sm font-medium ${section.enabled ? "text-ink" : "text-ink-disabled"}`}
