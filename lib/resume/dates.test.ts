@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { isValidDate, setCurrent, updateDates, type DateParts } from "./dates";
+import { endsBeforeStart, isValidDate, setCurrent, updateDates, type DateParts } from "./dates";
 import { sampleResume } from "./sample-resume";
 import type { DateRange, Resume, ResumeDate } from "./types";
 
@@ -164,5 +164,33 @@ describe("setCurrent", () => {
     setCurrent(sampleResume, "exp-northwind", true, { now });
 
     expect(sampleResume).toEqual(before);
+  });
+});
+
+describe("endsBeforeStart", () => {
+  const between = (start: ResumeDate | null, end: ResumeDate | null): DateRange => ({ start, current: false, end });
+
+  test.each<[string, ResumeDate, ResumeDate]>([
+    ["an earlier year", year(2022), year(2021)],
+    ["an earlier month in the same year", month(2022, 3), month(2022, 2)],
+    ["an earlier day in the same month", day(2022, 3, 14), day(2022, 3, 13)],
+    ["an earlier year, whatever the months", month(2022, 1), month(2021, 12)],
+  ])("is true for %s", (_, start, end) => {
+    expect(endsBeforeStart(between(start, end))).toBe(true);
+  });
+
+  test.each<[string, ResumeDate, ResumeDate]>([
+    ["the same date", month(2022, 3), month(2022, 3)],
+    ["a later date", month(2022, 3), year(2023)],
+    ["an end that may be the same month", month(2022, 3), year(2022)],
+    ["a start that may be the same day", month(2022, 3), day(2022, 3, 1)],
+  ])("is false for %s", (_, start, end) => {
+    expect(endsBeforeStart(between(start, end))).toBe(false);
+  });
+
+  test("is false when either date is missing, or the Entry is Current", () => {
+    expect(endsBeforeStart(between(null, year(2020)))).toBe(false);
+    expect(endsBeforeStart(between(year(2020), null))).toBe(false);
+    expect(endsBeforeStart({ start: year(2020), current: true, end: null })).toBe(false);
   });
 });
