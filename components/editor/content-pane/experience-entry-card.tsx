@@ -11,7 +11,7 @@ import { EntryCard } from "./entry-card";
 /**
  * An Experience Entry: a job. Its card's header line shows the company and
  * role, and "Current" or its dates; the card holds its company, role,
- * location, dates and Bullets. A new Entry opens with focus on Company.
+ * location, dates and Bullets. A new Entry has focus on Company.
  */
 export function ExperienceEntryCard({
   entry,
@@ -19,6 +19,8 @@ export function ExperienceEntryCard({
   onEdit,
   onEnabledChange,
   onDelete,
+  expanded,
+  onToggle,
   isNew,
 }: {
   entry: ExperienceEntry;
@@ -26,6 +28,8 @@ export function ExperienceEntryCard({
   onEdit: (edit: ResumeEdit) => void;
   onEnabledChange: (enabled: boolean) => void;
   onDelete: () => void;
+  expanded: boolean;
+  onToggle: () => void;
   isNew: boolean;
 }) {
   const company = entry.company.trim();
@@ -38,7 +42,8 @@ export function ExperienceEntryCard({
       enabled={entry.enabled}
       onEnabledChange={onEnabledChange}
       onDelete={onDelete}
-      defaultExpanded={isNew}
+      expanded={expanded}
+      onToggle={onToggle}
       title={
         named ? (
           <>

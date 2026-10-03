@@ -1,3 +1,4 @@
+import { useState, type ReactNode } from "react";
 import type { ResumeEdit, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
 import { ExperienceFields } from "./experience-fields";
@@ -7,8 +8,10 @@ import { SkillsFields } from "./skills-fields";
 import { SummaryFields } from "./summary-fields";
 
 /**
- * Only the Header, Summary, Experience and Skills can be edited so far; the
- * other Sections gain their fields in later tickets.
+ * The Resume's Sections, one open at a time: opening one closes the others.
+ * The Header starts open. Only the Header, Summary, Experience and Skills
+ * can be edited so far; the other Sections gain their fields in later
+ * tickets.
  */
 export function ContentPane({
   sections,
@@ -17,6 +20,23 @@ export function ContentPane({
   sections: Section[];
   onEdit: (edit: ResumeEdit) => void;
 }) {
+  const [openId, setOpenId] = useState(() => sections.find((s) => s.type === "header")?.id ?? null);
+
+  function fieldsOf(section: Section): ReactNode {
+    switch (section.type) {
+      case "header":
+        return <HeaderFields header={section} onEdit={onEdit} />;
+      case "summary":
+        return <SummaryFields section={section} onEdit={onEdit} />;
+      case "experience":
+        return <ExperienceFields section={section} onEdit={onEdit} />;
+      case "skills":
+        return <SkillsFields section={section} onEdit={onEdit} />;
+      default:
+        return null;
+    }
+  }
+
   return (
     <aside
       aria-label="Content"
@@ -27,36 +47,16 @@ export function ContentPane({
         <span className="text-xs text-ink-meta">{formatCount(sections.length, "section", "sections")}</span>
       </div>
       <ul className="flex grow flex-col gap-2 overflow-auto px-6 pt-4 pb-8">
-        {sections.map((section) => {
-          switch (section.type) {
-            case "header":
-              return (
-                <SectionRow key={section.id} section={section} defaultExpanded>
-                  <HeaderFields header={section} onEdit={onEdit} />
-                </SectionRow>
-              );
-            case "summary":
-              return (
-                <SectionRow key={section.id} section={section}>
-                  <SummaryFields section={section} onEdit={onEdit} />
-                </SectionRow>
-              );
-            case "experience":
-              return (
-                <SectionRow key={section.id} section={section}>
-                  <ExperienceFields section={section} onEdit={onEdit} />
-                </SectionRow>
-              );
-            case "skills":
-              return (
-                <SectionRow key={section.id} section={section}>
-                  <SkillsFields section={section} onEdit={onEdit} />
-                </SectionRow>
-              );
-            default:
-              return <SectionRow key={section.id} section={section} />;
-          }
-        })}
+        {sections.map((section) => (
+          <SectionRow
+            key={section.id}
+            section={section}
+            expanded={section.id === openId}
+            onToggle={() => setOpenId(section.id === openId ? null : section.id)}
+          >
+            {fieldsOf(section)}
+          </SectionRow>
+        ))}
       </ul>
     </aside>
   );

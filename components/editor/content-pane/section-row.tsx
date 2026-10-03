@@ -1,29 +1,39 @@
-import { useId, useState, type ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import type { Section } from "@/lib/resume/types";
 import { Badge } from "@/components/common/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { entrySummary } from "@/lib/resume/section-summary";
 import { ExpandButton } from "./expand-button";
+import { isControlClick } from "./is-control-click";
 
 /**
  * One Section in the Content pane. When it has fields to edit (`children`),
- * a chevron expands and collapses them.
+ * clicking anywhere on its header line opens or closes them, except on the
+ * line's own controls. Keyboard and screen reader users get the chevron
+ * button. Whether it's open is up to the parent, which keeps one Section
+ * open at a time. Closed fields stay on the page, hidden, so nothing typed
+ * in them is lost.
  */
 export function SectionRow({
   section,
-  defaultExpanded = false,
+  expanded = false,
+  onToggle,
   children,
 }: {
   section: Section;
-  defaultExpanded?: boolean;
+  expanded?: boolean;
+  onToggle?: () => void;
   children?: ReactNode;
 }) {
-  const [expanded, setExpanded] = useState(defaultExpanded);
   const bodyId = useId();
+  const toggle = children ? onToggle : undefined;
 
   return (
     <li className="rounded-lg border border-line bg-surface">
-      <div className="flex min-h-12 items-center gap-2.5 pr-2 pl-3">
+      <div
+        onClick={toggle && ((event) => !isControlClick(event) && toggle())}
+        className={`flex min-h-12 items-center gap-2.5 pr-2 pl-3 ${toggle ? "cursor-pointer select-none" : ""}`}
+      >
         <Checkbox
           checked={section.enabled}
           disabled
@@ -39,14 +49,7 @@ export function SectionRow({
         <span className="text-xs text-ink-meta">{entrySummary(section)}</span>
         <span className="grow" />
         {section.type === "header" && section.pinned && <Badge>Pinned</Badge>}
-        {children && (
-          <ExpandButton
-            expanded={expanded}
-            onClick={() => setExpanded(!expanded)}
-            controls={bodyId}
-            name={section.title}
-          />
-        )}
+        {toggle && <ExpandButton expanded={expanded} onClick={toggle} controls={bodyId} name={section.title} />}
       </div>
       {children && (
         <div id={bodyId} hidden={!expanded} className="border-t border-line-soft px-4 pt-3 pb-4">

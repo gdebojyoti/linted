@@ -1,14 +1,17 @@
-import { useId, useState, type ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DeleteEntryButton } from "./delete-entry-button";
 import { ExpandButton } from "./expand-button";
+import { isControlClick } from "./is-control-click";
 
 /**
  * An Entry with many fields (a job, a project, a degree) as a card: a header
  * line with its Enabled checkbox, a short description of it, its delete
- * button and a chevron, which opens and closes its fields. Cards start
- * closed, except a newly added one (`defaultExpanded`). The description is
- * grey while the Entry is Disabled.
+ * button and a chevron. Clicking anywhere on the line opens or closes its
+ * fields, except on the checkbox and delete button; keyboard and screen
+ * reader users get the chevron button. Whether it's open is up to the
+ * parent, which keeps one card open at a time. The description is grey
+ * while the Entry is Disabled.
  */
 export function EntryCard({
   name,
@@ -17,7 +20,8 @@ export function EntryCard({
   onDelete,
   title,
   meta,
-  defaultExpanded = false,
+  expanded,
+  onToggle,
   children,
 }: {
   /** Names the Entry for screen readers, e.g. "Paystream entry". */
@@ -29,15 +33,18 @@ export function EntryCard({
   title: ReactNode;
   /** Shown on the right of the header line, e.g. its dates. */
   meta?: ReactNode;
-  defaultExpanded?: boolean;
+  expanded: boolean;
+  onToggle: () => void;
   children: ReactNode;
 }) {
-  const [expanded, setExpanded] = useState(defaultExpanded);
   const bodyId = useId();
 
   return (
     <li className="rounded-lg border border-line bg-surface">
-      <div className="flex min-h-11 items-center gap-2.5 pr-1 pl-3">
+      <div
+        onClick={(event) => !isControlClick(event) && onToggle()}
+        className="flex min-h-11 cursor-pointer items-center gap-2.5 pr-1 pl-3 select-none"
+      >
         <Checkbox
           checked={enabled}
           onCheckedChange={(checked) => onEnabledChange(checked)}
@@ -48,7 +55,7 @@ export function EntryCard({
         </div>
         {meta && <div className="shrink-0 text-xs text-ink-meta">{meta}</div>}
         <DeleteEntryButton label={`Delete ${name}`} onClick={onDelete} />
-        <ExpandButton expanded={expanded} onClick={() => setExpanded(!expanded)} controls={bodyId} name={name} />
+        <ExpandButton expanded={expanded} onClick={onToggle} controls={bodyId} name={name} />
       </div>
       <div id={bodyId} hidden={!expanded} className="border-t border-line-soft px-3 pt-3 pb-4">
         {children}
