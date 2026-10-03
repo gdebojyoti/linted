@@ -125,12 +125,15 @@ function renderProjectEntry(entry: ProjectEntry): Rendered<ProjectEntry> | null 
   const rendered = {
     id: entry.id,
     name: trimmed(entry.name),
+    linkLabel: trimmed(entry.linkLabel),
     link: trimmed(entry.link),
     techStack: trimmed(entry.techStack),
     dates: entry.dates,
     bullets: renderBullets(entry.bullets),
   };
-  return anyFilled(rendered, [rendered.name, rendered.link, rendered.techStack]) ? rendered : null;
+  return anyFilled(rendered, [rendered.name, rendered.linkLabel, rendered.link, rendered.techStack])
+    ? rendered
+    : null;
 }
 
 function renderSkillsEntry(entry: SkillsEntry): Rendered<SkillsEntry> | null {

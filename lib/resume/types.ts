@@ -113,6 +113,9 @@ export type ExperienceEntry = Enableable & {
 
 export type ProjectEntry = Enableable & {
   name: string;
+  /** What the link reads as, e.g. "Live demo" or "ledgerly.example.com". */
+  linkLabel: string;
+  /** Empty unless it starts with http://, https:// or mailto: (the link rule). */
   link: string;
   techStack: string;
   dates: DateRange;

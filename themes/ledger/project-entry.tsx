@@ -8,13 +8,17 @@ import { TextLink } from "./text-link";
 
 /**
  * "Ledgerly — Go, Postgres, HTMX        ledgerly.example.com · Jan 2024 – Present"
+ *
+ * The link reads as its label, or as its URL when it has no label, like a
+ * Header link.
  */
 export function ProjectEntry({ entry }: { entry: Rendered<StoredProjectEntry> }) {
   const dates = formatDateRange(entry.dates);
-  const meta = (entry.link || dates) && (
+  const linkText = entry.linkLabel || entry.link;
+  const meta = (linkText || dates) && (
     <>
-      {entry.link && <TextLink url={entry.link}>{entry.link}</TextLink>}
-      {entry.link && dates && " · "}
+      {linkText && <TextLink url={entry.link}>{linkText}</TextLink>}
+      {linkText && dates && " · "}
       {dates}
     </>
   );
