@@ -2,6 +2,7 @@ import { useId } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { brokenLinks } from "@/lib/prose/parse-prose";
 import type { SummaryEntry } from "@/lib/resume/types";
+import { BrokenLinksMessage } from "./broken-links-message";
 import { DeleteEntryButton } from "./delete-entry-button";
 import { EntryRow } from "./entry-row";
 
@@ -9,8 +10,8 @@ import { EntryRow } from "./entry-row";
  * A Summary Entry: one piece of Prose, typed as Markdown (ADR 0004), in a
  * field that grows with its text. It has no visible label, since it sits in
  * the Summary Section; screen readers hear "Summary 1", "Summary 2"… A link
- * that can't become a link is still saved as typed, but the field says how
- * to fix it.
+ * that can't become a link is still saved as typed, but the field names it
+ * and says how to fix it.
  *
  * The resize handle is hidden only where the field grows by itself
  * (`field-sizing: content`), so older browsers can still enlarge it.
@@ -32,7 +33,7 @@ export function SummaryEntryRow({
 }) {
   const errorId = useId();
   const name = `Summary ${index + 1}`;
-  const broken = brokenLinks(entry.text).length > 0;
+  const broken = brokenLinks(entry.text);
 
   return (
     <EntryRow
@@ -49,15 +50,11 @@ export function SummaryEntryRow({
           value={entry.text}
           onChange={(event) => onTextChange(event.target.value)}
           autoFocus={autoFocus}
-          aria-invalid={broken || undefined}
-          aria-describedby={broken ? errorId : undefined}
+          aria-invalid={broken.length > 0 || undefined}
+          aria-describedby={broken.length > 0 ? errorId : undefined}
           className="min-h-20 text-[13px] md:text-[13px] supports-[field-sizing:content]:resize-none"
         />
-        {broken && (
-          <p id={errorId} className="text-xs text-danger">
-            Links must start with https://, http:// or mailto:.
-          </p>
-        )}
+        <BrokenLinksMessage id={errorId} links={broken} />
       </div>
     </EntryRow>
   );

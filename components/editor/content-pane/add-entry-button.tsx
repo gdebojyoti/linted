@@ -2,7 +2,7 @@ import type { ReactNode, Ref } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-/** The button under a Section's Entries that adds one, e.g. "Add link". */
+/** The button under a Section's Entries, or an Entry's Bullets, that adds one, e.g. "Add link". */
 export function AddEntryButton({
   ref,
   onClick,
