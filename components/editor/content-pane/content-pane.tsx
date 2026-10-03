@@ -1,13 +1,14 @@
 import type { ResumeEdit, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
+import { ExperienceFields } from "./experience-fields";
 import { HeaderFields } from "./header-fields";
 import { SectionRow } from "./section-row";
 import { SkillsFields } from "./skills-fields";
 import { SummaryFields } from "./summary-fields";
 
 /**
- * Only the Header, Summary and Skills can be edited so far; the other Sections gain
- * their fields in later tickets.
+ * Only the Header, Summary, Experience and Skills can be edited so far; the
+ * other Sections gain their fields in later tickets.
  */
 export function ContentPane({
   sections,
@@ -38,6 +39,12 @@ export function ContentPane({
               return (
                 <SectionRow key={section.id} section={section}>
                   <SummaryFields section={section} onEdit={onEdit} />
+                </SectionRow>
+              );
+            case "experience":
+              return (
+                <SectionRow key={section.id} section={section}>
+                  <ExperienceFields section={section} onEdit={onEdit} />
                 </SectionRow>
               );
             case "skills":

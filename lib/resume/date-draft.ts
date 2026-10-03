@@ -21,7 +21,9 @@ export type DraftReading =
 
 /**
  * Empty fields mean no date. Otherwise they need a year from 1900 to 2100,
- * and a picked day has to be one the month has in that year.
+ * and a picked day has to be one the month has in that year. In the editor
+ * the Day list changes such a day itself (see DateField), so the day error
+ * is mostly a guard.
  */
 export function readDraft({ year, month, day }: DateDraft): DraftReading {
   const typedYear = year.trim();
@@ -49,7 +51,11 @@ export function draftShows(draft: DateDraft, date: ResumeDate | null): boolean {
   );
 }
 
-/** The fields with a month picked. Without a month there's no day, so clearing the month clears the day too. */
+/**
+ * The fields with a month picked. Without a month there's no day, so clearing
+ * the month clears the day too. A day the new month doesn't have is kept
+ * here, but in the editor the Day list then changes it (see DateField).
+ */
 export function withMonth(draft: DateDraft, month: number | null): DateDraft {
   return { ...draft, month, day: month === null ? null : draft.day };
 }

@@ -16,6 +16,12 @@ const MONTHS = Array.from({ length: 12 }, (_, i) => ({ value: i + 1, label: mont
  * An error says what to fix once the user leaves the year or picks a month
  * or day, not while they're still typing. `note` shows under a valid date,
  * e.g. a warning about it.
+ *
+ * The Day list only offers days the month has. When a new month or year
+ * leaves the picked day out (31 January, then February), Base UI's Select
+ * changes it: back to the day the list started with when the page loaded, if
+ * that day is still offered, or else to no day. The change comes through
+ * onChange like a pick, so it's saved. Kept as it is (#25).
  */
 export function DateField({
   label,
