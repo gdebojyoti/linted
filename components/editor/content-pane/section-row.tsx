@@ -5,10 +5,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { entrySummary } from "@/lib/resume/section-summary";
 import { ExpandButton } from "./expand-button";
 import { isControlClick } from "./is-control-click";
+import { SectionTitle } from "./section-title";
 
 /**
- * One Section in the Content pane, with its Enabled checkbox. A Disabled
- * Section's title is grey, and its fields can still be edited. When it has
+ * One Section in the Content pane, with its Enabled checkbox and its title,
+ * which can be renamed (except the Header's). A Disabled Section's title is
+ * grey, and its fields can still be edited. When it has
  * fields to edit (`children`), clicking anywhere on its header line opens or
  * closes them, except on the line's own controls. Keyboard and screen reader users get the chevron
  * button. Whether it's open is up to the parent, which keeps one Section
@@ -18,12 +20,15 @@ import { isControlClick } from "./is-control-click";
 export function SectionRow({
   section,
   onEnabledChange,
+  onRename,
   expanded = false,
   onToggle,
   children,
 }: {
   section: Section;
   onEnabledChange: (enabled: boolean) => void;
+  /** Left out for the Header, which can't be renamed. */
+  onRename?: (title: string) => void;
   expanded?: boolean;
   onToggle?: () => void;
   children?: ReactNode;
@@ -42,11 +47,7 @@ export function SectionRow({
           onCheckedChange={(checked) => onEnabledChange(checked)}
           aria-label={`${section.title} enabled`}
         />
-        <span
-          className={`text-sm font-medium ${section.enabled ? "text-ink" : "text-ink-disabled"}`}
-        >
-          {section.title}
-        </span>
+        <SectionTitle title={section.title} enabled={section.enabled} onRename={onRename} />
         {section.type === "custom" && <Badge>Custom</Badge>}
         <span className="text-xs text-ink-meta">{entrySummary(section)}</span>
         <span className="grow" />
