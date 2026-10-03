@@ -31,8 +31,13 @@ export function formatDateRange({ start, current, end }: DateRange, style: DateS
   return parts.filter((part) => part).join(" – ");
 }
 
+/** The month's name, e.g. "Mar" (short) or "March" (long) for 3. */
+export function monthName(month: number, style: DateStyle = "short"): string {
+  return MONTHS[style][month - 1];
+}
+
 function formatDate({ year, month, day }: ResumeDate, style: DateStyle): string {
   if (month === null) return `${year}`;
-  const monthYear = `${MONTHS[style][month - 1]} ${year}`;
+  const monthYear = `${monthName(month, style)} ${year}`;
   return day === null ? monthYear : `${day} ${monthYear}`;
 }

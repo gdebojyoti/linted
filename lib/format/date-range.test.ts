@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import type { DateRange, ResumeDate } from "@/lib/resume/types";
-import { formatDateRange } from "./date-range";
+import { formatDateRange, monthName } from "./date-range";
 
 const year = (year: number): ResumeDate => ({ year, month: null, day: null });
 const month = (year: number, month: number): ResumeDate => ({ year, month, day: null });
@@ -40,5 +40,12 @@ describe("formatDateRange", () => {
 
   test("short is the default style", () => {
     expect(formatDateRange(since(month(2022, 9)), "short")).toBe(formatDateRange(since(month(2022, 9))));
+  });
+});
+
+describe("monthName", () => {
+  test("names a month (1-12) in either style, short by default", () => {
+    expect(monthName(1)).toBe("Jan");
+    expect(monthName(12, "long")).toBe("December");
   });
 });

@@ -1,8 +1,9 @@
 import { editEntry, editSections, type EditOptions } from "./edit-sections";
 import type { DateRange, Resume, ResumeDate } from "./types";
 
-// Setting an Entry's dates and marking it Current. Experience, Projects,
-// Education and Custom Entries have dates; other Entries don't.
+// Setting an Entry's dates, marking it Current, and checking its dates.
+// Experience, Projects, Education and Custom Entries have dates; other
+// Entries don't.
 
 /** The earliest year a date may have. */
 export const MIN_YEAR = 1900;
@@ -27,9 +28,28 @@ export function isValidDate(date: DateParts): date is ResumeDate {
 }
 
 /** How many days the month (1-12) has in this year. */
-function daysInMonth(year: number, month: number): number {
+export function daysInMonth(year: number, month: number): number {
   // Day 0 of the next month is this month's last day. Date counts months from 0.
   return new Date(Date.UTC(year, month, 0)).getUTCDate();
+}
+
+/**
+ * Whether the end date is before the start date, as far as both of them go:
+ * "2022" isn't before "Mar 2022", since it may mean that same month. The
+ * Resume allows such dates (see updateDates); the editor warns about them.
+ */
+export function endsBeforeStart({ start, end }: DateRange): boolean {
+  if (!start || !end) return false;
+  const pairs = [
+    [end.year, start.year],
+    [end.month, start.month],
+    [end.day, start.day],
+  ];
+  for (const [endPart, startPart] of pairs) {
+    if (endPart === null || startPart === null) return false;
+    if (endPart !== startPart) return endPart < startPart;
+  }
+  return false;
 }
 
 /** New start and/or end dates. null clears a date; a date left out stays as it is. */
