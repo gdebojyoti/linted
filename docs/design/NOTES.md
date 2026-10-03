@@ -16,6 +16,7 @@
 | 8 | Zones named `top`, `side`, `main` in the two-column board | **Our Zones:** `header`, `aside-left`, `main`, `aside-right`, `footer` (`ZONES` in `lib/resume/types.ts`) |
 | 9 | Header links shown as the address (e.g. "github.com/asharao") | **As specced.** Each link has a label and a URL (#1, #18) |
 | 10 | A greyed-out End field reading "Present" while the Entry is Current | The End fields are **hidden** while it's Current (#23) |
+| 11 | An Entry card with no delete button, a green "Current" tag, and its fields indented 44px | A **delete button** on the card's header line, next to the chevron; the app's grey **Badge** for "Current"; fields indented **12px**, so the date and Bullet rows fit the Content pane at its narrowest. Cards start **closed**, except a newly added one (#25) |
 
 ## Agreed on top of the design
 

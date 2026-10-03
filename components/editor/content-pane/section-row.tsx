@@ -3,6 +3,7 @@ import type { Section } from "@/lib/resume/types";
 import { Badge } from "@/components/common/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { entrySummary } from "@/lib/resume/section-summary";
+import { ExpandButton } from "./expand-button";
 
 /**
  * One Section in the Content pane. When it has fields to edit (`children`),
@@ -39,29 +40,12 @@ export function SectionRow({
         <span className="grow" />
         {section.type === "header" && section.pinned && <Badge>Pinned</Badge>}
         {children && (
-          <button
-            type="button"
+          <ExpandButton
+            expanded={expanded}
             onClick={() => setExpanded(!expanded)}
-            aria-expanded={expanded}
-            aria-controls={bodyId}
-            aria-label={`${expanded ? "Collapse" : "Expand"} ${section.title}`}
-            className="flex size-8 items-center justify-center rounded-sm text-ink-muted hover:bg-subtle"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              className={expanded ? "rotate-180" : undefined}
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
+            controls={bodyId}
+            name={section.title}
+          />
         )}
       </div>
       {children && (
