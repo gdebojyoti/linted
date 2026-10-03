@@ -403,6 +403,7 @@ describe("renderableView", () => {
       id: "project",
       enabled: true,
       name: "",
+      linkLabel: "",
       link: "",
       techStack: "",
       dates: noDates,
@@ -431,7 +432,15 @@ describe("renderableView", () => {
       const resume = resumeWith(projects([{ ...emptyProject, name: " ", techStack: "Go" }]));
 
       expect(renderableView(resume).sections[0].entries).toEqual([
-        { id: "project", name: "", link: "", techStack: "Go", dates: noDates, bullets: [] },
+        { id: "project", name: "", linkLabel: "", link: "", techStack: "Go", dates: noDates, bullets: [] },
+      ]);
+    });
+
+    test("a Project with only its link label filled renders", () => {
+      const resume = resumeWith(projects([{ ...emptyProject, linkLabel: " Live demo " }]));
+
+      expect(renderableView(resume).sections[0].entries).toEqual([
+        { id: "project", name: "", linkLabel: "Live demo", link: "", techStack: "", dates: noDates, bullets: [] },
       ]);
     });
 

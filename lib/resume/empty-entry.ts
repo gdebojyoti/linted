@@ -21,7 +21,7 @@ export function emptyEntry(type: SectionType, id: string): Entry {
     case "experience":
       return { id, enabled, company: "", role: "", location: "", dates: noDates, bullets: [] };
     case "projects":
-      return { id, enabled, name: "", link: "", techStack: "", dates: noDates, bullets: [] };
+      return { id, enabled, name: "", linkLabel: "", link: "", techStack: "", dates: noDates, bullets: [] };
     case "skills":
       return { id, enabled, label: "", skills: "" };
     case "education":
