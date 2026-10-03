@@ -6,6 +6,7 @@ import { addEntry, deleteEntry, setEntryEnabled } from "@/lib/resume/entries";
  * Adding, deleting and Enabling/Disabling a Section's Entries. A new Entry
  * gets focus (its row checks `addedId`), and after a delete focus moves to
  * the add button (`addButtonRef`), so keyboard users don't lose their place.
+ * `add` returns the new Entry's id.
  */
 export function useEntryList(sectionId: string, onEdit: (edit: ResumeEdit) => void) {
   const [addedId, setAddedId] = useState<string | null>(null);
@@ -18,6 +19,7 @@ export function useEntryList(sectionId: string, onEdit: (edit: ResumeEdit) => vo
       const id = crypto.randomUUID();
       onEdit((resume) => addEntry(resume, sectionId, { newId: () => id }));
       setAddedId(id);
+      return id;
     },
     remove(entryId: string) {
       onEdit((resume) => deleteEntry(resume, sectionId, entryId));
