@@ -1,4 +1,4 @@
-import { linkHref } from "@/lib/format/link-href";
+import { allowedLink } from "./allowed-link";
 import { editEntry, editSections, type EditOptions } from "./edit-sections";
 import type { Resume } from "./types";
 
@@ -9,9 +9,9 @@ export type ContactChanges = {
 };
 
 /**
- * The Resume with a Header contact item changed, stored exactly as typed.
- * A link must start with http://, https:// or mailto: (see linkHref); any
- * other link is saved as empty.
+ * The Resume with a Header contact item changed, stored exactly as typed,
+ * except that a link follows the link rule (allowedLink): one that doesn't
+ * start with http://, https:// or mailto: is saved as empty.
  */
 export function updateContact(
   resume: Resume,
@@ -35,8 +35,4 @@ export function updateContact(
         : section,
     options,
   );
-}
-
-function allowedLink(url: string): string {
-  return linkHref(url) === null ? "" : url;
 }
