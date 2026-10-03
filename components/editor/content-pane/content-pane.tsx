@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import type { ResumeEdit, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
+import { setSectionEnabled } from "@/lib/resume/sections";
 import { ExperienceFields } from "./experience-fields";
 import { HeaderFields } from "./header-fields";
 import { ProjectsFields } from "./projects-fields";
@@ -54,6 +55,7 @@ export function ContentPane({
           <SectionRow
             key={section.id}
             section={section}
+            onEnabledChange={(enabled) => onEdit((r) => setSectionEnabled(r, section.id, enabled))}
             expanded={section.id === openId}
             onToggle={() => setOpenId(section.id === openId ? null : section.id)}
           >
