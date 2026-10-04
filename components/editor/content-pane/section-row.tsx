@@ -21,6 +21,7 @@ export function SectionRow({
   section,
   onEnabledChange,
   onRename,
+  isNew = false,
   expanded = false,
   onToggle,
   children,
@@ -29,6 +30,8 @@ export function SectionRow({
   onEnabledChange: (enabled: boolean) => void;
   /** Left out for the Header, which can't be renamed. */
   onRename?: (title: string) => void;
+  /** Just added: its title starts in the rename field. */
+  isNew?: boolean;
   expanded?: boolean;
   onToggle?: () => void;
   children?: ReactNode;
@@ -47,7 +50,7 @@ export function SectionRow({
           onCheckedChange={(checked) => onEnabledChange(checked)}
           aria-label={`${section.title} enabled`}
         />
-        <SectionTitle title={section.title} enabled={section.enabled} onRename={onRename} />
+        <SectionTitle title={section.title} enabled={section.enabled} onRename={onRename} renaming={isNew} />
         {section.type === "custom" && <Badge>Custom</Badge>}
         <span className="text-xs text-ink-meta">{entrySummary(section)}</span>
         <span className="grow" />
