@@ -7,6 +7,7 @@ import { updateProjectEntry } from "@/lib/resume/update-project-entry";
 import { BulletsFields } from "./bullets-fields";
 import { DatesFields } from "./dates-fields";
 import { EntryCard } from "./entry-card";
+import type { EntryCardProps } from "./entry-card-list";
 import { LinkField } from "./link-field";
 
 /**
@@ -26,14 +27,8 @@ export function ProjectEntryCard({
   isNew,
 }: {
   entry: ProjectEntry;
-  index: number;
   onEdit: (edit: ResumeEdit) => void;
-  onEnabledChange: (enabled: boolean) => void;
-  onDelete: () => void;
-  expanded: boolean;
-  onToggle: () => void;
-  isNew: boolean;
-}) {
+} & EntryCardProps) {
   const name = entry.name.trim();
   const techStack = entry.techStack.trim();
   const named = name || techStack;

@@ -7,6 +7,7 @@ import { updateExperienceEntry } from "@/lib/resume/update-experience-entry";
 import { BulletsFields } from "./bullets-fields";
 import { DatesFields } from "./dates-fields";
 import { EntryCard } from "./entry-card";
+import type { EntryCardProps } from "./entry-card-list";
 
 /**
  * An Experience Entry: a job. Its card's header line shows the company and
@@ -24,14 +25,8 @@ export function ExperienceEntryCard({
   isNew,
 }: {
   entry: ExperienceEntry;
-  index: number;
   onEdit: (edit: ResumeEdit) => void;
-  onEnabledChange: (enabled: boolean) => void;
-  onDelete: () => void;
-  expanded: boolean;
-  onToggle: () => void;
-  isNew: boolean;
-}) {
+} & EntryCardProps) {
   const company = entry.company.trim();
   const role = entry.role.trim();
   const named = company || role;
