@@ -2,9 +2,10 @@ import { useState, type ReactNode } from "react";
 import type { ResumeEdit, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
 import { renameSection, setSectionEnabled } from "@/lib/resume/sections";
-import { ExperienceFields } from "./experience-fields";
+import { EntryCardList } from "./entry-card-list";
+import { ExperienceEntryCard } from "./experience-entry-card";
 import { HeaderFields } from "./header-fields";
-import { ProjectsFields } from "./projects-fields";
+import { ProjectEntryCard } from "./project-entry-card";
 import { SectionRow } from "./section-row";
 import { SkillsFields } from "./skills-fields";
 import { SummaryFields } from "./summary-fields";
@@ -31,9 +32,21 @@ export function ContentPane({
       case "summary":
         return <SummaryFields section={section} onEdit={onEdit} />;
       case "experience":
-        return <ExperienceFields section={section} onEdit={onEdit} />;
+        return (
+          <EntryCardList
+            section={section}
+            onEdit={onEdit}
+            card={(entry, props) => <ExperienceEntryCard entry={entry} onEdit={onEdit} {...props} />}
+          />
+        );
       case "projects":
-        return <ProjectsFields section={section} onEdit={onEdit} />;
+        return (
+          <EntryCardList
+            section={section}
+            onEdit={onEdit}
+            card={(entry, props) => <ProjectEntryCard entry={entry} onEdit={onEdit} {...props} />}
+          />
+        );
       case "skills":
         return <SkillsFields section={section} onEdit={onEdit} />;
       default:
