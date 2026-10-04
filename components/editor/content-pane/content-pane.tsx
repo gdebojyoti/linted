@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import type { ResumeEdit, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
 import { renameSection, setSectionEnabled } from "@/lib/resume/sections";
+import { EducationEntryCard } from "./education-entry-card";
 import { EntryCardList } from "./entry-card-list";
 import { ExperienceEntryCard } from "./experience-entry-card";
 import { HeaderFields } from "./header-fields";
@@ -12,9 +13,8 @@ import { SummaryFields } from "./summary-fields";
 
 /**
  * The Resume's Sections, one open at a time: opening one closes the others.
- * The Header starts open. Only the Header, Summary, Experience, Projects
- * and Skills can be edited so far; the other Sections gain their fields in
- * later tickets.
+ * The Header starts open. Every Default Section can be edited; Custom
+ * Sections gain their fields in a later ticket.
  */
 export function ContentPane({
   sections,
@@ -49,6 +49,14 @@ export function ContentPane({
         );
       case "skills":
         return <SkillsFields section={section} onEdit={onEdit} />;
+      case "education":
+        return (
+          <EntryCardList
+            section={section}
+            onEdit={onEdit}
+            card={(entry, props) => <EducationEntryCard entry={entry} onEdit={onEdit} {...props} />}
+          />
+        );
       default:
         return null;
     }
