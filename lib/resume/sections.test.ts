@@ -2,8 +2,8 @@ import { describe, expect, test } from "vitest";
 import { addEntry } from "./entries";
 import { renderableView } from "./renderable-view";
 import { sampleResume } from "./sample-resume";
-import { addCustomSection, renameSection, setSectionEnabled } from "./sections";
-import type { Resume, Section } from "./types";
+import { addCustomSection, deleteSection, hasContent, renameSection, setSectionEnabled } from "./sections";
+import type { CustomEntry, CustomSection, Resume, Section } from "./types";
 import { updateCustomEntry } from "./update-custom-entry";
 
 const now = new Date("2026-10-04T12:00:00.000Z");
@@ -132,5 +132,75 @@ describe("addCustomSection", () => {
       entries: [{ id: "entry-new", title: "Code Club mentor" }],
     });
     expect(shownIds(setSectionEnabled(resume, "custom-new", false, { now }))).not.toContain("custom-new");
+  });
+});
+
+describe("deleteSection", () => {
+  test("deletes a Custom Section, the others keeping their order", () => {
+    let resume = addCustomSection(sampleResume, { now, newId: () => "custom-1" });
+    resume = addCustomSection(resume, { now, newId: () => "custom-2" });
+    const updated = deleteSection(resume, "custom-talks", { now });
+
+    expect(updated.content.sections.map((s) => s.id)).toEqual(
+      resume.content.sections.map((s) => s.id).filter((id) => id !== "custom-talks"),
+    );
+    expect(updated.metadata.lastEditedAt).toBe("2026-10-04T12:00:00.000Z");
+  });
+
+  test("rejects deleting a Default Section, the Header included", () => {
+    for (const section of sampleResume.content.sections.filter((s) => s.type !== "custom")) {
+      expect(deleteSection(sampleResume, section.id, { now })).toBe(sampleResume);
+    }
+  });
+
+  test("an unknown Section id changes nothing", () => {
+    expect(deleteSection(sampleResume, "no-such-section", { now })).toBe(sampleResume);
+  });
+});
+
+describe("hasContent", () => {
+  const emptyEntry: CustomEntry = {
+    id: "entry",
+    enabled: true,
+    title: "",
+    subtitle: "",
+    dates: { start: null, current: false, end: null },
+    bullets: [],
+  };
+
+  function custom(...entries: CustomEntry[]): CustomSection {
+    return { id: "custom", type: "custom", title: "Talks", enabled: true, entries };
+  }
+
+  test("a Custom Section with no Entries, or only Empty ones, has none", () => {
+    expect(hasContent(custom())).toBe(false);
+    expect(hasContent(custom(emptyEntry, { ...emptyEntry, id: "entry-2", title: "  " }))).toBe(false);
+  });
+
+  test.each<[string, Partial<CustomEntry>]>([
+    ["a title", { title: "Talk" }],
+    ["a subtitle", { subtitle: "GopherCon" }],
+    ["dates", { dates: { start: null, current: true, end: null } }],
+    ["a Bullet", { bullets: [{ id: "b", enabled: true, text: "Spoke", children: [] }] }],
+  ])("an Entry with only %s has some", (_, filled) => {
+    expect(hasContent(custom({ ...emptyEntry, ...filled }))).toBe(true);
+  });
+
+  test("Disabled Entries and Bullets count, since deleting loses them too", () => {
+    const disabledChild = {
+      id: "b",
+      enabled: true,
+      text: "",
+      children: [{ id: "b-1", enabled: false, text: "Kept for later", children: [] }],
+    };
+
+    expect(hasContent(custom({ ...emptyEntry, enabled: false, title: "Talk" }))).toBe(true);
+    expect(hasContent(custom({ ...emptyEntry, bullets: [disabledChild] }))).toBe(true);
+  });
+
+  test("an Empty Bullet isn't content", () => {
+    const blank = { id: "b", enabled: true, text: " ", children: [] };
+
+    expect(hasContent(custom({ ...emptyEntry, bullets: [blank] }))).toBe(false);
   });
 });

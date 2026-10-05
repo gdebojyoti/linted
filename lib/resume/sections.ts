@@ -1,9 +1,10 @@
+import { hasDates } from "./dates";
 import { editSections, type EditOptions } from "./edit-sections";
 import type { AddOptions } from "./entries";
-import { DEFAULT_CUSTOM_SECTION_TITLE, type CustomSection, type Resume } from "./types";
+import { DEFAULT_CUSTOM_SECTION_TITLE, type Bullet, type CustomSection, type Resume } from "./types";
 
 // Section operations. They work the same in every Section, except that the
-// Header can't be renamed.
+// Header can't be renamed and only Custom Sections can be deleted.
 
 /**
  * The Resume with an Empty, Enabled Custom Section added after all the
@@ -61,4 +62,39 @@ export function renameSection(resume: Resume, sectionId: string, title: string, 
         : section,
     options,
   );
+}
+
+/**
+ * The Resume without the Section, the others keeping their order. Only a
+ * Custom Section can be deleted: a Default Section, the Header included, is
+ * left Empty or Disabled instead, so deleting one changes nothing.
+ */
+export function deleteSection(resume: Resume, sectionId: string, { now = new Date() }: EditOptions = {}): Resume {
+  const sections = resume.content.sections.filter((s) => s.id !== sectionId || s.type !== "custom");
+  if (sections.length === resume.content.sections.length) return resume;
+  return {
+    ...resume,
+    metadata: { ...resume.metadata, lastEditedAt: now.toISOString() },
+    content: { sections },
+  };
+}
+
+/**
+ * Whether anything in a Custom Section is filled in: text or dates in any of
+ * its Entries or Bullets, Enabled or Disabled. Deleting a Section with
+ * content loses work, so the editor asks first.
+ */
+export function hasContent(section: CustomSection): boolean {
+  return section.entries.some(
+    (entry) =>
+      isFilled(entry.title) || isFilled(entry.subtitle) || hasDates(entry.dates) || entry.bullets.some(bulletHasContent),
+  );
+}
+
+function bulletHasContent(bullet: Bullet): boolean {
+  return isFilled(bullet.text) || bullet.children.some(bulletHasContent);
+}
+
+function isFilled(text: string): boolean {
+  return text.trim() !== "";
 }
