@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 import { CHANGE_LATER_HINT, ResumeTitleDialog } from "@/components/common/title-dialog/resume-title-dialog";
 import { browserLibrary as library } from "@/lib/resume/browser-library";
 import { copyTitle } from "@/lib/resume/duplicate-resume";
 import { renameResume } from "@/lib/resume/rename-resume";
 import { DEFAULT_RESUME_TITLE, type Resume } from "@/lib/resume/types";
-import { DeleteResumeDialog } from "./delete-dialog/delete-resume-dialog";
 import { EmptyLibrary } from "./empty-state/empty-library";
 import { LibraryHeader } from "./header/library-header";
 import { LibraryMessage } from "./library-message";
@@ -157,10 +157,16 @@ export function Library() {
             newResumeRef={newResumeRef}
           />
         ))}
-      <DeleteResumeDialog
+      <ConfirmDeleteDialog
         open={confirming}
         onOpenChange={(open) => !saving && setConfirming(open)}
-        title={toDelete?.metadata.title ?? ""}
+        heading="Delete resume?"
+        message={
+          <>
+            &ldquo;{toDelete?.metadata.title}&rdquo; will be deleted from this browser. This can&apos;t be undone.
+          </>
+        }
+        action="Delete resume"
         deleting={saving}
         onConfirm={handleDelete}
         returnFocusTo={focusAfterDelete}

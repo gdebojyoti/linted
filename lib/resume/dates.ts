@@ -124,3 +124,8 @@ function withDates(resume: Resume, entryId: string, dates: DateRange, options: E
     options,
   );
 }
+
+/** Whether an Entry has any dates: a start, an end, or Current. */
+export function hasDates({ start, current, end }: DateRange): boolean {
+  return start !== null || current || end !== null;
+}

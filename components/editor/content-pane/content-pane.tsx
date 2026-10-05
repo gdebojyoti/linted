@@ -1,8 +1,9 @@
 import { Plus } from "lucide-react";
-import { useState, type ReactNode } from "react";
-import type { ResumeEdit, Section } from "@/lib/resume/types";
+import { useRef, useState, type ReactNode } from "react";
+import type { CustomSection, ResumeEdit, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
-import { addCustomSection, renameSection, setSectionEnabled } from "@/lib/resume/sections";
+import { addCustomSection, deleteSection, hasContent, renameSection, setSectionEnabled } from "@/lib/resume/sections";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
 import { CustomEntryCard } from "./custom-entry-card";
 import { EducationEntryCard } from "./education-entry-card";
@@ -28,6 +29,12 @@ export function ContentPane({
 }) {
   const [openId, setOpenId] = useState(() => sections.find((s) => s.type === "header")?.id ?? null);
   const [addedId, setAddedId] = useState<string | null>(null);
+  const addSectionRef = useRef<HTMLButtonElement>(null);
+  const [toDelete, setToDelete] = useState<CustomSection | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  /** The delete button that asked, and whether the delete went ahead: where focus goes after the dialog. */
+  const openerRef = useRef<HTMLElement | null>(null);
+  const deletedRef = useRef(false);
 
   /** Adds a Custom Section, opens it, and puts its title straight into the rename field. */
   function addSection() {
@@ -35,6 +42,30 @@ export function ContentPane({
     onEdit((r) => addCustomSection(r, { newId: () => id }));
     setAddedId(id);
     setOpenId(id);
+  }
+
+  /**
+   * Deletes a Custom Section, asking first if anything in it is filled in.
+   * Focus then goes to "Add custom section", or back to the delete button if
+   * the user cancels.
+   */
+  function requestDelete(section: CustomSection, opener: HTMLElement) {
+    if (!hasContent(section)) {
+      onEdit((r) => deleteSection(r, section.id));
+      addSectionRef.current?.focus();
+      return;
+    }
+    openerRef.current = opener;
+    deletedRef.current = false;
+    setToDelete(section);
+    setConfirming(true);
+  }
+
+  function confirmDelete() {
+    if (!toDelete) return;
+    deletedRef.current = true;
+    onEdit((r) => deleteSection(r, toDelete.id));
+    setConfirming(false);
   }
 
   function fieldsOf(section: Section): ReactNode {
@@ -99,6 +130,7 @@ export function ContentPane({
               onRename={
                 section.type === "header" ? undefined : (title) => onEdit((r) => renameSection(r, section.id, title))
               }
+              onDelete={section.type === "custom" ? (opener) => requestDelete(section, opener) : undefined}
               isNew={section.id === addedId}
               expanded={section.id === openId}
               onToggle={() => setOpenId(section.id === openId ? null : section.id)}
@@ -108,6 +140,7 @@ export function ContentPane({
           ))}
         </ul>
         <Button
+          ref={addSectionRef}
           variant="outline"
           onClick={addSection}
           className="h-12 w-full shrink-0 border-dashed bg-transparent text-[13px] font-medium"
@@ -116,6 +149,19 @@ export function ContentPane({
           Add custom section
         </Button>
       </div>
+      <ConfirmDeleteDialog
+        open={confirming}
+        onOpenChange={setConfirming}
+        heading="Delete section?"
+        message={
+          <>
+            &ldquo;{toDelete?.title}&rdquo; and everything in it will be deleted. This can&apos;t be undone.
+          </>
+        }
+        action="Delete section"
+        onConfirm={confirmDelete}
+        returnFocusTo={() => (deletedRef.current ? addSectionRef.current : openerRef.current)}
+      />
     </aside>
   );
 }
