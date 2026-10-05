@@ -1,27 +1,29 @@
 import { Pencil } from "lucide-react";
-import { useInlineRename } from "@/components/common/use-inline-rename";
+import type { InputHTMLAttributes, RefObject } from "react";
 import { Button } from "@/components/ui/button";
 
 /**
- * A Section's title on its header line, grey while the Section is Disabled.
- * With `onRename`, a pencil button next to it renames it in place
- * (useInlineRename). Only the pencil starts renaming: a click on the title
- * opens or closes the Section.
+ * A Section's title on its header line, grey while the Section is Disabled,
+ * or, while `draft` isn't null, the field it's renamed in (useInlineRename's
+ * `inputProps`). With `onStartRename`, a pencil button next to it starts
+ * renaming: a click on the title itself opens or closes the Section instead.
  */
 export function SectionTitle({
   title,
   enabled,
-  onRename,
-  renaming = false,
+  draft,
+  inputProps,
+  pencilRef,
+  onStartRename,
 }: {
   title: string;
   enabled: boolean;
-  onRename?: (title: string) => void;
-  /** Start in the rename field, as a newly added Section does. */
-  renaming?: boolean;
+  draft: string | null;
+  inputProps: InputHTMLAttributes<HTMLInputElement>;
+  pencilRef: RefObject<HTMLButtonElement | null>;
+  /** Left out when there's no pencil: the Header can't be renamed, and a Custom Section is renamed from its menu. */
+  onStartRename?: () => void;
 }) {
-  const { draft, start, buttonRef, inputProps } = useInlineRename(title, (title) => onRename?.(title), { renaming });
-
   if (draft !== null) {
     return (
       <input
@@ -35,13 +37,13 @@ export function SectionTitle({
   return (
     <span className="flex min-w-0 items-center gap-0.5">
       <span className={`truncate text-sm font-medium ${enabled ? "text-ink" : "text-ink-disabled"}`}>{title}</span>
-      {onRename && (
+      {onStartRename && (
         <Button
-          ref={buttonRef}
+          ref={pencilRef}
           variant="ghost"
           size="icon-sm"
           aria-label={`Rename ${title}`}
-          onClick={start}
+          onClick={onStartRename}
           className="text-ink-muted"
         >
           <Pencil aria-hidden="true" className="size-3.5" />
