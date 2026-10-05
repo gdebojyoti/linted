@@ -1,6 +1,6 @@
 import { Copy, Ellipsis, Pencil, Trash2 } from "lucide-react";
 import { useRef } from "react";
-import { cn } from "@/lib/utils";
+import { MENU_CONTENT_CLASS, MENU_DANGER_ITEM_CLASS, MENU_ITEM_CLASS } from "@/components/common/menu-class";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,9 +9,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-/** Menu items as in the Library design, with the app's grey highlight rather than shadcn's accent. */
-const ITEM = "h-8.5 gap-2 rounded-[5px] px-2.5 text-[13px] text-ink focus:bg-subtle focus:text-ink [&_svg]:size-3.5";
 
 /**
  * A Resume row's "…" menu: Rename, Duplicate and, after a divider, Delete
@@ -41,20 +38,17 @@ export function RowMenu({
           </Button>
         }
       />
-      <DropdownMenuContent
-        align="end"
-        className="w-50 rounded-lg p-1 shadow-[0_8px_24px_rgb(0_0_0/0.12)] ring-1 ring-line-input"
-      >
-        <DropdownMenuItem className={ITEM} onClick={() => onRename(trigger())}>
+      <DropdownMenuContent align="end" className={MENU_CONTENT_CLASS}>
+        <DropdownMenuItem className={MENU_ITEM_CLASS} onClick={() => onRename(trigger())}>
           <Pencil aria-hidden="true" />
           Rename
         </DropdownMenuItem>
-        <DropdownMenuItem className={ITEM} onClick={() => onDuplicate(trigger())}>
+        <DropdownMenuItem className={MENU_ITEM_CLASS} onClick={() => onDuplicate(trigger())}>
           <Copy aria-hidden="true" />
           Duplicate
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-line-soft" />
-        <DropdownMenuItem className={cn(ITEM, "text-danger focus:text-danger")} onClick={() => onDelete(trigger())}>
+        <DropdownMenuItem className={MENU_DANGER_ITEM_CLASS} onClick={() => onDelete(trigger())}>
           <Trash2 aria-hidden="true" />
           Delete resume
         </DropdownMenuItem>
