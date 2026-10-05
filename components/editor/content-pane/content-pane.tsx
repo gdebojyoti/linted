@@ -32,7 +32,7 @@ export function ContentPane({
   const addSectionRef = useRef<HTMLButtonElement>(null);
   const [toDelete, setToDelete] = useState<CustomSection | null>(null);
   const [confirming, setConfirming] = useState(false);
-  /** The "…" button that asked for the delete, and whether it went ahead: where focus goes after the dialog. */
+  /** The delete button that asked, and whether the delete went ahead: where focus goes after the dialog. */
   const openerRef = useRef<HTMLElement | null>(null);
   const deletedRef = useRef(false);
 
@@ -46,7 +46,7 @@ export function ContentPane({
 
   /**
    * Deletes a Custom Section, asking first if anything in it is filled in.
-   * Focus then goes to "Add custom section", or back to the "…" button if
+   * Focus then goes to "Add custom section", or back to the delete button if
    * the user cancels.
    */
   function requestDelete(section: CustomSection, opener: HTMLElement) {

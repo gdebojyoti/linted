@@ -17,6 +17,7 @@
 | 9 | Header links shown as the address (e.g. "github.com/asharao") | **As specced.** Each link has a label and a URL (#1, #18) |
 | 10 | A greyed-out End field reading "Present" while the Entry is Current | The End fields are **hidden** while it's Current (#23) |
 | 11 | An Entry card with no delete button, a green "Current" tag, and its fields indented 44px | A **delete button** on the card's header line, next to the chevron; the app's grey **Badge** for "Current"; fields indented **12px**, so the date and Bullet rows fit the Content pane at its narrowest. Cards start **closed**, except a newly added one (#25) |
+| 12 | A "…" menu on a Custom Section, with Rename section and Delete section | **No menu.** A **pencil** next to the title, as on every Section but the Header, and a **delete button** next to the chevron, as on Entry cards. Deleting asks first only when the Section has something filled in (#31) |
 
 ## Agreed on top of the design
 
@@ -24,7 +25,7 @@
 - v1 uses the **one-column** page (`PreviewPage.dc.html`). The two-column boards are reference for a later version.
 - The header bar's **"Saved"** indicator is fine to keep. Its **Duplicate** button works (#12): it opens the same dialog as the Library's Duplicate. The **"Rename resume"** pencil next to the title works (#11), and so does clicking the title: it's renamed in place, with Enter or clicking away to save and Esc to cancel.
 - **Export PDF** stays disabled until Export works (#20).
-- **A "…" menu appears only when it has more than one option.** A single action gets its own button. For example, a Custom Section's menu has Rename and Delete. A Default Section can't be deleted, so it gets just a rename button and no menu.
+- **A "…" menu appears only when it has more than one option.** A single action gets its own button. For example, a Resume row in the Library has a menu (Rename, Duplicate, Delete), but a Section has none: it gets a rename button, and a Custom Section a delete button too.
 - **App accent: Amethyst** (`#9b59b6`), in place of the design's Pine green. This is the app only; a Theme's colours are its own.
 - **Ledger accent: Pine green** (`#17784a`), as in the design, for the Theme's headings and links (about 5.5:1 on white). Set in the Theme's own variables (#15), separate from the app accent.
 - **Font: Open Sans** for now for the app, in place of the design's Geist and Geist Mono. **Ledger uses Source Serif 4**, as in the design.

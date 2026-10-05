@@ -33,7 +33,7 @@ export function ConfirmDeleteDialog({
   action: string;
   deleting?: boolean;
   onConfirm: () => void;
-  /** Focused when the dialog closes: the "…" button, or another control once the deleted thing is gone. */
+  /** Focused when the dialog closes: the button that opened it, or another control once the deleted thing is gone. */
   returnFocusTo: () => HTMLElement | null;
 }) {
   return (
