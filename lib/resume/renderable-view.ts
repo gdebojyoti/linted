@@ -1,3 +1,4 @@
+import { hasDates } from "./dates";
 import type {
   Bullet,
   ContactEntry,
@@ -191,10 +192,6 @@ function renderBullets(bullets: Bullet[]): Rendered<Bullet>[] {
       return { id: bullet.id, text: trimmed(bullet.text), children };
     }),
   );
-}
-
-function hasDates({ start, current, end }: DateRange): boolean {
-  return start !== null || current || end !== null;
 }
 
 function isFilled(text: string): boolean {
