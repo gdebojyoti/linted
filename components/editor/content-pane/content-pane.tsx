@@ -5,6 +5,7 @@ import { formatCount } from "@/lib/format/count";
 import { addCustomSection, deleteSection, hasContent, renameSection, setSectionEnabled } from "@/lib/resume/sections";
 import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
+import { ContentPaneFrame } from "./content-pane-frame";
 import { CustomEntryCard } from "./custom-entry-card";
 import { EducationEntryCard } from "./education-entry-card";
 import { EntryCardList } from "./entry-card-list";
@@ -112,14 +113,7 @@ export function ContentPane({
   }
 
   return (
-    <aside
-      aria-label="Content"
-      className="flex min-w-100 max-w-160 w-1/3 shrink-0 flex-col border-r border-line bg-surface"
-    >
-      <div className="flex h-11 shrink-0 items-center gap-2.5 border-b border-line-soft px-6">
-        <span className="text-[13px] font-semibold">Content</span>
-        <span className="text-xs text-ink-meta">{formatCount(sections.length, "section", "sections")}</span>
-      </div>
+    <ContentPaneFrame count={formatCount(sections.length, "section", "sections")}>
       <div className="flex grow flex-col gap-2 overflow-auto px-6 pt-4 pb-8">
         <ul className="flex flex-col gap-2">
           {sections.map((section) => (
@@ -162,6 +156,6 @@ export function ContentPane({
         onConfirm={confirmDelete}
         returnFocusTo={() => (deletedRef.current ? addSectionRef.current : openerRef.current)}
       />
-    </aside>
+    </ContentPaneFrame>
   );
 }
