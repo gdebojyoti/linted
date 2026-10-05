@@ -2,6 +2,7 @@ import { useId, useRef, useState } from "react";
 import { bulletLines } from "@/lib/resume/bullet-lines";
 import {
   addBullet,
+  addBulletAfter,
   deleteBullet,
   nestBullet,
   setBulletEnabled,
@@ -19,6 +20,7 @@ import { BulletRow } from "./bullet-row";
  * their place. Bullets go two levels deep: a child Bullet can only be
  * un-nested. There's no reordering in v1.
  *
+ * Enter in a Bullet adds the next one right under it, at the same level.
  * A new Bullet gets focus, and after a delete focus moves to the add
  * button. Deleting a Bullet deletes its children too, straight away.
  */
@@ -39,6 +41,12 @@ export function BulletsFields({
   function add() {
     const id = crypto.randomUUID();
     onEdit((resume) => addBullet(resume, entryId, { newId: () => id }));
+    setAddedId(id);
+  }
+
+  function addAfter(bulletId: string) {
+    const id = crypto.randomUUID();
+    onEdit((resume) => addBulletAfter(resume, bulletId, { newId: () => id }));
     setAddedId(id);
   }
 
@@ -74,6 +82,7 @@ export function BulletsFields({
                 onNest={() => onEdit((r) => nestBullet(r, bulletId))}
                 onUnnest={() => onEdit((r) => unnestBullet(r, bulletId))}
                 onDelete={() => remove(bulletId)}
+                onEnter={() => addAfter(bulletId)}
                 autoFocus={bulletId === addedId}
               />
             );
