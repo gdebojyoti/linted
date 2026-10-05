@@ -1,6 +1,14 @@
 import { describe, expect, test } from "vitest";
-import { addBullet, deleteBullet, nestBullet, setBulletEnabled, unnestBullet, updateBullet } from "./bullets";
-import { renderableView } from "./renderable-view";
+import {
+  addBullet,
+  addBulletAfter,
+  deleteBullet,
+  nestBullet,
+  setBulletEnabled,
+  unnestBullet,
+  updateBullet,
+} from "./bullets";
+import { renderableView, type Rendered } from "./renderable-view";
 import { sampleResume } from "./sample-resume";
 import type { Bullet, Resume } from "./types";
 
@@ -14,6 +22,15 @@ function bulletsOf(resume: Resume, entryId: string): Bullet[] {
     if (entry && "bullets" in entry) return entry.bullets;
   }
   throw new Error(`expected an Entry with Bullets: ${entryId}`);
+}
+
+/** The Entry's Bullets as the renderable view draws them. */
+function drawnBullets(resume: Resume, entryId: string): Rendered<Bullet>[] {
+  for (const section of renderableView(resume).sections) {
+    const entry = section.entries.find((e) => e.id === entryId);
+    if (entry && "bullets" in entry) return entry.bullets;
+  }
+  throw new Error(`expected a drawn Entry with Bullets: ${entryId}`);
 }
 
 /**
@@ -60,6 +77,53 @@ describe("addBullet", () => {
       expect(addBullet(sampleResume, entryId, { now, newId: () => "new" })).toBe(sampleResume);
     },
   );
+});
+
+describe("addBulletAfter", () => {
+  test("adds an Empty, Enabled Bullet right after a top-level Bullet", () => {
+    const updated = addBulletAfter(sampleResume, "exp-paystream-b2", { now, newId: () => "new" });
+
+    expect(outline(updated, paystream)).toEqual(["b1", "  b1-1", "  b1-2", "b2", "new", "b3"]);
+    expect(bulletsOf(updated, paystream)[2]).toEqual({ id: "new", enabled: true, text: "", children: [] });
+    expect(updated.metadata.lastEditedAt).toBe(now.toISOString());
+  });
+
+  test("after the last Bullet, adds at the end", () => {
+    const updated = addBulletAfter(sampleResume, "exp-paystream-b3", { now, newId: () => "new" });
+
+    expect(outline(updated, paystream)).toEqual(["b1", "  b1-1", "  b1-2", "b2", "b3", "new"]);
+  });
+
+  test("after a child Bullet, adds a child of the same parent", () => {
+    const afterFirst = addBulletAfter(sampleResume, "exp-paystream-b1-1", { now, newId: () => "new" });
+    const afterLast = addBulletAfter(sampleResume, "exp-paystream-b1-2", { now, newId: () => "new" });
+
+    expect(outline(afterFirst, paystream)).toEqual(["b1", "  b1-1", "  new", "  b1-2", "b2", "b3"]);
+    expect(outline(afterLast, paystream)).toEqual(["b1", "  b1-1", "  b1-2", "  new", "b2", "b3"]);
+  });
+
+  test("after a top-level Bullet with children, the new Bullet takes them, keeping their own states", () => {
+    const [b1] = bulletsOf(sampleResume, paystream);
+
+    const updated = addBulletAfter(sampleResume, "exp-paystream-b1", { now, newId: () => "new" });
+
+    expect(outline(updated, paystream)).toEqual(["b1", "new", "  b1-1", "  b1-2", "b2", "b3"]);
+    expect(bulletsOf(updated, paystream)[1].children).toEqual(b1.children);
+  });
+
+  test("the new Bullet is Enabled even after a Disabled one, so the children it takes show again", () => {
+    const disabled = setBulletEnabled(sampleResume, "exp-paystream-b1", false, { now });
+
+    const updated = addBulletAfter(disabled, "exp-paystream-b1", { now, newId: () => "new" });
+
+    expect(bulletsOf(updated, paystream)[1].enabled).toBe(true);
+    const drawn = drawnBullets(updated, paystream).find((b) => b.id === "new");
+    expect(drawn?.children.map((c) => c.id)).toEqual(["exp-paystream-b1-1"]);
+  });
+
+  test("an unknown Bullet changes nothing", () => {
+    expect(addBulletAfter(sampleResume, "no-such-bullet", { now, newId: () => "new" })).toBe(sampleResume);
+  });
 });
 
 describe("updateBullet", () => {
@@ -199,6 +263,7 @@ test("Bullet edits don't change the given Resume", () => {
   const before = structuredClone(sampleResume);
 
   addBullet(sampleResume, paystream, { now, newId: () => "new" });
+  addBulletAfter(sampleResume, "exp-paystream-b1", { now, newId: () => "new" });
   updateBullet(sampleResume, "exp-paystream-b1-1", "x", { now });
   deleteBullet(sampleResume, "exp-paystream-b1", { now });
   setBulletEnabled(sampleResume, "exp-paystream-b1", false, { now });

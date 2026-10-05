@@ -20,6 +20,29 @@ export function addBullet(
   );
 }
 
+/**
+ * The Resume with an Empty, Enabled Bullet added right after this one in
+ * reading order, at the same level: after a child Bullet, a child of the
+ * same parent. After a top-level Bullet, the new one takes its children,
+ * as when un-nesting.
+ */
+export function addBulletAfter(
+  resume: Resume,
+  bulletId: string,
+  { newId = () => crypto.randomUUID(), ...options }: AddOptions = {},
+): Resume {
+  return editInReadingOrder(
+    resume,
+    bulletId,
+    (flat, index) => [
+      ...flat.slice(0, index + 1),
+      { bullet: { id: newId(), enabled: true, text: "", children: [] }, nested: flat[index].nested },
+      ...flat.slice(index + 1),
+    ],
+    options,
+  );
+}
+
 /** The Resume with a Bullet's Prose changed, stored exactly as typed (ADR 0004). */
 export function updateBullet(resume: Resume, bulletId: string, text: string, options: EditOptions = {}): Resume {
   return editInReadingOrder(

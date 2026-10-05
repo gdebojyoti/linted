@@ -17,6 +17,10 @@ import { DeleteEntryButton } from "./delete-entry-button";
  * parent is. The one indent button nests a top-level Bullet (not the first,
  * which has nothing above it) or un-nests a child; staying the same button
  * keeps focus on it as the Bullet moves.
+ *
+ * Bullets have no line breaks (#75): Enter adds the next Bullet, and Enter
+ * with Shift or another modifier does nothing. Line breaks already in the
+ * text, or pasted in, stay as typed.
  */
 export function BulletRow({
   line,
@@ -26,6 +30,7 @@ export function BulletRow({
   onNest,
   onUnnest,
   onDelete,
+  onEnter,
   autoFocus,
 }: {
   line: BulletLine;
@@ -36,6 +41,8 @@ export function BulletRow({
   onNest: () => void;
   onUnnest: () => void;
   onDelete: () => void;
+  /** Enter was pressed in the field. */
+  onEnter: () => void;
   autoFocus?: boolean;
 }) {
   const errorId = useId();
@@ -59,6 +66,14 @@ export function BulletRow({
             aria-label={name}
             value={bullet.text}
             onChange={(event) => onTextChange(event.target.value)}
+            onKeyDown={(event) => {
+              // While an input method (e.g. for Chinese or Japanese) is
+              // composing, Enter confirms the text. Safari reports that
+              // Enter as keyCode 229 rather than with isComposing.
+              if (event.key !== "Enter" || event.nativeEvent.isComposing || event.keyCode === 229) return;
+              event.preventDefault();
+              if (!event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) onEnter();
+            }}
             autoFocus={autoFocus}
             aria-invalid={broken.length > 0 || undefined}
             aria-describedby={broken.length > 0 ? `${errorId} ${hintId}` : hintId}
