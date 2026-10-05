@@ -81,7 +81,7 @@ Content the user has not filled in. Empty content is never included in the Expor
 _Avoid_: Blank, unset
 
 **Current**:
-An Entry (such as a job or school) that is still ongoing, so it has a start date but no end date. Marking an Entry Current discards any end date it had. Shown as "Present" when rendered.
+An Entry (such as a job or school) that is still ongoing, so it has no end date. Its start date is optional, like every date. Marking an Entry Current discards any end date it had. Shown as "Present" when rendered: "Mar 2022 – Present" with a start date, or just "Present" without one.
 _Avoid_: Ongoing, active, open-ended
 
 ### Presentation
