@@ -3,14 +3,15 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
+import { Notice } from "@/components/common/notice";
 import { CHANGE_LATER_HINT, ResumeTitleDialog } from "@/components/common/title-dialog/resume-title-dialog";
+import { Button } from "@/components/ui/button";
 import { browserLibrary as library } from "@/lib/resume/browser-library";
 import { copyTitle } from "@/lib/resume/duplicate-resume";
 import { renameResume } from "@/lib/resume/rename-resume";
 import { DEFAULT_RESUME_TITLE, type Resume } from "@/lib/resume/types";
 import { EmptyLibrary } from "./empty-state/empty-library";
 import { LibraryHeader } from "./header/library-header";
-import { LibraryMessage } from "./library-message";
 import { ResumeList } from "./resume-list/resume-list";
 
 type Status =
@@ -46,7 +47,8 @@ function dialogText(request: Request) {
 
 /**
  * The Library page. Resumes live in this browser (ADR 0002), so the server
- * renders only "Loading…" and the list is read after hydration.
+ * renders only "Loading resumes…" and the list is read after hydration.
+ * If storage can't be read, Try again reloads the page.
  */
 export function Library() {
   const router = useRouter();
@@ -136,11 +138,24 @@ export function Library() {
   return (
     <div className="flex min-h-screen flex-col">
       <LibraryHeader />
-      {status.kind === "loading" && <LibraryMessage>Loading…</LibraryMessage>}
-      {status.kind === "failed" && (
-        <LibraryMessage role="alert">
-          Your resumes couldn&apos;t be read. This browser may be blocking site storage.
-        </LibraryMessage>
+      {status.kind !== "ready" && (
+        <main className="flex grow items-center justify-center px-4 pb-14">
+          {status.kind === "loading" ? (
+            <Notice title="Loading resumes…" />
+          ) : (
+            <Notice
+              role="alert"
+              title="Your resumes couldn't be read"
+              actions={
+                <Button size="lg" onClick={() => window.location.reload()}>
+                  Try again
+                </Button>
+              }
+            >
+              This browser may be blocking site storage. Allow cookies and site data for this site, then try again.
+            </Notice>
+          )}
+        </main>
       )}
       {status.kind === "ready" &&
         (status.resumes.length === 0 ? (

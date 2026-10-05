@@ -9,6 +9,7 @@ import { copyTitle } from "@/lib/resume/duplicate-resume";
 import { renameResume } from "@/lib/resume/rename-resume";
 import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { ContentPane } from "./content-pane/content-pane";
+import { EditorFrame } from "./editor-frame";
 import { PreviewPane } from "./preview-pane/preview-pane";
 import { TopBar } from "./top-bar/top-bar";
 import { useAutosave } from "./use-autosave";
@@ -27,6 +28,8 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
   /** The Duplicate button, which gets focus back when the dialog closes. */
   const duplicateRef = useRef<HTMLElement>(null);
   useAutosave(resume, initialResume);
+  /** Whether the preview's Theme has loaded, which Export waits for. */
+  const [themeReady, setThemeReady] = useState(false);
 
   /** Every edit is a Resume module function, applied to the latest Resume. */
   function handleEdit(edit: ResumeEdit) {
@@ -63,17 +66,20 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      <TopBar
-        resumeTitle={resume.metadata.title}
-        onRename={(title) => handleEdit((current) => renameResume(current, title))}
-        onDuplicate={openDuplicate}
-        onExport={handleExport}
-      />
-      <div className="flex min-h-0 grow">
-        <ContentPane sections={resume.content.sections} onEdit={handleEdit} />
-        <PreviewPane resume={resume} pageRef={pageRef} />
-      </div>
+    <EditorFrame
+      topBar={
+        <TopBar
+          status="ready"
+          resumeTitle={resume.metadata.title}
+          onRename={(title) => handleEdit((current) => renameResume(current, title))}
+          onDuplicate={openDuplicate}
+          onExport={handleExport}
+          canExport={themeReady}
+        />
+      }
+    >
+      <ContentPane sections={resume.content.sections} onEdit={handleEdit} />
+      <PreviewPane resume={resume} pageRef={pageRef} onThemeReadyChange={setThemeReady} />
       <ResumeTitleDialog
         open={naming}
         onOpenChange={(open) => !duplicating && setNaming(open)}
@@ -85,6 +91,6 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
         onSubmit={handleDuplicate}
         returnFocusTo={duplicateRef}
       />
-    </div>
+    </EditorFrame>
   );
 }

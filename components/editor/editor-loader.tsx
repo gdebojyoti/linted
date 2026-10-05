@@ -1,11 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { browserLibrary as library } from "@/lib/resume/browser-library";
 import type { Resume } from "@/lib/resume/types";
+import { ContentPaneSkeleton } from "./content-pane/content-pane-skeleton";
 import { Editor } from "./editor";
-import { EditorMessage } from "./editor-message";
+import { EditorFrame } from "./editor-frame";
+import { MissingResume } from "./missing-resume";
+import { PreviewPane } from "./preview-pane/preview-pane";
+import { TopBar } from "./top-bar/top-bar";
 
 type Status =
   | { kind: "loading" }
@@ -15,8 +18,9 @@ type Status =
 
 /**
  * Loads the Resume with this id, then opens the editor on it. Resumes live
- * in this browser (ADR 0002), so the server renders only "Loading…" and the
- * Resume is read after hydration.
+ * in this browser (ADR 0002), so the server renders the editor's layout with
+ * skeletons, and the Resume is read after hydration. Every state keeps the
+ * top bar and fills in the rest, so the layout never jumps.
  *
  * Holds the state of one id only; the page gives it a `key` of the id, so
  * opening another Resume starts over, Editor included.
@@ -37,21 +41,18 @@ export function EditorLoader({ id }: { id: string }) {
 
   switch (status.kind) {
     case "loading":
-      return <EditorMessage>Loading…</EditorMessage>;
-    case "not-found":
       return (
-        <EditorMessage>
-          Not found!{" "}
-          <Link href="/resume-builder" className="underline">
-            Back to resumes
-          </Link>
-        </EditorMessage>
+        <EditorFrame topBar={<TopBar status="loading" />}>
+          <ContentPaneSkeleton />
+          <PreviewPane resume={null} />
+        </EditorFrame>
       );
+    case "not-found":
     case "failed":
       return (
-        <EditorMessage role="alert">
-          This resume couldn&apos;t be read. This browser may be blocking site storage.
-        </EditorMessage>
+        <EditorFrame topBar={<TopBar status="missing" />}>
+          <MissingResume reason={status.kind} />
+        </EditorFrame>
       );
     case "ready":
       return <Editor initialResume={status.resume} />;
