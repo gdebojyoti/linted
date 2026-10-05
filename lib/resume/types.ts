@@ -7,6 +7,9 @@ export const SCHEMA_VERSION = 1;
 
 export const DEFAULT_RESUME_TITLE = "Untitled Resume";
 
+/** A new Custom Section's title, until the user renames it. */
+export const DEFAULT_CUSTOM_SECTION_TITLE = "Untitled Section";
+
 /** v1 ships exactly one Theme. */
 export const DEFAULT_THEME_ID = "ledger";
 

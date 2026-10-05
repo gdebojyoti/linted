@@ -1,7 +1,10 @@
+import { Plus } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import type { ResumeEdit, Section } from "@/lib/resume/types";
 import { formatCount } from "@/lib/format/count";
-import { renameSection, setSectionEnabled } from "@/lib/resume/sections";
+import { addCustomSection, renameSection, setSectionEnabled } from "@/lib/resume/sections";
+import { Button } from "@/components/ui/button";
+import { CustomEntryCard } from "./custom-entry-card";
 import { EducationEntryCard } from "./education-entry-card";
 import { EntryCardList } from "./entry-card-list";
 import { ExperienceEntryCard } from "./experience-entry-card";
@@ -13,8 +16,8 @@ import { SummaryFields } from "./summary-fields";
 
 /**
  * The Resume's Sections, one open at a time: opening one closes the others.
- * The Header starts open. Every Default Section can be edited; Custom
- * Sections gain their fields in a later ticket.
+ * The Header starts open. Custom Sections are added with the button under
+ * them all.
  */
 export function ContentPane({
   sections,
@@ -24,6 +27,15 @@ export function ContentPane({
   onEdit: (edit: ResumeEdit) => void;
 }) {
   const [openId, setOpenId] = useState(() => sections.find((s) => s.type === "header")?.id ?? null);
+  const [addedId, setAddedId] = useState<string | null>(null);
+
+  /** Adds a Custom Section, opens it, and puts its title straight into the rename field. */
+  function addSection() {
+    const id = crypto.randomUUID();
+    onEdit((r) => addCustomSection(r, { newId: () => id }));
+    setAddedId(id);
+    setOpenId(id);
+  }
 
   function fieldsOf(section: Section): ReactNode {
     switch (section.type) {
@@ -57,8 +69,14 @@ export function ContentPane({
             card={(entry, props) => <EducationEntryCard entry={entry} onEdit={onEdit} {...props} />}
           />
         );
-      default:
-        return null;
+      case "custom":
+        return (
+          <EntryCardList
+            section={section}
+            onEdit={onEdit}
+            card={(entry, props) => <CustomEntryCard entry={entry} onEdit={onEdit} {...props} />}
+          />
+        );
     }
   }
 
@@ -71,22 +89,33 @@ export function ContentPane({
         <span className="text-[13px] font-semibold">Content</span>
         <span className="text-xs text-ink-meta">{formatCount(sections.length, "section", "sections")}</span>
       </div>
-      <ul className="flex grow flex-col gap-2 overflow-auto px-6 pt-4 pb-8">
-        {sections.map((section) => (
-          <SectionRow
-            key={section.id}
-            section={section}
-            onEnabledChange={(enabled) => onEdit((r) => setSectionEnabled(r, section.id, enabled))}
-            onRename={
-              section.type === "header" ? undefined : (title) => onEdit((r) => renameSection(r, section.id, title))
-            }
-            expanded={section.id === openId}
-            onToggle={() => setOpenId(section.id === openId ? null : section.id)}
-          >
-            {fieldsOf(section)}
-          </SectionRow>
-        ))}
-      </ul>
+      <div className="flex grow flex-col gap-2 overflow-auto px-6 pt-4 pb-8">
+        <ul className="flex flex-col gap-2">
+          {sections.map((section) => (
+            <SectionRow
+              key={section.id}
+              section={section}
+              onEnabledChange={(enabled) => onEdit((r) => setSectionEnabled(r, section.id, enabled))}
+              onRename={
+                section.type === "header" ? undefined : (title) => onEdit((r) => renameSection(r, section.id, title))
+              }
+              isNew={section.id === addedId}
+              expanded={section.id === openId}
+              onToggle={() => setOpenId(section.id === openId ? null : section.id)}
+            >
+              {fieldsOf(section)}
+            </SectionRow>
+          ))}
+        </ul>
+        <Button
+          variant="outline"
+          onClick={addSection}
+          className="h-12 w-full shrink-0 border-dashed bg-transparent text-[13px] font-medium"
+        >
+          <Plus aria-hidden="true" />
+          Add custom section
+        </Button>
+      </div>
     </aside>
   );
 }

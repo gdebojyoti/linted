@@ -7,10 +7,15 @@ import { useRef, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent
  * After Enter or Esc, focus goes back to the button that started it
  * (`buttonRef`).
  *
- * `draft` is null while not renaming. Spread `inputProps` on the field.
+ * `draft` is null while not renaming; with `renaming`, it starts renaming at
+ * once. Spread `inputProps` on the field.
  */
-export function useInlineRename(name: string, onRename: (name: string) => void) {
-  const [draft, setDraft] = useState<string | null>(null);
+export function useInlineRename(
+  name: string,
+  onRename: (name: string) => void,
+  { renaming = false }: { renaming?: boolean } = {},
+) {
+  const [draft, setDraft] = useState<string | null>(renaming ? name : null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   /** Set once Enter, Esc or a blur ends the edit, so a blur as the field goes away can't save again. */
   const finishedRef = useRef(false);

@@ -1,8 +1,10 @@
 import { describe, expect, test } from "vitest";
+import { addEntry } from "./entries";
 import { renderableView } from "./renderable-view";
 import { sampleResume } from "./sample-resume";
-import { renameSection, setSectionEnabled } from "./sections";
+import { addCustomSection, renameSection, setSectionEnabled } from "./sections";
 import type { Resume, Section } from "./types";
+import { updateCustomEntry } from "./update-custom-entry";
 
 const now = new Date("2026-10-04T12:00:00.000Z");
 
@@ -84,5 +86,51 @@ describe("renameSection", () => {
 
   test("an unknown Section id changes nothing", () => {
     expect(renameSection(sampleResume, "no-such-section", "Anything", { now })).toBe(sampleResume);
+  });
+});
+
+describe("addCustomSection", () => {
+  test("adds an Empty, Enabled Custom Section titled \"Untitled Section\" after all the others", () => {
+    const updated = addCustomSection(sampleResume, { now, newId: () => "custom-new" });
+
+    expect(updated.content.sections.map((s) => s.id)).toEqual([
+      ...sampleResume.content.sections.map((s) => s.id),
+      "custom-new",
+    ]);
+    expect(sectionOf(updated, "custom-new")).toEqual({
+      id: "custom-new",
+      type: "custom",
+      title: "Untitled Section",
+      enabled: true,
+      entries: [],
+    });
+    expect(updated.metadata.lastEditedAt).toBe("2026-10-04T12:00:00.000Z");
+  });
+
+  test("adds any number, in the order added", () => {
+    const first = addCustomSection(sampleResume, { now, newId: () => "custom-1" });
+    const second = addCustomSection(first, { now, newId: () => "custom-2" });
+
+    expect(second.content.sections.map((s) => s.id).slice(-2)).toEqual(["custom-1", "custom-2"]);
+  });
+
+  test("being Empty, it doesn't change the preview", () => {
+    const updated = addCustomSection(sampleResume, { now, newId: () => "custom-new" });
+
+    expect(renderableView(updated)).toEqual(renderableView(sampleResume));
+  });
+
+  test("it can be renamed, toggled and given Entries like any other Custom Section", () => {
+    let resume = addCustomSection(sampleResume, { now, newId: () => "custom-new" });
+    resume = renameSection(resume, "custom-new", "Volunteering", { now });
+    resume = addEntry(resume, "custom-new", { now, newId: () => "entry-new" });
+    resume = updateCustomEntry(resume, "entry-new", { title: "Code Club mentor" }, { now });
+
+    expect(renderableView(resume).sections.at(-1)).toMatchObject({
+      id: "custom-new",
+      title: "Volunteering",
+      entries: [{ id: "entry-new", title: "Code Club mentor" }],
+    });
+    expect(shownIds(setSectionEnabled(resume, "custom-new", false, { now }))).not.toContain("custom-new");
   });
 });

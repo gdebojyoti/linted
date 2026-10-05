@@ -12,12 +12,15 @@ export function SectionTitle({
   title,
   enabled,
   onRename,
+  renaming = false,
 }: {
   title: string;
   enabled: boolean;
   onRename?: (title: string) => void;
+  /** Start in the rename field, as a newly added Section does. */
+  renaming?: boolean;
 }) {
-  const { draft, start, buttonRef, inputProps } = useInlineRename(title, (title) => onRename?.(title));
+  const { draft, start, buttonRef, inputProps } = useInlineRename(title, (title) => onRename?.(title), { renaming });
 
   if (draft !== null) {
     return (
