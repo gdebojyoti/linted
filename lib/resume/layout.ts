@@ -110,28 +110,6 @@ function movedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, dire
   return { ...layout, [zone]: ids };
 }
 
-/**
- * The Resume with the Section moved to the end of another of the Theme's
- * Zones, and the whole Layout saved. A Pinned Section never moves; moving to
- * the Section's own Zone, or to one the Theme doesn't draw, changes nothing.
- */
-export function moveSectionToZone(
-  resume: Resume,
-  theme: ThemeLayout,
-  sectionId: string,
-  zone: Zone,
-  { now = new Date() }: EditOptions = {},
-): Resume {
-  const layout = layoutOf(resume, theme);
-  const from = zoneOf(layout, theme, sectionId);
-  if (!from || from === zone || !theme.zones.includes(zone) || pinnedIds(resume).has(sectionId)) return resume;
-  return withLayout(
-    resume,
-    { ...layout, [from]: layout[from]?.filter((id) => id !== sectionId), [zone]: [...(layout[zone] ?? []), sectionId] },
-    now,
-  );
-}
-
 /** The Resume back on its Theme's default Layout. With no Layout saved, it comes back unchanged. */
 export function resetLayout(resume: Resume, { now = new Date() }: EditOptions = {}): Resume {
   return resume.themeSettings.layout === null ? resume : withLayout(resume, null, now);

@@ -3,7 +3,6 @@ import {
   layoutOf,
   layoutTag,
   moveSection,
-  moveSectionToZone,
   positionInZone,
   resetLayout,
   type ThemeLayout,
@@ -136,32 +135,6 @@ describe("moveSection", () => {
 
   test("an unknown Section id changes nothing", () => {
     expect(moveSection(sampleResume, twoColumn, "no-such-section", "up", { now })).toBe(sampleResume);
-  });
-});
-
-describe("moveSectionToZone", () => {
-  test("moves a Section to the end of another of the Theme's Zones", () => {
-    const moved = moveSectionToZone(sampleResume, twoColumn, "experience", "aside-left", { now });
-
-    expect(moved.themeSettings.layout).toEqual({
-      header: ["header"],
-      "aside-left": ["skills", "education", "experience"],
-      main: ["summary", "projects", "custom-talks", "custom-volunteering"],
-    });
-    expect(moved.metadata.lastEditedAt).toBe("2026-11-11T12:00:00.000Z");
-  });
-
-  test("a Section moved into the Header's Zone goes below the Pinned Header", () => {
-    const moved = moveSectionToZone(sampleResume, twoColumn, "summary", "header", { now });
-
-    expect(layoutOf(moved, twoColumn).header).toEqual(["header", "summary"]);
-  });
-
-  test("changes nothing for the Section's own Zone, a Zone the Theme doesn't draw, the Pinned Header or an unknown id", () => {
-    expect(moveSectionToZone(sampleResume, twoColumn, "summary", "main", { now })).toBe(sampleResume);
-    expect(moveSectionToZone(sampleResume, twoColumn, "summary", "footer", { now })).toBe(sampleResume);
-    expect(moveSectionToZone(sampleResume, twoColumn, "header", "main", { now })).toBe(sampleResume);
-    expect(moveSectionToZone(sampleResume, twoColumn, "no-such-section", "main", { now })).toBe(sampleResume);
   });
 });
 
