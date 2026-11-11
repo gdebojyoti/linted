@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { CHANGE_LATER_HINT, ResumeTitleDialog } from "@/components/common/title-dialog/resume-title-dialog";
+import { Tabs } from "@/components/ui/tabs";
 import { browserLibrary as library } from "@/lib/resume/browser-library";
 import { copyTitle } from "@/lib/resume/duplicate-resume";
 import { renameResume } from "@/lib/resume/rename-resume";
 import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { ContentPane } from "./content-pane/content-pane";
-import { Tabs } from "@/components/ui/tabs";
 import { EditorFrame } from "./editor-frame";
 import { usePdfExport } from "./export/use-pdf-export";
 import { LeftPane } from "./left-pane";

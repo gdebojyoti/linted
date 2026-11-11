@@ -7,4 +7,4 @@ export const EDITOR_TABS = [
 
 export type EditorTab = (typeof EDITOR_TABS)[number]["value"];
 
-export const FIRST_TAB: EditorTab = "content";
+export const FIRST_TAB: EditorTab = EDITOR_TABS[0].value;

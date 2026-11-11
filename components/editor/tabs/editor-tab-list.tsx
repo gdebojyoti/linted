@@ -13,7 +13,7 @@ export function EditorTabList() {
         <TabsTrigger
           key={tab.value}
           value={tab.value}
-          className="h-7.5 flex-none rounded-sm px-4 text-[13px] font-medium text-ink-muted hover:text-ink data-active:text-ink"
+          className="h-7.5 flex-none rounded-sm px-4 text-[13px] font-medium text-ink-muted hover:text-ink data-active:text-ink group-data-[variant=default]/tabs-list:data-active:shadow-[0_1px_2px_rgb(0_0_0/0.08)]"
         >
           {tab.label}
         </TabsTrigger>
