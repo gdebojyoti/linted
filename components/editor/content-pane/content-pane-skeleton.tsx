@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { ContentPaneFrame } from "./content-pane-frame";
+import { LeftPane } from "@/components/editor/left-pane";
 
 /** Title widths for the six Default Sections every Resume has, so the rows look like them. */
 const TITLE_WIDTHS = ["w-14", "w-18", "w-22", "w-17", "w-12", "w-21"];
@@ -10,7 +10,7 @@ const TITLE_WIDTHS = ["w-14", "w-18", "w-22", "w-17", "w-12", "w-21"];
  */
 export function ContentPaneSkeleton() {
   return (
-    <ContentPaneFrame>
+    <LeftPane>
       <div className="flex grow flex-col gap-2 px-6 pt-4 pb-8">
         <p role="status" className="sr-only">
           Loading resume…
@@ -24,6 +24,6 @@ export function ContentPaneSkeleton() {
           ))}
         </ul>
       </div>
-    </ContentPaneFrame>
+    </LeftPane>
   );
 }
