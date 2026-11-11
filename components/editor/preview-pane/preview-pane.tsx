@@ -3,7 +3,7 @@ import { layoutOf } from "@/lib/resume/layout";
 import { renderableView } from "@/lib/resume/renderable-view";
 import type { Resume } from "@/lib/resume/types";
 import { placeSections } from "@/lib/theme/place-sections";
-import { useTheme } from "./use-theme";
+import { useTheme } from "@/components/editor/theme/use-theme";
 
 /**
  * The preview area belongs to the app; everything inside the page belongs to

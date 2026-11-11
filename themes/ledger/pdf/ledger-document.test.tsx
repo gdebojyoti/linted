@@ -5,13 +5,11 @@ import type { CustomSection, ExperienceEntry, Resume } from "@/lib/resume/types"
 import { layoutOf } from "@/lib/resume/layout";
 import { placeSections } from "@/lib/theme/place-sections";
 import { pageText, readPdf } from "@/themes/testing/read-pdf";
-import { LEDGER_DEFAULT_LAYOUT } from "@/themes/ledger/default-layout";
-import { LEDGER_ZONES } from "@/themes/ledger/zones";
+import { LEDGER_LAYOUT } from "@/themes/ledger/default-layout";
 import { LedgerDocument } from "./ledger-document";
 
 function ledgerPdf(resume: Resume) {
-  const layout = layoutOf(resume, { zones: LEDGER_ZONES, defaultLayout: LEDGER_DEFAULT_LAYOUT });
-  const zones = placeSections(renderableView(resume).sections, layout);
+  const zones = placeSections(renderableView(resume).sections, layoutOf(resume, LEDGER_LAYOUT));
   return readPdf(<LedgerDocument zones={zones} />);
 }
 

@@ -42,8 +42,34 @@ export function layoutOf(resume: Resume, theme: ThemeLayout): Layout {
   return layout;
 }
 
-function isPinned(section: Section): boolean {
+/** Whether the Section is Pinned: always first in its Zone, and never moved. */
+export function isPinned(section: Section): boolean {
   return section.type === "header" && section.pinned;
+}
+
+function pinnedIds(resume: Resume): Set<string> {
+  return new Set(resume.content.sections.filter(isPinned).map((section) => section.id));
+}
+
+/** The Zone of the Layout holding this Section, if any. */
+function zoneOf(layout: Layout, theme: ThemeLayout, sectionId: string): Zone | undefined {
+  return theme.zones.find((zone) => layout[zone]?.includes(sectionId));
+}
+
+/**
+ * Where the Section sits in its Zone, counting from 1, and how many Sections
+ * the Zone holds. Null for an unknown Section.
+ */
+export function positionInZone(
+  resume: Resume,
+  theme: ThemeLayout,
+  sectionId: string,
+): { position: number; count: number } | null {
+  const layout = layoutOf(resume, theme);
+  const zone = zoneOf(layout, theme, sectionId);
+  if (!zone) return null;
+  const ids = layout[zone] ?? [];
+  return { position: ids.indexOf(sectionId) + 1, count: ids.length };
 }
 
 export type MoveDirection = "up" | "down";
@@ -62,7 +88,7 @@ export function moveSection(
   { now = new Date() }: EditOptions = {},
 ): Resume {
   const layout = movedLayout(resume, theme, sectionId, direction);
-  return layout ? withSavedLayout(resume, layout, now) : resume;
+  return layout ? withLayout(resume, layout, now) : resume;
 }
 
 /** Whether moveSection would move the Section, so the editor can disable the arrow. */
@@ -72,7 +98,7 @@ export function canMoveSection(resume: Resume, theme: ThemeLayout, sectionId: st
 
 function movedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, direction: MoveDirection): Layout | null {
   const layout = layoutOf(resume, theme);
-  const zone = theme.zones.find((z) => layout[z]?.includes(sectionId));
+  const zone = zoneOf(layout, theme, sectionId);
   if (!zone) return null;
   const ids = [...(layout[zone] ?? [])];
   const from = ids.indexOf(sectionId);
@@ -82,14 +108,6 @@ function movedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, dire
   if (pinned.has(sectionId) || pinned.has(ids[to])) return null;
   [ids[from], ids[to]] = [ids[to], ids[from]];
   return { ...layout, [zone]: ids };
-}
-
-function withSavedLayout(resume: Resume, layout: Layout, now: Date): Resume {
-  return {
-    ...resume,
-    metadata: { ...resume.metadata, lastEditedAt: now.toISOString() },
-    themeSettings: { ...resume.themeSettings, layout },
-  };
 }
 
 /**
@@ -105,26 +123,26 @@ export function moveSectionToZone(
   { now = new Date() }: EditOptions = {},
 ): Resume {
   const layout = layoutOf(resume, theme);
-  const from = theme.zones.find((z) => layout[z]?.includes(sectionId));
+  const from = zoneOf(layout, theme, sectionId);
   if (!from || from === zone || !theme.zones.includes(zone) || pinnedIds(resume).has(sectionId)) return resume;
-  return withSavedLayout(
+  return withLayout(
     resume,
     { ...layout, [from]: layout[from]?.filter((id) => id !== sectionId), [zone]: [...(layout[zone] ?? []), sectionId] },
     now,
   );
 }
 
-function pinnedIds(resume: Resume): Set<string> {
-  return new Set(resume.content.sections.filter(isPinned).map((section) => section.id));
-}
-
 /** The Resume back on its Theme's default Layout. With no Layout saved, it comes back unchanged. */
 export function resetLayout(resume: Resume, { now = new Date() }: EditOptions = {}): Resume {
-  if (resume.themeSettings.layout === null) return resume;
+  return resume.themeSettings.layout === null ? resume : withLayout(resume, null, now);
+}
+
+/** The Resume with this Layout saved (null for the Theme's default), last edited now. */
+function withLayout(resume: Resume, layout: Layout | null, now: Date): Resume {
   return {
     ...resume,
     metadata: { ...resume.metadata, lastEditedAt: now.toISOString() },
-    themeSettings: { ...resume.themeSettings, layout: null },
+    themeSettings: { ...resume.themeSettings, layout },
   };
 }
 

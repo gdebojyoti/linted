@@ -1,5 +1,13 @@
 import { describe, expect, test } from "vitest";
-import { layoutOf, layoutTag, moveSection, moveSectionToZone, resetLayout, type ThemeLayout } from "./layout";
+import {
+  layoutOf,
+  layoutTag,
+  moveSection,
+  moveSectionToZone,
+  positionInZone,
+  resetLayout,
+  type ThemeLayout,
+} from "./layout";
 import { newResume } from "./new-resume";
 import { sampleResume } from "./sample-resume";
 import { addCustomSection, deleteSection, setSectionEnabled } from "./sections";
@@ -214,5 +222,22 @@ describe("layoutTag", () => {
 
     expect(tagOf(resume, "new-custom")).toBe("Empty");
     expect(tagOf(setSectionEnabled(resume, "new-custom", false, { now }), "new-custom")).toBe("Disabled");
+  });
+});
+
+describe("positionInZone", () => {
+  test("gives a Section's place in its Zone, counting from 1, and how many Sections the Zone holds", () => {
+    expect(positionInZone(sampleResume, twoColumn, "summary")).toEqual({ position: 1, count: 5 });
+    expect(positionInZone(sampleResume, twoColumn, "education")).toEqual({ position: 2, count: 2 });
+  });
+
+  test("follows a move", () => {
+    const moved = moveSection(sampleResume, twoColumn, "summary", "down", { now });
+
+    expect(positionInZone(moved, twoColumn, "summary")).toEqual({ position: 2, count: 5 });
+  });
+
+  test("is null for an unknown Section id", () => {
+    expect(positionInZone(sampleResume, twoColumn, "no-such-section")).toBeNull();
   });
 });

@@ -2,11 +2,22 @@ import { Info, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { Notice } from "@/components/common/notice";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/components/editor/preview-pane/use-theme";
-import { canMoveSection, layoutOf, moveSection, resetLayout, type MoveDirection } from "@/lib/resume/layout";
-import type { Resume, ResumeEdit, Section } from "@/lib/resume/types";
+import { useTheme } from "@/components/editor/theme/use-theme";
+import {
+  canMoveSection,
+  isPinned,
+  layoutOf,
+  moveSection,
+  positionInZone,
+  resetLayout,
+  type MoveDirection,
+} from "@/lib/resume/layout";
+import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { PinnedRow } from "./pinned-row";
 import { SectionChip } from "./section-chip";
+
+/** What was last done, to read out: a move, worded from the Resume as it now is, or a fixed message. */
+type LastAction = { sectionId: string; direction: MoveDirection } | { message: string } | null;
 
 /**
  * The Layout tab: the Resume's Sections as chips, in Layout order, for its
@@ -22,7 +33,7 @@ import { SectionChip } from "./section-chip";
 export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: ResumeEdit) => void }) {
   const theme = useTheme(resume.themeSettings.themeId);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [announcement, setAnnouncement] = useState("");
+  const [lastAction, setLastAction] = useState<LastAction>(null);
 
   if (!theme) {
     return (
@@ -38,18 +49,27 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
     .flatMap((zone) => layout[zone] ?? [])
     .flatMap((id) => sectionsById.get(id) ?? []);
 
-  function move(section: Section, direction: MoveDirection) {
-    if (!theme || !canMoveSection(resume, theme, section.id, direction)) return;
-    onEdit((current) => moveSection(current, theme, section.id, direction));
-    const movedLayout = layoutOf(moveSection(resume, theme, section.id, direction), theme);
-    const order = theme.zones.flatMap((zone) => movedLayout[zone] ?? []);
-    setAnnouncement(`${section.title} moved ${direction}, position ${order.indexOf(section.id) + 1} of ${order.length}.`);
-  }
+  const announcement = (): string => {
+    if (lastAction === null) return "";
+    if ("message" in lastAction) return lastAction.message;
+    const section = sectionsById.get(lastAction.sectionId);
+    const place = positionInZone(resume, theme, lastAction.sectionId);
+    if (!section || !place) return "";
+    return `${section.title} moved ${lastAction.direction}, position ${place.position} of ${place.count}.`;
+  };
+
+  const move = (sectionId: string, direction: MoveDirection) => {
+    onEdit((current) => moveSection(current, theme, sectionId, direction));
+    setLastAction({ sectionId, direction });
+  };
 
   function reset() {
+    const saved = resume.themeSettings.layout !== null;
     onEdit((current) => resetLayout(current));
     setSelectedId(null);
-    setAnnouncement("Layout reset to the theme's default.");
+    setLastAction({
+      message: saved ? "Layout reset to the theme's default." : "The layout is already the theme's default.",
+    });
   }
 
   return (
@@ -68,7 +88,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
           }`}
         >
           {sections.map((section) =>
-            section.type === "header" && section.pinned ? (
+            isPinned(section) ? (
               <PinnedRow key={section.id} section={section} />
             ) : (
               <SectionChip
@@ -77,7 +97,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
                 selected={section.id === selectedId}
                 onSelect={() => setSelectedId(section.id === selectedId ? null : section.id)}
                 canMove={(direction) => canMoveSection(resume, theme, section.id, direction)}
-                onMove={(direction) => move(section, direction)}
+                onMove={(direction) => move(section.id, direction)}
               />
             ),
           )}
@@ -89,7 +109,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
         won&apos;t appear in your resume.
       </p>
       <p aria-live="polite" className="sr-only">
-        {announcement}
+        {announcement()}
       </p>
     </div>
   );

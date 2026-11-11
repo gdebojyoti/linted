@@ -2,9 +2,8 @@ import { describe, expect, test } from "vitest";
 import { moveSection } from "@/lib/resume/layout";
 import { sampleResume } from "@/lib/resume/sample-resume";
 import type { Resume } from "@/lib/resume/types";
-import { LEDGER_DEFAULT_LAYOUT } from "@/themes/ledger/default-layout";
+import { LEDGER_LAYOUT } from "@/themes/ledger/default-layout";
 import { LedgerDocument } from "@/themes/ledger/pdf/ledger-document";
-import { LEDGER_ZONES } from "@/themes/ledger/zones";
 import { pageText, readPdf } from "@/themes/testing/read-pdf";
 import type { Theme } from "@/themes/theme";
 import { exportDocument } from "./export-document";
@@ -15,8 +14,7 @@ import { exportDocument } from "./export-document";
  */
 const ledgerForExport: Theme = {
   id: "ledger",
-  zones: LEDGER_ZONES,
-  defaultLayout: LEDGER_DEFAULT_LAYOUT,
+  ...LEDGER_LAYOUT,
   Page: () => null,
   Document: LedgerDocument,
 };

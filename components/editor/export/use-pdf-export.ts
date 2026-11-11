@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTheme } from "@/components/editor/preview-pane/use-theme";
+import { useTheme } from "@/components/editor/theme/use-theme";
 import { downloadFile } from "@/lib/export/download-file";
 import { pdfFileName } from "@/lib/export/pdf-file-name";
 import type { Resume } from "@/lib/resume/types";
