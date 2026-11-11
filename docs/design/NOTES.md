@@ -72,6 +72,10 @@
 | A US Letter page (612 × 792) | An **A4** page, as today. The app has no page size option |
 | Zones named `top`, `side`, `main` | **Our Zones** (`ZONES` in `lib/resume/types.ts`): `top` is `header`, `side` is `aside-left` |
 | A Layout tab with Margin's zone diagram only | **Ledger's Layout tab is a single list**: the Header Pinned first, then every other Section |
+| Four arrows on a selected chip, moving between Top, Sidebar and Main | **Up and down only, within a Zone** (#87). Ledger has nothing to move between; moves between Zones come with Margin |
+| "Empty" and "Disabled" chip tags as filled grey pills | The app's grey **Badge**, as for "Current" |
+| An Amethyst "Reset to theme default" | **`accent-strong`** text, as Amethyst on the grey board is under 4.5:1 for 12.5px text |
+| Footer note: "Drag sections between zones, or select one and use the arrows. Empty and disabled sections can be placed too; they won't print. Switching theme resets this layout to the new theme's default." | **"Select a section and use the arrows to move it. Empty and disabled sections can be placed too; they won't appear in your resume."** Dragging (its own ticket) and switching Theme (a second Theme) add their sentences when they exist |
 | Theme cards for Ledger and Margin | **Ledger only, so no Theme cards** until a second Theme exists; the Theme tab holds "Customize Ledger". Margin is reference for its own task, which also settles its defaults |
 | A 640px left pane beside the preview, at desktop width only | **Desktop only for now.** A mobile layout comes later |
 
