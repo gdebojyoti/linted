@@ -223,6 +223,47 @@ describe("LedgerDocument", () => {
     for (const bullet of bullets) expect(text).toContain(bullet);
   });
 
+  test("breaks a long Summary paragraph across pages, starting it under its title", async () => {
+    const words = Array.from({ length: 1200 }, (_, i) => `word${i + 1}`).join(" ");
+    const pages = await ledgerPdf(withSummary(words));
+    const pageOf = (text: string) =>
+      pages.findIndex((page) => squash(pageText(page)).includes(squash(text)));
+
+    expect(pageOf("SUMMARY")).toBe(0);
+    expect(pageOf("word1 word2 word3")).toBe(0);
+    expect(pageOf("word1200")).toBeGreaterThan(0);
+  });
+
+  test("never leaves a Summary's title alone at the bottom of a page", async () => {
+    // Different amounts of Talks above the Summary, so that, in one of them,
+    // the title lands near the bottom of the first page.
+    for (let talks = 18; talks <= 30; talks++) {
+      const custom: CustomSection = {
+        id: "custom-talks",
+        type: "custom",
+        title: "Talks",
+        enabled: true,
+        entries: Array.from({ length: talks }, (_, i) => ({
+          id: `talk-${i}`,
+          enabled: true,
+          title: `Talk ${i + 1}`,
+          subtitle: "",
+          dates: { start: null, current: false, end: null },
+          bullets: [],
+        })),
+      };
+      const summary = withSummary("Opening-words of a Summary that runs over a few lines. ".repeat(6));
+      const pages = await ledgerPdf({
+        ...summary,
+        content: { sections: [summary.content.sections[0], custom, summary.content.sections[1]] },
+      });
+      const pageOf = (text: string) =>
+        pages.findIndex((page) => squash(pageText(page)).includes(squash(text)));
+
+      expect(pageOf("SUMMARY"), `${talks} Talks`).toBe(pageOf("Opening-words"));
+    }
+  });
+
   test("keeps the line breaks typed in a Summary", async () => {
     const [page] = await ledgerPdf(withSummary("First line\nSecond line"));
     const yOf = (text: string) => page.text.find((run) => run.text.includes(text))?.y ?? 0;

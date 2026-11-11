@@ -6,11 +6,12 @@ import { placeSections } from "@/lib/theme/place-sections";
 import { findByText, pathTo, primitiveTree, textOf, type Primitive } from "@/themes/testing/primitive-tree";
 import { LEDGER_DEFAULT_LAYOUT } from "@/themes/ledger/default-layout";
 import { LedgerDocument } from "./ledger-document";
+import { colors } from "./styles";
 
 // What reading the PDF back can't show: colours, sizes and what is kept together.
 
-const PINE = "#17784a";
-const MUTED = "#45453f";
+const PINE = colors.accent;
+const MUTED = colors.inkMuted;
 
 function ledgerTree(resume: Resume = sampleResume) {
   const zones = placeSections(renderableView(resume).sections, LEDGER_DEFAULT_LAYOUT);

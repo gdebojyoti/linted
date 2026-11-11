@@ -4,19 +4,13 @@ import { Font } from "@react-pdf/renderer";
 export const LEDGER_FONT_FAMILY = "Ledger Source Serif 4";
 
 /**
- * Registers Ledger's font, Source Serif 4, with react-pdf as static files (one
- * weight and style per file), so the PDF embeds it as real text. The italics
- * are real italic files, not slanted upright letters.
+ * Registers Source Serif 4 with react-pdf: static files, one per weight and
+ * style, with real italics.
  *
- * These are WOFF, not the WOFF2 the HTML Ledger uses: react-pdf opens WOFF2
- * but crashes while embedding it ("Offset is outside the bounds of the
- * DataView", in fontkit's subsetter). Both are Fontsource's files
- * (@fontsource/source-serif-4 5.3.1, latin subset), under the SIL Open Font
- * License. Letters outside the latin subset fall back to react-pdf's
- * Helvetica, which can't draw most of them (logged on #62).
- *
- * Each file is a `new URL(..., import.meta.url)`, so the bundler serves it as
- * a static file, and react-pdf fetches it the first time it draws Ledger.
+ * - WOFF, not WOFF2: react-pdf crashes while embedding WOFF2.
+ * - From Fontsource 5.3.1, latin subset, under the SIL Open Font License.
+ *   Other letters fall back to Helvetica, which can't draw most of them (#62).
+ * - `new URL(..., import.meta.url)` makes the bundler serve each file.
  */
 export function registerLedgerFonts() {
   Font.register({
@@ -46,5 +40,6 @@ export function registerLedgerFonts() {
   });
 
   // Words are never split with a hyphen at the end of a line, as on the web.
+  // react-pdf has one setting for every document, so this applies to all Themes.
   Font.registerHyphenationCallback((word) => [word]);
 }

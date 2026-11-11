@@ -6,11 +6,9 @@ import { BulletRow } from "./bullet-row";
 import { styles } from "./styles";
 
 /**
- * An Entry: its lines, then its Bullets, children indented under their
- * parent. A page can break between any two Bullets but never inside one, and
- * never between the lines and the first Bullet, so the lines are never left
- * alone at the bottom of a page. For a Section's first Entry, `heading` is
- * the Section's title, kept with them too.
+ * An Entry: its lines, then its Bullets. The lines, the first Bullet and any
+ * `heading` (the Section's title) stay on one page. A page can break between
+ * later Bullets.
  */
 export function EntryBlock({
   heading,

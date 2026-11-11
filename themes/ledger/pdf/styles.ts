@@ -22,6 +22,15 @@ const SECTION_TITLE_SIZE = 8.55;
 /** The height of one line of body text, in pt. */
 const BODY_LINE_HEIGHT = BODY_SIZE * 1.42;
 
+/** Two lines of body text, in pt: the least that must follow a title on its page. */
+export const TWO_LINES = BODY_LINE_HEIGHT * 2;
+
+/** Space between Sections, in pt. */
+export const SPACE_BETWEEN_SECTIONS = 14;
+
+/** Space between a Summary's paragraphs, in pt. */
+export const SPACE_BETWEEN_PARAGRAPHS = 5;
+
 /** How far each level of Bullets is indented, in pt. */
 export const BULLET_INDENT = 14;
 
@@ -40,10 +49,6 @@ export const styles = StyleSheet.create({
     // No "fi", "ff" or "ft" ligatures: some PDF readers, such as applicant
     // tracking systems, read a ligature as one letter ("trafc").
     fontFeatureSettings: { liga: false },
-  },
-  zones: {
-    flexDirection: "column",
-    gap: 14,
   },
   muted: {
     color: colors.inkMuted,
@@ -87,8 +92,9 @@ export const styles = StyleSheet.create({
 
   // Sections
 
-  // Each Section's title is drawn by its first Entry (see LedgerSection).
+  // 5pt under the title, plus the 3pt gap in an Entry's head before its line.
   sectionTitle: {
+    marginBottom: 5,
     paddingBottom: 3,
     borderBottomWidth: 0.75,
     borderBottomColor: colors.rule,
@@ -98,10 +104,6 @@ export const styles = StyleSheet.create({
     fontWeight: 600,
     letterSpacing: SECTION_TITLE_SIZE * 0.12,
     textTransform: "uppercase",
-  },
-  summary: {
-    flexDirection: "column",
-    gap: 5,
   },
   entries: {
     flexDirection: "column",

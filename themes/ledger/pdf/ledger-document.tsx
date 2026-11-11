@@ -1,9 +1,9 @@
-import { Document, Page, View } from "@react-pdf/renderer";
+import { Document, Page } from "@react-pdf/renderer";
 import type { PlacedSections } from "@/lib/theme/place-sections";
 import { LEDGER_ZONES } from "@/themes/ledger/zones";
 import { registerLedgerFonts } from "./fonts";
 import { LedgerSection } from "./ledger-section";
-import { styles } from "./styles";
+import { SPACE_BETWEEN_SECTIONS, styles } from "./styles";
 
 registerLedgerFonts();
 
@@ -16,11 +16,13 @@ export function LedgerDocument({ zones }: { zones: PlacedSections }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <View style={styles.zones}>
-          {LEDGER_ZONES.flatMap((zone) => zones[zone]).map((section) => (
-            <LedgerSection key={section.id} section={section} />
-          ))}
-        </View>
+        {LEDGER_ZONES.flatMap((zone) => zones[zone]).map((section, i) => (
+          <LedgerSection
+            key={section.id}
+            section={section}
+            spaceBefore={i === 0 ? 0 : SPACE_BETWEEN_SECTIONS}
+          />
+        ))}
       </Page>
     </Document>
   );

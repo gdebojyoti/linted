@@ -2,11 +2,21 @@ import { Text } from "@react-pdf/renderer";
 import { styles } from "./styles";
 
 /**
- * A Section's title over its rule. `spaceAfter` is the gap to what follows:
- * the title is drawn inside the Section's first unbreakable group, so it is
- * never left alone at the bottom of a page, and that group sets no gap of
- * its own before it.
+ * A Section's title over its rule. `keepWithNext` is how many pt of what
+ * follows must fit on the same page, or the title moves to the next one.
  */
-export function SectionTitle({ title, spaceAfter }: { title: string; spaceAfter: number }) {
-  return <Text style={[styles.sectionTitle, { marginBottom: spaceAfter }]}>{title}</Text>;
+export function SectionTitle({
+  title,
+  spaceBefore = 0,
+  keepWithNext,
+}: {
+  title: string;
+  spaceBefore?: number;
+  keepWithNext?: number;
+}) {
+  return (
+    <Text style={[styles.sectionTitle, { marginTop: spaceBefore }]} minPresenceAhead={keepWithNext}>
+      {title}
+    </Text>
+  );
 }
