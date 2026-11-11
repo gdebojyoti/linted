@@ -21,9 +21,9 @@ const ledgerForExport: Theme = {
 };
 
 async function exportedText(resume: Resume): Promise<string> {
-  const document = exportDocument(resume, ledgerForExport);
-  if (!document) throw new Error("Nothing was exported");
-  const pages = await readPdf(document);
+  const pdfDocument = exportDocument(resume, ledgerForExport);
+  if (!pdfDocument) throw new Error("Nothing was exported");
+  const pages = await readPdf(pdfDocument);
   return pages.map(pageText).join("");
 }
 
@@ -46,9 +46,9 @@ describe("exportDocument", () => {
   });
 
   test("keeps links clickable", async () => {
-    const document = exportDocument(sampleResume, ledgerForExport);
-    if (!document) throw new Error("Nothing was exported");
-    const [page] = await readPdf(document);
+    const pdfDocument = exportDocument(sampleResume, ledgerForExport);
+    if (!pdfDocument) throw new Error("Nothing was exported");
+    const [page] = await readPdf(pdfDocument);
 
     expect(page.links.map((link) => link.url)).toContain("https://github.com/example-maya");
   });
