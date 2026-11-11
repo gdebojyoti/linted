@@ -76,7 +76,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
     <div className="flex grow flex-col gap-4 overflow-auto px-6 pt-5 pb-6">
       <div className="flex flex-col gap-3 rounded-xl border border-line bg-app p-4">
         <div className="-mt-1.5 -mr-1.5 -mb-1 flex justify-end">
-          <Button variant="ghost" size="sm" onClick={reset} className="text-[12.5px] text-accent-strong">
+          <Button variant="ghost" size="sm" onClick={reset} className="text-[12.5px] text-accent">
             <RotateCcw aria-hidden="true" />
             Reset to theme default
           </Button>
