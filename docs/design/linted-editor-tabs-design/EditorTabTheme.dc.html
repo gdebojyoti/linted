@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Editor — Theme tab</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=EB+Garamond:wght@400;600&amp;family=IBM+Plex+Sans:wght@400;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap">
+<style>
+body{margin:0;font-family:'Geist',system-ui,sans-serif;color:#1A1A18;background:#F6F6F3}
+a{color:#17784A}a:hover{color:#0F5E39}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1440px; height: 940px; display: flex; flex-direction: column; background: #F6F6F3; font-family: 'Geist', system-ui, sans-serif; color: #1A1A18; overflow: hidden">
+
+<header style="height: 56px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 16px; padding: 0 20px; background: #FFFFFF; border-bottom: 1px solid #E3E3DE">
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 24px; height: 24px; border-radius: 6px; background: #17784A; display: flex; align-items: center; justify-content: center; color: #FFFFFF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></div>
+<span style="font-family: 'Geist Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: -0.02em">linted</span>
+</div>
+<div style="width: 1px; height: 20px; background: #E3E3DE"></div>
+<nav aria-label="Breadcrumb" style="display: flex; align-items: center; gap: 8px; font-size: 13px">
+<a href="#" style="color: #5F5F58; text-decoration: none">Resumes</a>
+<span style="color: #B5B5AE">/</span>
+<span style="font-weight: 600">Backend — payments v2</span>
+<button aria-label="Rename resume" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg></button>
+</nav>
+<div style="flex-grow: 1; display: flex; justify-content: center">
+<div role="tablist" aria-label="Editor panels" style="display: flex; gap: 2px; padding: 3px; background: #EFEFEB; border-radius: 8px">
+<a href="EditorTabContent.dc.html" role="tab" aria-selected="false" style="height: 30px; padding: 0 16px; display: flex; align-items: center; font-size: 13px; font-weight: 500; color: #5F5F58; border-radius: 6px; text-decoration: none">Content</a>
+<a href="EditorTabLayout.dc.html" role="tab" aria-selected="false" style="height: 30px; padding: 0 16px; display: flex; align-items: center; font-size: 13px; font-weight: 500; color: #5F5F58; border-radius: 6px; text-decoration: none">Layout</a>
+<a href="EditorTabTheme.dc.html" role="tab" aria-selected="true" style="height: 30px; padding: 0 16px; display: flex; align-items: center; font-size: 13px; font-weight: 500; color: #1A1A18; background: #FFFFFF; border-radius: 6px; text-decoration: none; box-shadow: 0 1px 2px rgba(0,0,0,0.08)">Theme</a>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="display: flex; align-items: center; gap: 6px; font-family: 'Geist Mono', monospace; font-size: 12px; color: #5F5F58"><span style="width: 6px; height: 6px; border-radius: 3px; background: #17784A"></span>Saved</span>
+<button disabled="{{ true }}" title="Coming soon" style="height: 34px; padding: 0 12px; display: flex; align-items: center; gap: 6px; border: 1px solid #E3E3DE; background: #F6F6F3; border-radius: 7px; font-size: 13px; font-weight: 500; color: #8F8F88; cursor: not-allowed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>Duplicate</button>
+<button style="height: 34px; padding: 0 14px; display: flex; align-items: center; gap: 6px; border: 1px solid #17784A; background: #17784A; border-radius: 7px; font-size: 13px; font-weight: 500; color: #FFFFFF; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>Export PDF</button>
+</div>
+</header>
+
+<div style="flex-grow: 1; display: flex; min-height: 0">
+
+<aside aria-label="Theme" style="width: 640px; flex-shrink: 0; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E3DE; display: flex; flex-direction: column; min-height: 0">
+
+<div style="flex-grow: 1; overflow: auto; padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 24px">
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+<button onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="display: flex; align-items: center; gap: 14px; padding: 14px; border: 1px solid {{t.border}}; box-shadow: {{t.ring}}; background: #FFFFFF; border-radius: 10px; cursor: pointer; text-align: left">
+<span style="width: 46px; height: 60px; flex-shrink: 0; box-sizing: border-box; background: #F6F6F3; border: 1px solid #E3E3DE; border-radius: 3px; padding: 6px 5px; display: flex; flex-direction: column; gap: 3px">
+<span style="height: 3px; width: 20px; background: #1A1A18; border-radius: 1px"></span>
+<span style="height: 2px; width: 28px; background: #D9D9D3; border-radius: 1px"></span>
+<span style="display: flex; gap: 3px; margin-top: 4px; flex-grow: 1">
+<sc-if value="{{t.twoCol}}" hint-placeholder-val="{{ false }}"><span style="width: 10px; display: flex; flex-direction: column; gap: 3px"><span style="height: 2px; background: {{accent}}; border-radius: 1px"></span><span style="height: 2px; background: #D9D9D3; border-radius: 1px"></span><span style="height: 2px; background: #D9D9D3; border-radius: 1px"></span></span></sc-if>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 3px"><span style="height: 2px; width: 12px; background: {{accent}}; border-radius: 1px"></span><span style="height: 2px; background: #D9D9D3; border-radius: 1px"></span><span style="height: 2px; background: #D9D9D3; border-radius: 1px"></span><span style="height: 2px; width: 12px; background: {{accent}}; border-radius: 1px; margin-top: 2px"></span><span style="height: 2px; background: #D9D9D3; border-radius: 1px"></span></span>
+</span>
+</span>
+<span style="display: flex; flex-direction: column; gap: 3px; flex-grow: 1">
+<span style="font-size: 14px; font-weight: 600; color: #1A1A18">{{t.name}}</span>
+<span style="font-size: 12.5px; color: #5F5F58">{{t.desc}}</span>
+</span>
+<sc-if value="{{t.sel}}" hint-placeholder-val="{{ false }}"><span style="width: 20px; height: 20px; border-radius: 10px; background: #17784A; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span></sc-if>
+</button>
+</sc-for>
+</div>
+<span style="font-size: 12.5px; line-height: 1.5; color: #5F5F58">Switching theme resets your Layout and customizations to the new theme's defaults. Your content never changes.</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: baseline; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid #EFEFEA">
+<span style="font-size: 14px; font-weight: 600">Customize {{themeName}}</span>
+<span style="font-size: 12.5px; color: #6B6B64">for this resume only</span>
+</div>
+
+<div style="display: flex; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #F2F2EE">
+<span style="width: 140px; flex-shrink: 0; height: 40px; display: flex; align-items: center; font-size: 13px; color: #45453F">Accent</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1; min-width: 0">
+<sc-for list="{{accents}}" as="a" hint-placeholder-count="5">
+<button onClick="{{a.pick}}" aria-pressed="{{a.pressed}}" style="height: 40px; padding: 0 14px; display: flex; align-items: center; gap: 8px; border: 1px solid {{a.border}}; box-shadow: {{a.ring}}; background: #FFFFFF; border-radius: 8px; cursor: pointer">
+<span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 7px; background: {{a.hex}}; flex-shrink: 0"></span>
+<span style="font-size: 12px; color: #5F5F58">{{a.label}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; min-height: 56px; border-bottom: 1px solid #F2F2EE">
+<span style="width: 140px; font-size: 13px; color: #45453F">Typeface</span>
+<div style="display: flex; gap: 8px">
+<sc-for list="{{fonts}}" as="f" hint-placeholder-count="3">
+<button onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="height: 40px; padding: 0 14px; display: flex; align-items: center; gap: 8px; border: 1px solid {{f.border}}; box-shadow: {{f.ring}}; background: #FFFFFF; border-radius: 8px; cursor: pointer">
+<span style="font-family: {{f.stack}}; font-size: 18px; color: #1A1A18">Aa</span>
+<span style="font-size: 12px; color: #5F5F58">{{f.label}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; min-height: 56px">
+<span style="width: 140px; font-size: 13px; color: #45453F">Density</span>
+<div style="display: flex; gap: 8px">
+<sc-for list="{{densities}}" as="o" hint-placeholder-count="2">
+<button onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="height: 40px; padding: 0 14px; display: flex; align-items: center; gap: 8px; border: 1px solid {{o.border}}; box-shadow: {{o.ring}}; background: #FFFFFF; border-radius: 8px; cursor: pointer">
+<span style="font-size: 12px; color: #5F5F58">{{o.label}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+</div>
+</div>
+</aside>
+
+<main style="flex-grow: 1; min-width: 0; background: #EDEDE9; display: flex; flex-direction: column">
+<div style="height: 44px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-bottom: 1px solid #E3E3DE; background: #F6F6F3">
+<span style="font-size: 13px; font-weight: 600">Preview</span>
+<span style="flex-grow: 1"></span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">{{themeName}}</span>
+</div>
+<div style="flex-grow: 1; display: flex; justify-content: center; padding-top: 24px; overflow: hidden">
+<div style="width: 612px; height: 792px; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 10px 30px rgba(0,0,0,0.08)">
+<sc-if value="{{isMargin}}" hint-placeholder-val="{{ true }}"><dc-import name="PreviewTwoCol" mode="render" accent="{{accent}}" font="{{font}}" density="{{density}}" hint-size="612px,792px"></dc-import></sc-if>
+<sc-if value="{{isLedger}}" hint-placeholder-val="{{ false }}"><dc-import name="ResumePage" accent="{{accent}}" font="{{font}}" density="{{density}}" hint-size="612px,792px"></dc-import></sc-if>
+</div>
+</div>
+</main>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var st = this.state || {};
+    var theme = st.theme || 'margin';
+    var accent = st.accent || '#17784A';
+    var fontId = st.font || 'serif';
+    var density = st.density || 'comfortable';
+    var THEMES = [
+      { id: 'ledger', name: 'Ledger', desc: 'One column' },
+      { id: 'margin', name: 'Margin', desc: 'Two columns, sidebar on the left' }
+    ];
+    var ACC = [
+      { hex: '#17784A', label: 'Pine' }, { hex: '#2456C7', label: 'Cobalt' }, { hex: '#1F1F1D', label: 'Ink' },
+      { hex: '#A8461F', label: 'Rust' }, { hex: '#7A3E8E', label: 'Plum' },
+      { hex: '#0E6E7A', label: 'Teal' }, { hex: '#9F1239', label: 'Wine' }, { hex: '#475569', label: 'Slate' }, { hex: '#8A5A0B', label: 'Ochre' }
+    ];
+    var FONTS = [
+      { id: 'serif', label: 'Serif', stack: "'Source Serif 4', Georgia, serif" },
+      { id: 'sans', label: 'Sans', stack: "'IBM Plex Sans', sans-serif" },
+      { id: 'classic', label: 'Classic', stack: "'EB Garamond', Georgia, serif" }
+    ];
+    var fontObj = FONTS.filter(function (f) { return f.id === fontId; })[0];
+    var on = '#17784A';
+    return {
+      themeName: theme === 'margin' ? 'Margin' : 'Ledger',
+      isMargin: theme === 'margin', isLedger: theme === 'ledger',
+      accent: accent, font: fontObj.stack, density: density,
+      accentLabel: (ACC.filter(function (a) { return a.hex === accent; })[0] || {}).label,
+      themes: THEMES.map(function (t) {
+        var s = t.id === theme;
+        return { name: t.name, desc: t.desc, twoCol: t.id === 'margin', sel: s, pressed: s ? 'true' : 'false',
+          border: s ? on : '#E3E3DE', ring: s ? '0 0 0 3px #E8F3ED' : 'none',
+          pick: function () { if (!s) self.setState({ theme: t.id, accent: null, font: null, density: null }); } };
+      }),
+      accents: ACC.map(function (a) {
+        var s = a.hex === accent;
+        return { hex: a.hex, label: a.label, pressed: s ? 'true' : 'false',
+          border: s ? on : '#E3E3DE', ring: s ? '0 0 0 3px #E8F3ED' : 'none',
+          pick: function () { self.setState({ accent: a.hex }); } };
+      }),
+      fonts: FONTS.map(function (f) {
+        var s = f.id === fontId;
+        return { label: f.label, stack: f.stack, pressed: s ? 'true' : 'false',
+          border: s ? on : '#E3E3DE', ring: s ? '0 0 0 3px #E8F3ED' : 'none',
+          pick: function () { self.setState({ font: f.id }); } };
+      }),
+      densities: [{ id: 'comfortable', label: 'Comfortable' }, { id: 'compact', label: 'Compact' }].map(function (v) {
+        var s = v.id === density;
+        return { label: v.label, pressed: s ? 'true' : 'false', lineGap: v.id === 'compact' ? '2px' : '4.5px',
+          border: s ? on : '#E3E3DE', ring: s ? '0 0 0 3px #E8F3ED' : 'none', pick: function () { self.setState({ density: v.id }); } };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

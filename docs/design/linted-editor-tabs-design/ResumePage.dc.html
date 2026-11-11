@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rendered resume page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600&amp;family=IBM+Plex+Mono:wght@400;600&amp;family=IBM+Plex+Sans:wght@400;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 612px; height: 792px; box-sizing: border-box; padding: 42px 48px; background: #FFFFFF; font-family: {{font}}; font-size: {{base}}; line-height: {{lh}}; color: #1F1F1D; display: flex; flex-direction: column; gap: {{secGap}}; overflow: hidden">
+<sc-if value="{{en.header}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: {{nameSize}}; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em">Asha Rao</div>
+<div style="font-size: {{lead}}; color: #45453F">Backend engineer · Payments and distributed systems</div>
+<div style="display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: {{small}}; color: #45453F; margin-top: 3px">
+<span>asha@asharao.dev</span>
+<span>Bengaluru, India</span>
+<sc-if value="{{en.phone}}" hint-placeholder-val="{{ false }}"><span>[PHONE]</span></sc-if>
+<span style="color: {{accent}}">github.com/asharao</span>
+<span style="color: {{accent}}">asharao.dev</span>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{en.summary}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 5px">
+<h2 style="margin: 0; font-size: {{hSize}}; font-weight: 600; color: {{hColor}}; text-transform: {{hCase}}; letter-spacing: {{hTrack}}; border-bottom: {{hBorder}}; padding-bottom: 3px">Summary</h2>
+<p style="margin: 0">Backend engineer with six years building payment and ledger services in Go and Postgres. I like boring, observable systems and APIs that are hard to misuse.</p>
+</section>
+</sc-if>
+<sc-if value="{{en.exp}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: {{hSize}}; font-weight: 600; color: {{hColor}}; text-transform: {{hCase}}; letter-spacing: {{hTrack}}; border-bottom: {{hBorder}}; padding-bottom: 3px">Experience</h2>
+<sc-if value="{{en.parcel}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 3px; outline: {{hl}}; outline-offset: 5px; border-radius: 2px; background: {{hlBg}}">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<div><span style="font-weight: 600">Senior Backend Engineer</span><span style="color: #45453F">, Parcelwise</span></div>
+<div style="font-size: {{small}}; color: #45453F; white-space: nowrap">Bengaluru · Mar 2022 – Present</div>
+</div>
+<ul style="margin: 0; padding-left: 14px; display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.b1}}" hint-placeholder-val="{{ true }}">
+<li>Led the move of the order ledger from a single Postgres instance to a sharded cluster, with <b>no customer-facing downtime</b>.
+<ul style="margin: 2px 0 0; padding-left: 14px; list-style-type: circle; display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.b1a}}" hint-placeholder-val="{{ true }}"><li>Wrote the dual-write and backfill tooling, reviewed by three teams before rollout.</li></sc-if>
+<sc-if value="{{en.b1b}}" hint-placeholder-val="{{ false }}"><li>Built dashboards for replication lag and reconciliation drift.</li></sc-if>
+</ul>
+</li>
+</sc-if>
+<sc-if value="{{en.b2}}" hint-placeholder-val="{{ true }}"><li>Designed the idempotency layer for the public payouts API, now used by every write endpoint.</li></sc-if>
+<sc-if value="{{en.b3}}" hint-placeholder-val="{{ true }}"><li>Mentor two engineers and run the fortnightly backend design review.</li></sc-if>
+</ul>
+</div>
+</sc-if>
+<sc-if value="{{en.kite}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 3px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<div><span style="font-weight: 600">Software Engineer</span><span style="color: #45453F">, Kitefin</span></div>
+<div style="font-size: {{small}}; color: #45453F; white-space: nowrap">Pune · Jul 2019 – Feb 2022</div>
+</div>
+<ul style="margin: 0; padding-left: 14px; display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.k1}}" hint-placeholder-val="{{ true }}"><li>Built the webhook delivery service in Go, with retries, request signing and a replay tool for support.</li></sc-if>
+<sc-if value="{{en.k2}}" hint-placeholder-val="{{ true }}"><li>Moved hot account-search queries to a read replica and added the indexes they were missing.</li></sc-if>
+</ul>
+</div>
+</sc-if>
+</section>
+</sc-if>
+<sc-if value="{{en.projects}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 5px">
+<h2 style="margin: 0; font-size: {{hSize}}; font-weight: 600; color: {{hColor}}; text-transform: {{hCase}}; letter-spacing: {{hTrack}}; border-bottom: {{hBorder}}; padding-bottom: 3px">Projects</h2>
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<div><span style="font-weight: 600">pgshard-lint</span><span style="color: #45453F"> — a CLI that flags queries likely to cross shard boundaries before review.</span></div>
+<div style="font-size: {{small}}; color: {{accent}}; white-space: nowrap">github.com/asharao/pgshard-lint</div>
+</div>
+</section>
+</sc-if>
+<sc-if value="{{en.skills}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 5px">
+<h2 style="margin: 0; font-size: {{hSize}}; font-weight: 600; color: {{hColor}}; text-transform: {{hCase}}; letter-spacing: {{hTrack}}; border-bottom: {{hBorder}}; padding-bottom: 3px">Skills</h2>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{en.sk1}}" hint-placeholder-val="{{ true }}"><div style="display: flex; gap: 10px"><span style="width: 88px; flex-shrink: 0; font-weight: 600">Languages</span><span>Go, Python, SQL, TypeScript</span></div></sc-if>
+<sc-if value="{{en.sk2}}" hint-placeholder-val="{{ true }}"><div style="display: flex; gap: 10px"><span style="width: 88px; flex-shrink: 0; font-weight: 600">Infrastructure</span><span>Postgres, Kafka, Kubernetes, Terraform</span></div></sc-if>
+<sc-if value="{{en.sk3}}" hint-placeholder-val="{{ true }}"><div style="display: flex; gap: 10px"><span style="width: 88px; flex-shrink: 0; font-weight: 600">Practices</span><span>API design, observability, incident response</span></div></sc-if>
+</div>
+</section>
+</sc-if>
+<sc-if value="{{en.edu}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 5px">
+<h2 style="margin: 0; font-size: {{hSize}}; font-weight: 600; color: {{hColor}}; text-transform: {{hCase}}; letter-spacing: {{hTrack}}; border-bottom: {{hBorder}}; padding-bottom: 3px">Education</h2>
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<div><span style="font-weight: 600">B.Tech, Computer Science</span><span style="color: #45453F">, College of Engineering, Pune</span></div>
+<div style="font-size: {{small}}; color: #45453F; white-space: nowrap">2015 – 2019</div>
+</div>
+</section>
+</sc-if>
+<sc-if value="{{en.talks}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 5px">
+<h2 style="margin: 0; font-size: {{hSize}}; font-weight: 600; color: {{hColor}}; text-transform: {{hCase}}; letter-spacing: {{hTrack}}; border-bottom: {{hBorder}}; padding-bottom: 3px">Talks</h2>
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<div><span style="font-weight: 600">Idempotency keys, in practice</span><span style="color: #45453F"> — Bengaluru Go meetup</span></div>
+<div style="font-size: {{small}}; color: #45453F; white-space: nowrap">2024</div>
+</div>
+</section>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#17784A","options":["#17784A","#2456C7","#1F1F1D","#A8461F"]},"heading":{"editor":"enum","default":"rule","options":["rule","underline","plain"]},"size":{"editor":"float","default":9.5,"min":8.5,"max":11,"step":0.25,"unit":"px"},"highlight":{"editor":"boolean","default":false},"font":{"editor":null,"tsType":"string"},"en":{"editor":null,"tsType":"object"},"density":{"editor":"enum","default":"comfortable","options":["comfortable","compact"]},"$preview":{"width":612,"height":792}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var D = {header:true, phone:false, summary:true, exp:true, parcel:true, b1:true, b1a:true, b1b:false, b2:true, b3:true, kite:true, k1:true, k2:true, projects:true, skills:true, sk1:true, sk2:true, sk3:true, edu:true, talks:true};
+    var en = Object.assign({}, D, this.props.en || {});
+    var accent = this.props.accent ?? '#17784A';
+    var size = Number(this.props.size ?? 9.5);
+    var heading = this.props.heading ?? 'rule';
+    var font = this.props.font ?? "'Source Serif 4', Georgia, serif";
+    var hl = !!this.props.highlight;
+    var px = function (n) { return n.toFixed(2) + 'px'; };
+    var h = {
+      rule: { color: accent, border: '0.75px solid #D6D6D0', kase: 'uppercase', track: '0.12em', size: px(size * 0.9) },
+      underline: { color: '#1F1F1D', border: '1.5px solid ' + accent, kase: 'none', track: '0', size: px(size * 1.2) },
+      plain: { color: '#1F1F1D', border: '0 solid transparent', kase: 'uppercase', track: '0.08em', size: px(size * 0.95) }
+    }[heading] || {};
+    return {
+      en: en, accent: accent, font: font,
+      lh: this.props.density === 'compact' ? '1.32' : '1.42', secGap: this.props.density === 'compact' ? '9px' : '14px',
+      base: px(size), small: px(size * 0.92), lead: px(size * 1.12), nameSize: px(size * 2.4),
+      hColor: h.color, hBorder: h.border, hCase: h.kase, hTrack: h.track, hSize: h.size,
+      hl: hl ? '1.5px solid rgba(23, 120, 74, 0.55)' : '0 solid transparent',
+      hlBg: hl ? 'rgba(23, 120, 74, 0.05)' : 'transparent'
+    };
+  }
+}
+</script>
+</body>
+</html>

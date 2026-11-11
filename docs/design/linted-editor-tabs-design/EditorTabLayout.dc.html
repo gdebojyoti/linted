@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Editor — Layout tab</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap">
+<style>
+body{margin:0;font-family:'Geist',system-ui,sans-serif;color:#1A1A18;background:#F6F6F3}
+a{color:#17784A}a:hover{color:#0F5E39}
+button,select{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1440px; height: 940px; display: flex; flex-direction: column; background: #F6F6F3; font-family: 'Geist', system-ui, sans-serif; color: #1A1A18; overflow: hidden">
+
+<header style="height: 56px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 16px; padding: 0 20px; background: #FFFFFF; border-bottom: 1px solid #E3E3DE">
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 24px; height: 24px; border-radius: 6px; background: #17784A; display: flex; align-items: center; justify-content: center; color: #FFFFFF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></div>
+<span style="font-family: 'Geist Mono', monospace; font-size: 15px; font-weight: 600; letter-spacing: -0.02em">linted</span>
+</div>
+<div style="width: 1px; height: 20px; background: #E3E3DE"></div>
+<nav aria-label="Breadcrumb" style="display: flex; align-items: center; gap: 8px; font-size: 13px">
+<a href="#" style="color: #5F5F58; text-decoration: none">Resumes</a>
+<span style="color: #B5B5AE">/</span>
+<span style="font-weight: 600">Backend — payments v2</span>
+<button aria-label="Rename resume" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 6px; color: #5F5F58; cursor: pointer; padding: 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg></button>
+</nav>
+<div style="flex-grow: 1; display: flex; justify-content: center">
+<div role="tablist" aria-label="Editor panels" style="display: flex; gap: 2px; padding: 3px; background: #EFEFEB; border-radius: 8px">
+<a href="EditorTabContent.dc.html" role="tab" aria-selected="false" style="height: 30px; padding: 0 16px; display: flex; align-items: center; font-size: 13px; font-weight: 500; color: #5F5F58; border-radius: 6px; text-decoration: none">Content</a>
+<a href="EditorTabLayout.dc.html" role="tab" aria-selected="true" style="height: 30px; padding: 0 16px; display: flex; align-items: center; font-size: 13px; font-weight: 500; color: #1A1A18; background: #FFFFFF; border-radius: 6px; text-decoration: none; box-shadow: 0 1px 2px rgba(0,0,0,0.08)">Layout</a>
+<a href="EditorTabTheme.dc.html" role="tab" aria-selected="false" style="height: 30px; padding: 0 16px; display: flex; align-items: center; font-size: 13px; font-weight: 500; color: #5F5F58; border-radius: 6px; text-decoration: none">Theme</a>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="display: flex; align-items: center; gap: 6px; font-family: 'Geist Mono', monospace; font-size: 12px; color: #5F5F58"><span style="width: 6px; height: 6px; border-radius: 3px; background: #17784A"></span>Saved</span>
+<button disabled="{{ true }}" title="Coming soon" style="height: 34px; padding: 0 12px; display: flex; align-items: center; gap: 6px; border: 1px solid #E3E3DE; background: #F6F6F3; border-radius: 7px; font-size: 13px; font-weight: 500; color: #8F8F88; cursor: not-allowed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>Duplicate</button>
+<button style="height: 34px; padding: 0 14px; display: flex; align-items: center; gap: 6px; border: 1px solid #17784A; background: #17784A; border-radius: 7px; font-size: 13px; font-weight: 500; color: #FFFFFF; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>Export PDF</button>
+</div>
+</header>
+
+<div style="flex-grow: 1; display: flex; min-height: 0">
+
+<aside aria-label="Layout" style="width: 640px; flex-shrink: 0; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3E3DE; display: flex; flex-direction: column; min-height: 0">
+
+<div style="flex-grow: 1; overflow: auto; padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 16px">
+
+<div style="background: #F6F6F3; border: 1px solid #E3E3DE; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: flex-end; margin: -6px -6px -4px 0">
+<button onClick="{{reset}}" style="height: 28px; padding: 0 8px; display: flex; align-items: center; gap: 6px; border: 0; background: transparent; border-radius: 6px; font-size: 12.5px; font-weight: 500; color: #17784A; cursor: pointer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 4v4h4"></path></svg>Reset to theme default</button>
+</div>
+
+<div style="border: 1px dashed {{zoneLine}}; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; background: #FFFFFF">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #6B6B64; padding: 0 2px 2px">Top · full width</span>
+<div style="display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px; border-radius: 7px; background: #F6F6F3; color: #5F5F58">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6l-1 5 3 3H7l3-3-1-5z"></path><path d="M12 12v8"></path></svg>
+<span style="font-size: 13.5px; font-weight: 500; color: #1A1A18">Header</span>
+<span style="flex-grow: 1"></span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px">Pinned · always first</span>
+</div>
+<sc-for list="{{top}}" as="c" hint-placeholder-count="1">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-if value="{{c.dropBefore}}" hint-placeholder-val="{{ false }}"><div style="height: 2px; border-radius: 1px; background: #17784A"></div></sc-if>
+<div style="display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 6px 0 10px; border-radius: 7px; background: #FFFFFF; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}; opacity: {{c.op}}">
+<button onClick="{{c.pick}}" aria-label="Select {{c.title}}" aria-pressed="{{c.pressed}}" style="width: 22px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; color: {{c.grip}}; cursor: grab; padding: 0"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></button>
+<span style="font-size: 13.5px; font-weight: 500">{{c.title}}</span>
+<sc-if value="{{c.ghost}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 10.5px; color: #45453F; background: #F2F2EE; padding: 1px 6px; border-radius: 4px">{{c.tag}}</span></sc-if>
+<span style="flex-grow: 1"></span>
+<sc-if value="{{c.sel}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 1px">
+<button onClick="{{c.left}}" disabled="{{c.leftDis}}" aria-label="Move {{c.title}} to the sidebar" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 5px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{c.leftOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M11 6l-6 6 6 6"></path></svg></button>
+<button onClick="{{c.up}}" disabled="{{c.upDis}}" aria-label="Move {{c.title}} up" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 5px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{c.upOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></button>
+<button onClick="{{c.down}}" disabled="{{c.downDis}}" aria-label="Move {{c.title}} down" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 5px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{c.downOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M6 13l6 6 6-6"></path></svg></button>
+<button onClick="{{c.right}}" disabled="{{c.rightDis}}" aria-label="Move {{c.title}} to the main column" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 5px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{c.rightOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></button>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 12px; align-items: stretch">
+<sc-for list="{{cols}}" as="z" hint-placeholder-count="2">
+<div style="border: 1px dashed {{zoneLine}}; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; min-height: 220px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #6B6B64; padding: 0 2px 2px">{{z.label}}</span>
+<sc-for list="{{z.chips}}" as="c" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-if value="{{c.dropBefore}}" hint-placeholder-val="{{ false }}"><div style="height: 2px; border-radius: 1px; background: #17784A"></div></sc-if>
+<div style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 6px 0 8px; border-radius: 7px; background: #FFFFFF; border: 1px solid {{c.border}}; box-shadow: {{c.shadow}}; opacity: {{c.op}}">
+<button onClick="{{c.pick}}" aria-label="Select {{c.title}}" aria-pressed="{{c.pressed}}" style="width: 22px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; color: {{c.grip}}; cursor: grab; padding: 0"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true"><circle cx="2.5" cy="2.5" r="1.3"></circle><circle cx="7.5" cy="2.5" r="1.3"></circle><circle cx="2.5" cy="7" r="1.3"></circle><circle cx="7.5" cy="7" r="1.3"></circle><circle cx="2.5" cy="11.5" r="1.3"></circle><circle cx="7.5" cy="11.5" r="1.3"></circle></svg></button>
+<span style="font-size: 13.5px; font-weight: 500">{{c.title}}</span>
+<sc-if value="{{c.ghost}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Geist Mono', monospace; font-size: 10.5px; color: #45453F; background: #F2F2EE; padding: 1px 6px; border-radius: 4px">{{c.tag}}</span></sc-if>
+<span style="flex-grow: 1"></span>
+<sc-if value="{{c.sel}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 1px">
+<button onClick="{{c.left}}" disabled="{{c.leftDis}}" aria-label="Move {{c.title}} to the sidebar" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 5px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{c.leftOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M11 6l-6 6 6 6"></path></svg></button>
+<button onClick="{{c.up}}" disabled="{{c.upDis}}" aria-label="Move {{c.title}} up" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 5px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{c.upOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></button>
+<button onClick="{{c.down}}" disabled="{{c.downDis}}" aria-label="Move {{c.title}} down" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 5px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{c.downOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M6 13l6 6 6-6"></path></svg></button>
+<button onClick="{{c.right}}" disabled="{{c.rightDis}}" aria-label="Move {{c.title}} to the main column" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: 0; background: transparent; border-radius: 5px; color: #1A1A18; cursor: pointer; padding: 0; opacity: {{c.rightOp}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></button>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; line-height: 1.5; color: #5F5F58">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>
+<span>Drag sections between zones, or select one and use the arrows. Empty and disabled sections can be placed too; they won't print. Switching theme resets this layout to the new theme's default.</span>
+</div>
+</div>
+</aside>
+
+<main style="flex-grow: 1; min-width: 0; background: #EDEDE9; display: flex; flex-direction: column">
+<div style="height: 44px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-bottom: 1px solid #E3E3DE; background: #F6F6F3">
+<span style="font-size: 13px; font-weight: 600">Preview</span>
+<span style="flex-grow: 1"></span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #6B6B64">Margin</span>
+</div>
+<div style="flex-grow: 1; display: flex; justify-content: center; padding-top: 24px; overflow: hidden">
+<div style="width: 612px; height: 792px; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 10px 30px rgba(0,0,0,0.08)">
+<dc-import name="PreviewTwoCol" mode="render" layout="{{layout}}" hint-size="612px,792px"></dc-import>
+</div>
+</div>
+</main>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var st = this.state || {};
+    var DEF = { top: ['summary'], side: ['skills', 'edu'], main: ['exp', 'projects', 'talks'] };
+    var L = st.layout || DEF;
+    var sel = st.sel !== undefined ? st.sel : 'talks';
+    var T = { summary: 'Summary', exp: 'Experience', projects: 'Projects', skills: 'Skills', edu: 'Education', talks: 'Talks' };
+    var EMPTY = { projects: true };
+    var zoneOf = function (id) { return ['top', 'side', 'main'].filter(function (z) { return L[z].indexOf(id) > -1; })[0]; };
+    var act = function (id, a) {
+      var l = { top: L.top.slice(), side: L.side.slice(), main: L.main.slice() };
+      var z = zoneOf(id); var arr = l[z]; var i = arr.indexOf(id);
+      if (a === 'up') {
+        if (i > 0) { arr[i] = arr[i - 1]; arr[i - 1] = id; }
+        else if (z !== 'top') { arr.splice(i, 1); l.top.push(id); }
+      } else if (a === 'down') {
+        if (i < arr.length - 1) { arr[i] = arr[i + 1]; arr[i + 1] = id; }
+        else if (z === 'top') { arr.splice(i, 1); l.main.unshift(id); }
+      } else if (a === 'left' && z === 'main') { arr.splice(i, 1); l.side.push(id); }
+      else if (a === 'right' && z === 'side') { arr.splice(i, 1); l.main.push(id); }
+      self.setState({ layout: l });
+    };
+    var chips = function (z) {
+      return L[z].map(function (id, i) {
+        var s = sel === id;
+        var last = i === L[z].length - 1;
+        var upDis = i === 0 && z === 'top', downDis = last && z !== 'top';
+        var leftDis = z !== 'main', rightDis = z !== 'side';
+        return {
+          title: T[id], ghost: !!EMPTY[id], tag: 'Empty', sel: s, pressed: s ? 'true' : 'false',
+          border: s ? '#17784A' : '#E3E3DE',
+          shadow: s ? '0 0 0 3px #E8F3ED, 0 8px 20px rgba(0,0,0,0.10)' : 'none',
+          grip: s ? '#17784A' : '#A3A39C',
+          op: '1',
+          dropBefore: false,
+          upDis: upDis, downDis: downDis, leftDis: leftDis, rightDis: rightDis,
+          upOp: upDis ? '0.3' : '1', downOp: downDis ? '0.3' : '1', leftOp: leftDis ? '0.3' : '1', rightOp: rightDis ? '0.3' : '1',
+          pick: function () { self.setState({ sel: s ? null : id }); },
+          up: function () { act(id, 'up'); }, down: function () { act(id, 'down'); },
+          left: function () { act(id, 'left'); }, right: function () { act(id, 'right'); }
+        };
+      });
+    };
+    return {
+      layout: L, sel: sel,
+      zoneLine: sel ? '#9CC8B1' : '#D9D9D3',
+      top: chips('top'),
+      cols: [
+        { label: 'Sidebar · narrow', chips: chips('side') },
+        { label: 'Main', chips: chips('main') }
+      ],
+      reset: function () { self.setState({ layout: DEF, sel: null }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

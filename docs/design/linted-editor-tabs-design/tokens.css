@@ -1,0 +1,83 @@
+/* Linted — design tokens pulled from the Linted design canvas. */
+/* Fonts (Google Fonts): Geist, Geist Mono for the app; Source Serif 4 for the resume (Ledger, Margin). */
+/* Theme typeface options: Source Serif 4 (Serif), IBM Plex Sans (Sans), EB Garamond (Classic). */
+/* Density: comfortable = line-height 1.42, section gap 14px; compact = 1.32, 9px. */
+
+:root {
+  /* Type */
+  --font-ui: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-resume: 'Source Serif 4', Georgia, serif;
+
+  /* Surfaces */
+  --bg-app: #F6F6F3;          /* app background, toolbar strips, zone diagram */
+  --bg-surface: #FFFFFF;      /* panes, cards, inputs */
+  --bg-preview: #EDEDE9;      /* area behind the resume page */
+  --bg-subtle: #F2F2EE;       /* tags, menu hover */
+  --bg-segment: #EFEFEB;      /* tab pills / segmented-control track */
+  --bg-entry-open: #FCFCFA;   /* expanded entry card */
+
+  /* Lines */
+  --line: #E3E3DE;
+  --line-soft: #EFEFEA;
+  --line-input: #D9D9D3;
+  --line-dashed: #C9C9C2;
+
+  /* Text */
+  --text: #1A1A18;
+  --text-muted: #5F5F58;
+  --text-meta: #6B6B64;
+  --text-disabled: #8F8F88;
+  --icon-muted: #A3A39C;      /* drag handles at rest */
+
+  /* Accent (Pine, the default) */
+  --accent: #17784A;
+  --accent-strong: #0F5E39;
+  --accent-tint: #E8F3ED;     /* focus and selection rings */
+  --accent-border: #9CC8B1;   /* open entry border, zone outline while moving */
+  --danger: #B42318;
+
+  /* Resume accent options (Theme tab) */
+  --accent-pine: #17784A;
+  --accent-cobalt: #2456C7;
+  --accent-ink: #1F1F1D;
+  --accent-rust: #A8461F;
+  --accent-plum: #7A3E8E;
+  --accent-teal: #0E6E7A;
+  --accent-wine: #9F1239;
+  --accent-slate: #475569;
+  --accent-ochre: #8A5A0B;
+
+  /* Resume page (Letter at 72dpi: 612 × 792) */
+  --page-w: 612px;
+  --page-h: 792px;
+  --resume-text: #1F1F1D;
+  --resume-muted: #45453F;
+  --resume-rule: #D6D6D0;
+  --resume-base: 9.5px;
+  --ghost-opacity: 0.4;
+  --margin-sidebar: 164px;    /* Margin theme */
+  --margin-gap: 28px;
+
+  /* Radii */
+  --r-xs: 4px;  --r-sm: 6px;  --r-md: 7px;  --r-lg: 8px;  --r-xl: 10px;
+
+  /* Elevation */
+  --shadow-page: 0 1px 2px rgba(0,0,0,.06), 0 10px 30px rgba(0,0,0,.08);
+  --shadow-pop: 0 3px 10px rgba(0,0,0,.10);
+  --shadow-menu: 0 8px 24px rgba(0,0,0,.12);
+  --shadow-chip-selected: 0 0 0 3px var(--accent-tint), 0 8px 20px rgba(0,0,0,.10);
+  --ring-focus: 0 0 0 3px var(--accent-tint);
+
+  /* Sizes */
+  --header-h: 56px;
+  --pane-toolbar-h: 44px;     /* preview toolbar */
+  --side-pane-w: 640px;
+  --row-h: 48px;
+  --chip-h: 40px;             /* Layout tab section chip */
+  --option-h: 40px;           /* Theme tab option card */
+  --option-pad-x: 14px;
+  --input-h: 36px;
+  --btn-h: 34px;
+  --icon-btn: 32px;
+}

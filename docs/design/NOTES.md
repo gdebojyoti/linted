@@ -60,6 +60,21 @@
 | The footer hint "Enter to create · Esc to close" | **"You can change the title later."** Enter and Esc still work as the design describes |
 | An error under the field when saving fails | **Not yet.** Failed saves are #49; until then a failed create behaves as it does today |
 
+## The editor with Content · Layout · Theme tabs (`linted-editor-tabs-design/`)
+
+`linted-editor-tabs-design/` is a fourth Claude Design export: the editor split into three tabs. **Content** is the form, **Layout** arranges Sections in a zone diagram, and **Theme** picks and customises the Theme. In every tab the preview shows exactly what Export produces. It replaces the earlier export's direction of arranging Sections in the preview (rows 2 and 3 of the first table) and Ghosted Sections in the preview (ADR 0006). Everything above about colours and fonts applies, and so do the Content pane rows of the first table (5, 6, 7, 10, 11 and 12). Where we build something different:
+
+| The design shows | Build this instead |
+|---|---|
+| Pine green tabs, chips, selection rings and buttons | **Amethyst**, like the rest of the app. Pine stays only as Ledger's default accent, inside the Theme |
+| Geist, and Geist Mono for zone labels, tags and the preview toolbar | **Open Sans** everywhere in the app |
+| A disabled **Duplicate** button ("disabled in v1") | **It works** (#12), as today |
+| A US Letter page (612 × 792) | An **A4** page, as today. The app has no page size option |
+| Zones named `top`, `side`, `main` | **Our Zones** (`ZONES` in `lib/resume/types.ts`): `top` is `header`, `side` is `aside-left` |
+| A Layout tab with Margin's zone diagram only | **Ledger's Layout tab is a single list**: the Header Pinned first, then every other Section |
+| Theme cards for Ledger and Margin | **Ledger only, so no Theme cards** until a second Theme exists; the Theme tab holds "Customize Ledger". Margin is reference for its own task, which also settles its defaults |
+| A 640px left pane beside the preview, at desktop width only | **Desktop only for now.** A mobile layout comes later |
+
 ## The delete confirmation (no design yet)
 
 "Delete resume" in a row's "…" menu (#13) asks first, in shadcn's **Alert Dialog** styled like the title dialog: same width, radius, shadow and footer strip. It reads "Delete resume?" and "“<title>” will be deleted from this browser. This can't be undone.", with **Cancel** and a red **Delete resume** button. Focus starts on Cancel, and clicking outside doesn't close it. Replace this with a Claude Design export when there is one.

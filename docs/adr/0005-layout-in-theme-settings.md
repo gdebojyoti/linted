@@ -1,3 +1,7 @@
+---
+status: partly superseded by ADR-0006 (Sections are arranged in a Layout tab, and nothing is Ghosted in the preview)
+---
+
 # Section placement lives in the Layout, not in Content
 
 Supersedes ADR 0003. Themes can have several Zones (e.g. sidebar and main), which a single ordered list of Sections cannot describe. So where Sections appear on the page is stored as a Layout in Theme Settings: for each Zone, an ordered list of Section ids. The user rearranges Sections in the preview, not in the editor. The editor lists Sections in a fixed order: the Default Sections first, then Custom Sections in the order they were added. The order of `content.sections` only drives the editor.
