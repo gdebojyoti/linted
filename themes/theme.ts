@@ -11,5 +11,8 @@ export type Theme = {
   /** The Zones the Theme draws. Its default Layout only uses these. */
   zones: readonly Zone[];
   defaultLayout: DefaultLayout;
+  /** The HTML page the preview shows, until the preview shows the PDF too (ADR 0006). */
   Page: ComponentType<{ zones: PlacedSections }>;
+  /** The PDF that Export downloads: a react-pdf `<Document>` (ADR 0006). */
+  Document: ComponentType<{ zones: PlacedSections }>;
 };

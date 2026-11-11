@@ -17,8 +17,10 @@ type TopBarProps =
       /** Gets the Duplicate button, so focus can return to it. */
       onDuplicate: (opener: HTMLElement) => void;
       onExport: () => void;
-      /** Export prints the Theme's page, so it waits for the Theme to load. */
+      /** False until the Theme has loaded, while there's nothing to export, and while exporting. */
       canExport: boolean;
+      /** The PDF is being built; the button says so. */
+      exporting: boolean;
     };
 
 /**
@@ -65,7 +67,7 @@ export function TopBar(props: TopBarProps) {
           </Button>
           <Button size="lg" disabled={!ready?.canExport} onClick={() => ready?.onExport()}>
             <Download aria-hidden="true" />
-            Export PDF
+            {ready?.exporting ? "Exporting…" : "Export PDF"}
           </Button>
         </div>
       )}
