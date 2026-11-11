@@ -22,7 +22,8 @@ type LastAction = { sectionId: string; direction: MoveDirection } | { message: s
 /**
  * The Layout tab: the Resume's Sections as chips, in Layout order, for its
  * Theme (ADR 0006). Moves are saved in the Resume's Theme Settings, so the
- * preview follows them; selecting a chip changes nothing in the preview.
+ * preview follows them. A chip's arrows show on hover or keyboard focus,
+ * with nothing to select first.
  *
  * Ledger has one column, so its Zones show as one list, the Pinned Header
  * first. Moves stay within a Zone. A Theme with several columns will show a
@@ -32,7 +33,6 @@ type LastAction = { sectionId: string; direction: MoveDirection } | { message: s
  */
 export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: ResumeEdit) => void }) {
   const theme = useTheme(resume.themeSettings.themeId);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [lastAction, setLastAction] = useState<LastAction>(null);
 
   if (!theme) {
@@ -66,7 +66,6 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
   function reset() {
     const saved = resume.themeSettings.layout !== null;
     onEdit((current) => resetLayout(current));
-    setSelectedId(null);
     setLastAction({
       message: saved ? "Layout reset to the theme's default." : "The layout is already the theme's default.",
     });
@@ -83,9 +82,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
         </div>
         <ul
           aria-label="Sections"
-          className={`flex flex-col gap-1.5 rounded-lg border border-dashed bg-surface p-2.5 ${
-            selectedId && sectionsById.has(selectedId) ? "border-accent/50" : "border-line-input"
-          }`}
+          className="flex flex-col gap-1.5 rounded-lg border border-dashed border-line-input bg-surface p-2.5 focus-within:border-accent/50"
         >
           {sections.map((section) =>
             isPinned(section) ? (
@@ -94,8 +91,6 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
               <SectionChip
                 key={section.id}
                 section={section}
-                selected={section.id === selectedId}
-                onSelect={() => setSelectedId(section.id === selectedId ? null : section.id)}
                 canMove={(direction) => canMoveSection(resume, theme, section.id, direction)}
                 onMove={(direction) => move(section.id, direction)}
               />
@@ -105,7 +100,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
       </div>
       <p className="flex items-start gap-2.5 text-[12.5px] leading-normal text-ink-muted">
         <Info aria-hidden="true" className="mt-px size-4 shrink-0" />
-        Select a section and use the arrows to move it. Empty and disabled sections can be placed too; they
+        Point to a section, or Tab to it, and use its arrows to move it. Empty and disabled sections can be placed too; they
         won&apos;t appear in your resume.
       </p>
       <p aria-live="polite" className="sr-only">

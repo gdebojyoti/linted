@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { MoveDirection } from "@/lib/resume/layout";
 
 /**
- * An arrow that moves a selected Section chip one place up or down. When the
+ * An arrow that moves a Section chip one place up or down. When the
  * move can't happen it is disabled but stays focusable, so focus isn't lost
  * when a move takes the chip to the end of its Zone. Focus stays on the
  * arrow after the move, even though the chip changes place in the list.
