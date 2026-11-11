@@ -30,8 +30,8 @@ const eslintConfig = defineConfig([
   // The app (components/) and each Theme (themes/) must stay independent:
   // changing the app's look must never change how a Resume renders, and a
   // Theme must never leak into the rest of the site. These rules block
-  // imports across that line. Only the preview pane may import a Theme,
-  // because it is where a Theme is shown.
+  // imports across that line. Only the preview pane, which shows a Theme,
+  // and Export, which draws a Theme's PDF, may import Theme code.
   //
   // This only covers imports. Keeping CSS variables apart (app tokens in
   // app/globals.css, Theme variables prefixed per Theme and scoped to its
@@ -55,7 +55,7 @@ const eslintConfig = defineConfig([
   },
   {
     files: ["components/**/*.{ts,tsx}"],
-    ignores: ["components/editor/preview-pane/**"],
+    ignores: ["components/editor/preview-pane/**", "components/editor/export/**"],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -64,7 +64,8 @@ const eslintConfig = defineConfig([
             noParentImports,
             {
               group: ["@/themes/**"],
-              message: "App components must not use Theme code. Only the preview pane shows a Theme.",
+              message:
+                "App components must not use Theme code. Only the preview pane and Export (components/editor/export/) may.",
             },
           ],
         },

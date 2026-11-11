@@ -3,13 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { CHANGE_LATER_HINT, ResumeTitleDialog } from "@/components/common/title-dialog/resume-title-dialog";
-import { printElement } from "@/lib/export/print-element";
 import { browserLibrary as library } from "@/lib/resume/browser-library";
 import { copyTitle } from "@/lib/resume/duplicate-resume";
 import { renameResume } from "@/lib/resume/rename-resume";
 import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { ContentPane } from "./content-pane/content-pane";
 import { EditorFrame } from "./editor-frame";
+import { usePdfExport } from "./export/use-pdf-export";
 import { PreviewPane } from "./preview-pane/preview-pane";
 import { TopBar } from "./top-bar/top-bar";
 import { useAutosave } from "./use-autosave";
@@ -22,24 +22,16 @@ import { useAutosave } from "./use-autosave";
 export function Editor({ initialResume }: { initialResume: Resume }) {
   const router = useRouter();
   const [resume, setResume] = useState(initialResume);
-  const pageRef = useRef<HTMLDivElement>(null);
   const [naming, setNaming] = useState(false);
   const [duplicating, setDuplicating] = useState(false);
   /** The Duplicate button, which gets focus back when the dialog closes. */
   const duplicateRef = useRef<HTMLElement>(null);
   useAutosave(resume, initialResume);
-  /** Whether the preview's Theme has loaded, which Export waits for. */
-  const [themeReady, setThemeReady] = useState(false);
+  const { canExport, exporting, exportPdf } = usePdfExport(resume);
 
   /** Every edit is a Resume module function, applied to the latest Resume. */
   function handleEdit(edit: ResumeEdit) {
     setResume(edit);
-  }
-
-  /** Export prints the preview's page itself, so the PDF matches the preview. */
-  function handleExport() {
-    const page = pageRef.current?.firstElementChild;
-    if (page instanceof HTMLElement) void printElement(page, { title: resume.metadata.title });
   }
 
   function openDuplicate(opener: HTMLElement) {
@@ -73,13 +65,14 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
           resumeTitle={resume.metadata.title}
           onRename={(title) => handleEdit((current) => renameResume(current, title))}
           onDuplicate={openDuplicate}
-          onExport={handleExport}
-          canExport={themeReady}
+          onExport={() => void exportPdf()}
+          canExport={canExport}
+          exporting={exporting}
         />
       }
     >
       <ContentPane sections={resume.content.sections} onEdit={handleEdit} />
-      <PreviewPane resume={resume} pageRef={pageRef} onThemeReadyChange={setThemeReady} />
+      <PreviewPane resume={resume} />
       <ResumeTitleDialog
         open={naming}
         onOpenChange={(open) => !duplicating && setNaming(open)}
