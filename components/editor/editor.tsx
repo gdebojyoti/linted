@@ -11,6 +11,7 @@ import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { ContentPane } from "./content-pane/content-pane";
 import { EditorFrame } from "./editor-frame";
 import { usePdfExport } from "./export/use-pdf-export";
+import { LayoutPane } from "./layout-pane/layout-pane";
 import { LeftPane } from "./left-pane";
 import { PreviewPane } from "./preview-pane/preview-pane";
 import { FIRST_TAB } from "./tabs/editor-tab";
@@ -85,7 +86,7 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
             <ContentPane sections={resume.content.sections} onEdit={handleEdit} />
           </EditorTabPanel>
           <EditorTabPanel value="layout">
-            <TabPlaceholder title="Layout is coming soon">You&apos;ll arrange your sections here.</TabPlaceholder>
+            <LayoutPane resume={resume} onEdit={handleEdit} />
           </EditorTabPanel>
           <EditorTabPanel value="theme">
             <TabPlaceholder title="Theme settings are coming soon">You&apos;ll customize Ledger here.</TabPlaceholder>

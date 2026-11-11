@@ -87,6 +87,14 @@ function withEntries<S extends Section, E>(
 }
 
 /**
+ * Whether this Section, if Enabled, would be drawn: whether it has anything
+ * filled in to show. Uses the same rule as the rendering itself.
+ */
+export function hasShownContent(section: Section): boolean {
+  return renderSection({ ...section, enabled: true }) !== null;
+}
+
+/**
  * Whether this contact item is drawn when its Header is: it is Enabled and
  * not Empty. Uses the same rule as the rendering itself, so the two can't differ.
  */

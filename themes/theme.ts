@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
-import type { DefaultLayout, PlacedSections } from "@/lib/theme/place-sections";
+import type { DefaultLayout } from "@/lib/resume/layout";
+import type { PlacedSections } from "@/lib/theme/place-sections";
 import type { Zone } from "@/lib/resume/types";
 
 /**

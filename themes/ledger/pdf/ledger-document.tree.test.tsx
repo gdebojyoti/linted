@@ -2,9 +2,10 @@ import { describe, expect, test } from "vitest";
 import { renderableView } from "@/lib/resume/renderable-view";
 import { sampleResume } from "@/lib/resume/sample-resume";
 import type { Resume } from "@/lib/resume/types";
+import { layoutOf } from "@/lib/resume/layout";
 import { placeSections } from "@/lib/theme/place-sections";
 import { findByText, pathTo, primitiveTree, textOf, type Primitive } from "@/themes/testing/primitive-tree";
-import { LEDGER_DEFAULT_LAYOUT } from "@/themes/ledger/default-layout";
+import { LEDGER_LAYOUT } from "@/themes/ledger/default-layout";
 import { LedgerDocument } from "./ledger-document";
 import { colors } from "./styles";
 
@@ -14,7 +15,7 @@ const PINE = colors.accent;
 const MUTED = colors.inkMuted;
 
 function ledgerTree(resume: Resume = sampleResume) {
-  const zones = placeSections(renderableView(resume).sections, LEDGER_DEFAULT_LAYOUT);
+  const zones = placeSections(renderableView(resume).sections, layoutOf(resume, LEDGER_LAYOUT));
   return primitiveTree(<LedgerDocument zones={zones} />);
 }
 

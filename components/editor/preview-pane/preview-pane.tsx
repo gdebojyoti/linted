@@ -1,8 +1,9 @@
 import { Notice } from "@/components/common/notice";
+import { layoutOf } from "@/lib/resume/layout";
 import { renderableView } from "@/lib/resume/renderable-view";
 import type { Resume } from "@/lib/resume/types";
 import { placeSections } from "@/lib/theme/place-sections";
-import { useTheme } from "./use-theme";
+import { useTheme } from "@/components/editor/theme/use-theme";
 
 /**
  * The preview area belongs to the app; everything inside the page belongs to
@@ -11,8 +12,7 @@ import { useTheme } from "./use-theme";
  * until the preview shows the PDF too (ADR 0006).
  *
  * Drawn straight from the Resume it is given, so it updates whenever that
- * Resume changes. The Layout is always null in v1, so the Theme's default
- * Layout places every Section (ADR 0005).
+ * Resume changes, its Layout included (ADR 0005).
  *
  * Until both the Resume and its Theme have loaded, one note says the preview
  * is loading. After that, a note shows only when nothing is Enabled and
@@ -46,7 +46,7 @@ export function PreviewPane({
     }
     return (
       <div className="h-fit shrink-0 shadow-page">
-        <theme.Page zones={placeSections(sections, theme.defaultLayout)} />
+        <theme.Page zones={placeSections(sections, layoutOf(resume, theme))} />
       </div>
     );
   }
