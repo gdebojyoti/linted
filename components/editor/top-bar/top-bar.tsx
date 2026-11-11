@@ -3,6 +3,7 @@ import { Copy, Download } from "lucide-react";
 import { Logo } from "@/components/common/logo";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EditorTabList } from "@/components/editor/tabs/editor-tab-list";
 import { ResumeTitleEditor } from "./resume-title-editor";
 
 type TopBarProps =
@@ -26,6 +27,9 @@ type TopBarProps =
 /**
  * The editor's header bar. Kept separate from the Library's header, although
  * they look alike, because the two headers are expected to differ more over time.
+ *
+ * When ready, it holds the Content · Layout · Theme tabs, so it must sit
+ * inside the editor's Tabs. While loading, a skeleton keeps their place.
  */
 export function TopBar(props: TopBarProps) {
   const ready = props.status === "ready" ? props : null;
@@ -52,7 +56,9 @@ export function TopBar(props: TopBarProps) {
         )}
       </nav>
 
-      <div className="grow" />
+      <div className="flex grow justify-center">
+        {ready ? <EditorTabList /> : props.status === "loading" && <Skeleton className="h-9 w-56 rounded-lg" />}
+      </div>
 
       {props.status !== "missing" && (
         <div className="flex items-center gap-2.5">

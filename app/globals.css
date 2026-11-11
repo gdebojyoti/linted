@@ -22,6 +22,8 @@
   --color-surface: #ffffff;
   --color-preview: #edede9;
   --color-subtle: #f2f2ee;
+  /* The track behind a segmented control, such as the editor's tabs. */
+  --color-segment: #efefeb;
   /* A dialog's footer strip. */
   --color-surface-soft: #fafaf8;
 

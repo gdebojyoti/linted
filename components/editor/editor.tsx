@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { CHANGE_LATER_HINT, ResumeTitleDialog } from "@/components/common/title-dialog/resume-title-dialog";
+import { Tabs } from "@/components/ui/tabs";
 import { browserLibrary as library } from "@/lib/resume/browser-library";
 import { copyTitle } from "@/lib/resume/duplicate-resume";
 import { renameResume } from "@/lib/resume/rename-resume";
@@ -10,7 +11,11 @@ import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { ContentPane } from "./content-pane/content-pane";
 import { EditorFrame } from "./editor-frame";
 import { usePdfExport } from "./export/use-pdf-export";
+import { LeftPane } from "./left-pane";
 import { PreviewPane } from "./preview-pane/preview-pane";
+import { FIRST_TAB } from "./tabs/editor-tab";
+import { EditorTabPanel } from "./tabs/editor-tab-panel";
+import { TabPlaceholder } from "./tabs/tab-placeholder";
 import { TopBar } from "./top-bar/top-bar";
 import { useAutosave } from "./use-autosave";
 
@@ -58,32 +63,47 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
   }
 
   return (
-    <EditorFrame
-      topBar={
-        <TopBar
-          status="ready"
-          resumeTitle={resume.metadata.title}
-          onRename={(title) => handleEdit((current) => renameResume(current, title))}
-          onDuplicate={openDuplicate}
-          onExport={() => void exportPdf()}
-          canExport={canExport}
-          exporting={exporting}
+    // The Tabs pair the tab list in the top bar with the panels in the left
+    // pane. `contents` keeps it out of the layout, so EditorFrame lays out
+    // the page as it does while loading.
+    <Tabs defaultValue={FIRST_TAB} className="contents">
+      <EditorFrame
+        topBar={
+          <TopBar
+            status="ready"
+            resumeTitle={resume.metadata.title}
+            onRename={(title) => handleEdit((current) => renameResume(current, title))}
+            onDuplicate={openDuplicate}
+            onExport={() => void exportPdf()}
+            canExport={canExport}
+            exporting={exporting}
+          />
+        }
+      >
+        <LeftPane>
+          <EditorTabPanel value="content">
+            <ContentPane sections={resume.content.sections} onEdit={handleEdit} />
+          </EditorTabPanel>
+          <EditorTabPanel value="layout">
+            <TabPlaceholder title="Layout is coming soon">You&apos;ll arrange your sections here.</TabPlaceholder>
+          </EditorTabPanel>
+          <EditorTabPanel value="theme">
+            <TabPlaceholder title="Theme settings are coming soon">You&apos;ll customize Ledger here.</TabPlaceholder>
+          </EditorTabPanel>
+        </LeftPane>
+        <PreviewPane resume={resume} />
+        <ResumeTitleDialog
+          open={naming}
+          onOpenChange={(open) => !duplicating && setNaming(open)}
+          heading="Duplicate resume"
+          submitLabel="Duplicate"
+          footerHint={CHANGE_LATER_HINT}
+          initialTitle={copyTitle(resume.metadata.title)}
+          submitting={duplicating}
+          onSubmit={handleDuplicate}
+          returnFocusTo={duplicateRef}
         />
-      }
-    >
-      <ContentPane sections={resume.content.sections} onEdit={handleEdit} />
-      <PreviewPane resume={resume} />
-      <ResumeTitleDialog
-        open={naming}
-        onOpenChange={(open) => !duplicating && setNaming(open)}
-        heading="Duplicate resume"
-        submitLabel="Duplicate"
-        footerHint={CHANGE_LATER_HINT}
-        initialTitle={copyTitle(resume.metadata.title)}
-        submitting={duplicating}
-        onSubmit={handleDuplicate}
-        returnFocusTo={duplicateRef}
-      />
-    </EditorFrame>
+      </EditorFrame>
+    </Tabs>
   );
 }
