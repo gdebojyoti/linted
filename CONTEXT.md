@@ -73,11 +73,11 @@ A single named skill (e.g. "Go") within a Skills Entry. A Skills Entry groups Sk
 _Avoid_: Tag, keyword
 
 **Enabled / Disabled**:
-Whether a Section, Entry, Bullet or contact item is included in the Export. Disabling a parent hides everything beneath it without changing the children's own Enabled state. A Disabled Section is Ghosted in the preview.
+Whether a Section, Entry, Bullet or contact item is included in the Export. Disabling a parent hides everything beneath it without changing the children's own Enabled state. A Disabled Section is left out of the preview, like the Export, but can still be placed in the Layout tab.
 _Avoid_: Hidden, visible, active, checked
 
 **Empty**:
-Content the user has not filled in. Empty content is never included in the Export, regardless of whether it is Enabled. An Empty Section is Ghosted in the preview.
+Content the user has not filled in. Empty content is never included in the Export, regardless of whether it is Enabled. An Empty Section is left out of the preview, like the Export, but can still be placed in the Layout tab.
 _Avoid_: Blank, unset
 
 **Current**:
@@ -87,20 +87,20 @@ _Avoid_: Ongoing, active, open-ended
 ### Presentation
 
 **Theme**:
-The visual design that renders a Resume's Enabled Content. A Theme defines its Zones and a default Layout, which places Sections into Zones by their type. Every Theme must be able to render any Custom Section. Changing the Theme never changes Content, but resets the Layout to the new Theme's default.
+The visual design that renders a Resume's Enabled Content. A Theme defines its Zones and a default Layout, which places Sections into Zones by their type. Every Theme must be able to render any Custom Section. Changing the Theme never changes Content, but resets the Layout and the Theme Options to the new Theme's defaults.
 _Avoid_: Template, skin
+
+**Theme Options**:
+The choices a Theme offers for one Resume: accent colour, typeface and density, each picked from a fixed list. Part of Theme Settings.
+_Avoid_: Customizations, preferences, style
 
 **Zone**:
 A named area of the page that a Theme defines, such as header, sidebar or main, holding Sections in order. Each Zone belongs to one Theme.
 _Avoid_: Column, region, slot, area
 
 **Layout**:
-Which Zone each Section of a Resume sits in, and the order of Sections within each Zone, for the Resume's current Theme. Part of Theme Settings, not Content. The user changes it in the preview.
+Which Zone each Section of a Resume sits in, and the order of Sections within each Zone, for the Resume's current Theme. Part of Theme Settings, not Content. The user changes it in the Layout tab, where Empty and Disabled Sections can be placed too.
 _Avoid_: Arrangement, placement, order
-
-**Ghosted**:
-How the preview shows a Section that is Empty or Disabled: only its title, faded, so the user can still move it within the Layout. Ghosted Sections never appear in the Export.
-_Avoid_: Hidden, dimmed, placeholder
 
 **Export**:
 Producing a PDF of a Resume's Enabled Content in its Theme.
