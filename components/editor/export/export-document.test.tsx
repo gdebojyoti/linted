@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+import { moveSection } from "@/lib/resume/layout";
 import { sampleResume } from "@/lib/resume/sample-resume";
 import type { Resume } from "@/lib/resume/types";
 import { LEDGER_DEFAULT_LAYOUT } from "@/themes/ledger/default-layout";
@@ -43,6 +44,14 @@ describe("exportDocument", () => {
     const text = await exportedText({ ...sampleResume, content: { sections: [...rest, header] } });
 
     expect(text.indexOf("Maya Okafor")).toBe(0);
+  });
+
+  test("follows the saved Layout", async () => {
+    const defaultText = await exportedText(sampleResume);
+    const movedText = await exportedText(moveSection(sampleResume, ledgerForExport, "summary", "down"));
+
+    expect(defaultText.indexOf("Backend engineer with 8 years")).toBeLessThan(defaultText.indexOf("Paystream"));
+    expect(movedText.indexOf("Paystream")).toBeLessThan(movedText.indexOf("Backend engineer with 8 years"));
   });
 
   test("keeps links clickable", async () => {

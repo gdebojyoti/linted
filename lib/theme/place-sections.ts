@@ -1,25 +1,18 @@
 import type { RenderedSection } from "@/lib/resume/renderable-view";
-import { ZONES, type SectionType, type Zone } from "@/lib/resume/types";
-
-/** Where a Theme puts each type of Section when the Resume has no Layout of its own (ADR 0005). */
-export type DefaultLayout = Record<SectionType, Zone>;
+import { ZONES, type Layout, type Zone } from "@/lib/resume/types";
 
 /** The Sections in each Zone, in drawing order. Zones a Theme doesn't use stay empty. */
 export type PlacedSections = Record<Zone, RenderedSection[]>;
 
 /**
- * Groups Sections by the Zone the default Layout gives their type. Within a
- * Zone, Pinned Sections come first; the rest keep their Content order.
+ * Puts the Sections to draw into their Zones, in the order the Layout gives.
+ * The Layout should be the Resume's whole Layout for the Theme (`layoutOf`);
+ * its ids with no Section to draw, such as Empty or Disabled Sections, are
+ * left out.
  */
-export function placeSections(sections: RenderedSection[], layout: DefaultLayout): PlacedSections {
-  const zones = Object.fromEntries(ZONES.map((zone) => [zone, []])) as unknown as PlacedSections;
-  const pinnedFirst = [...sections.filter(isPinned), ...sections.filter((s) => !isPinned(s))];
-  for (const section of pinnedFirst) {
-    zones[layout[section.type]].push(section);
-  }
-  return zones;
-}
-
-function isPinned(section: RenderedSection): boolean {
-  return "pinned" in section && section.pinned;
+export function placeSections(sections: RenderedSection[], layout: Layout): PlacedSections {
+  const byId = new Map(sections.map((section) => [section.id, section]));
+  return Object.fromEntries(
+    ZONES.map((zone) => [zone, (layout[zone] ?? []).flatMap((id) => byId.get(id) ?? [])]),
+  ) as PlacedSections;
 }

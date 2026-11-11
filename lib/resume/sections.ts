@@ -1,6 +1,7 @@
 import { hasDates } from "./dates";
 import { editSections, type EditOptions } from "./edit-sections";
 import type { AddOptions } from "./entries";
+import { withoutSection } from "./layout";
 import { DEFAULT_CUSTOM_SECTION_TITLE, type Bullet, type CustomSection, type Resume } from "./types";
 
 // Section operations. They work the same in every Section, except that the
@@ -67,7 +68,8 @@ export function renameSection(resume: Resume, sectionId: string, title: string, 
 /**
  * The Resume without the Section, the others keeping their order. Only a
  * Custom Section can be deleted: a Default Section, the Header included, is
- * left Empty or Disabled instead, so deleting one changes nothing.
+ * left Empty or Disabled instead, so deleting one changes nothing. Its id
+ * leaves the saved Layout too.
  */
 export function deleteSection(resume: Resume, sectionId: string, { now = new Date() }: EditOptions = {}): Resume {
   const sections = resume.content.sections.filter((s) => s.id !== sectionId || s.type !== "custom");
@@ -75,6 +77,7 @@ export function deleteSection(resume: Resume, sectionId: string, { now = new Dat
   return {
     ...resume,
     metadata: { ...resume.metadata, lastEditedAt: now.toISOString() },
+    themeSettings: { ...resume.themeSettings, layout: withoutSection(resume.themeSettings.layout, sectionId) },
     content: { sections },
   };
 }

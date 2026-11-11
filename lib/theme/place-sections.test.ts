@@ -1,16 +1,6 @@
 import { describe, expect, test } from "vitest";
 import type { RenderedSection } from "@/lib/resume/renderable-view";
-import { placeSections, type DefaultLayout } from "./place-sections";
-
-const headerAside: DefaultLayout = {
-  header: "header",
-  summary: "main",
-  experience: "main",
-  projects: "main",
-  skills: "aside-left",
-  education: "aside-left",
-  custom: "main",
-};
+import { placeSections } from "./place-sections";
 
 function section(id: string, type: RenderedSection["type"]): RenderedSection {
   if (type === "header") {
@@ -22,7 +12,7 @@ function section(id: string, type: RenderedSection["type"]): RenderedSection {
 const ids = (sections: RenderedSection[]) => sections.map((s) => s.id);
 
 describe("placeSections", () => {
-  test("puts each Section in the Zone its type is given by the default Layout, keeping Content order", () => {
+  test("puts each Section in its Zone of the Layout, in the Layout's order", () => {
     const zones = placeSections(
       [
         section("header", "header"),
@@ -31,37 +21,22 @@ describe("placeSections", () => {
         section("experience", "experience"),
         section("education", "education"),
       ],
-      headerAside,
+      { header: ["header"], "aside-left": ["education", "skills"], main: ["experience", "summary"] },
     );
 
     expect(ids(zones.header)).toEqual(["header"]);
-    expect(ids(zones.main)).toEqual(["summary", "experience"]);
-    expect(ids(zones["aside-left"])).toEqual(["skills", "education"]);
+    expect(ids(zones.main)).toEqual(["experience", "summary"]);
+    expect(ids(zones["aside-left"])).toEqual(["education", "skills"]);
   });
 
-  test("a Pinned Section comes first in its Zone, wherever it sits in the Content", () => {
-    const allInMain: DefaultLayout = { ...headerAside, header: "main", skills: "main", education: "main" };
+  test("leaves out Layout ids with no Section to draw, such as Empty or Disabled ones", () => {
+    const zones = placeSections([section("summary", "summary")], { main: ["experience", "summary", "talks"] });
 
-    const zones = placeSections(
-      [section("summary", "summary"), section("skills", "skills"), section("header", "header")],
-      allInMain,
-    );
-
-    expect(ids(zones.main)).toEqual(["header", "summary", "skills"]);
-  });
-
-  test("Custom Sections are placed by the Custom type, in Content order", () => {
-    const zones = placeSections(
-      [section("talks", "custom"), section("summary", "summary"), section("volunteering", "custom")],
-      { ...headerAside, custom: "footer" },
-    );
-
-    expect(ids(zones.footer)).toEqual(["talks", "volunteering"]);
     expect(ids(zones.main)).toEqual(["summary"]);
   });
 
   test("Zones with no Sections are empty", () => {
-    const zones = placeSections([section("summary", "summary")], headerAside);
+    const zones = placeSections([section("summary", "summary")], { main: ["summary"] });
 
     expect(zones.header).toEqual([]);
     expect(zones["aside-right"]).toEqual([]);
