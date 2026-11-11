@@ -2,22 +2,26 @@ import { Info, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { Notice } from "@/components/common/notice";
 import { Button } from "@/components/ui/button";
+import type { DropSide } from "@/components/common/drag/use-reorderable";
 import { useTheme } from "@/components/editor/theme/use-theme";
 import {
   canMoveSection,
+  canPlaceSection,
   isPinned,
   layoutOf,
   moveSection,
+  placeSection,
   positionInZone,
   resetLayout,
   type MoveDirection,
+  type Placement,
 } from "@/lib/resume/layout";
 import type { Resume, ResumeEdit } from "@/lib/resume/types";
 import { PinnedRow } from "./pinned-row";
 import { SectionChip } from "./section-chip";
 
-/** What was last done, to read out: a move, worded from the Resume as it now is, or a fixed message. */
-type LastAction = { sectionId: string; direction: MoveDirection } | { message: string } | null;
+/** What was last done, to read out: a move or a drop, worded from the Resume as it now is, or a fixed message. */
+type LastAction = { sectionId: string; direction: MoveDirection | "dropped" } | { message: string } | null;
 
 /**
  * The Layout tab: the Resume's Sections as chips, in Layout order, for its
@@ -25,9 +29,12 @@ type LastAction = { sectionId: string; direction: MoveDirection } | { message: s
  * preview follows them. A chip's arrows show on hover or keyboard focus,
  * with nothing to select first.
  *
+ * Chips are dragged, with a marker showing where they'll land, or moved
+ * with their arrows, the keyboard path.
+ *
  * Ledger has one column, so its Zones show as one list, the Pinned Header
- * first. Moves stay within a Zone. A Theme with several columns will show a
- * box per Zone, with moves between them.
+ * first, and chips are dropped only within their own Zone. A Theme with
+ * several columns will show a box per Zone, with drops between them.
  *
  * Each move and reset is read out to screen readers.
  */
@@ -45,6 +52,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
 
   const sectionsById = new Map(resume.content.sections.map((section) => [section.id, section]));
   const layout = layoutOf(resume, theme);
+  const zoneOfSection = new Map(theme.zones.flatMap((zone) => (layout[zone] ?? []).map((id) => [id, zone] as const)));
   const sections = theme.zones
     .flatMap((zone) => layout[zone] ?? [])
     .flatMap((id) => sectionsById.get(id) ?? []);
@@ -55,12 +63,33 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
     const section = sectionsById.get(lastAction.sectionId);
     const place = positionInZone(resume, theme, lastAction.sectionId);
     if (!section || !place) return "";
-    return `${section.title} moved ${lastAction.direction}, position ${place.position} of ${place.count}.`;
+    const how = lastAction.direction === "dropped" ? "dropped" : `moved ${lastAction.direction}`;
+    return `${section.title} ${how}, position ${place.position} of ${place.count}.`;
   };
 
   const move = (sectionId: string, direction: MoveDirection) => {
     onEdit((current) => moveSection(current, theme, sectionId, direction));
     setLastAction({ sectionId, direction });
+  };
+
+  /** Where a chip dropped on this side of the target chip lands: in the target's Zone, which must be its own. */
+  const placementFor = (sourceId: string, targetId: string, side: DropSide): Placement | null => {
+    const zone = zoneOfSection.get(targetId);
+    if (!zone || zone !== zoneOfSection.get(sourceId)) return null;
+    const index = (layout[zone] ?? []).indexOf(targetId) + (side === "after" ? 1 : 0);
+    return { zone, index };
+  };
+
+  const accepts = (sourceId: string, targetId: string, side: DropSide) => {
+    const placement = placementFor(sourceId, targetId, side);
+    return placement !== null && canPlaceSection(resume, theme, sourceId, placement);
+  };
+
+  const drop = (sourceId: string, targetId: string, side: DropSide) => {
+    const placement = placementFor(sourceId, targetId, side);
+    if (!placement) return;
+    onEdit((current) => placeSection(current, theme, sourceId, placement));
+    setLastAction({ sectionId: sourceId, direction: "dropped" });
   };
 
   function reset() {
@@ -93,6 +122,8 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
                 section={section}
                 canMove={(direction) => canMoveSection(resume, theme, section.id, direction)}
                 onMove={(direction) => move(section.id, direction)}
+                accepts={(sourceId, side) => accepts(sourceId, section.id, side)}
+                onDrop={(sourceId, side) => drop(sourceId, section.id, side)}
               />
             ),
           )}
@@ -100,7 +131,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
       </div>
       <p className="flex items-start gap-2.5 text-[12.5px] leading-normal text-ink-muted">
         <Info aria-hidden="true" className="mt-px size-4 shrink-0" />
-        Point to a section, or Tab to it, and use its arrows to move it. Empty and disabled sections can be placed too; they
+        Drag a section to move it, or point to it or Tab to it and use its arrows. Empty and disabled sections can be placed too; they
         won&apos;t appear in your resume.
       </p>
       <p aria-live="polite" className="sr-only">
