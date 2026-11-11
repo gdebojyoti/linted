@@ -110,6 +110,51 @@ function movedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, dire
   return { ...layout, [zone]: ids };
 }
 
+/**
+ * Where a dropped Section lands: a Zone, and the gap between its Sections,
+ * counted as the Zone is now (0 is before the first, the Zone's length after
+ * the last).
+ */
+export type Placement = { zone: Zone; index: number };
+
+/** Whether placeSection would move the Section, so a drop marker shows only where a drop does something. */
+export function canPlaceSection(resume: Resume, theme: ThemeLayout, sectionId: string, placement: Placement): boolean {
+  return placedLayout(resume, theme, sectionId, placement) !== null;
+}
+
+/**
+ * The Resume with the Section placed at this gap, in its own Zone or another,
+ * and the whole Layout saved. A placement that can't happen (of a Pinned
+ * Section, above a Pinned Section, into a Zone the Theme doesn't draw, at a
+ * gap outside the Zone) or that changes nothing gives back the Resume
+ * unchanged.
+ */
+export function placeSection(
+  resume: Resume,
+  theme: ThemeLayout,
+  sectionId: string,
+  placement: Placement,
+  { now = new Date() }: EditOptions = {},
+): Resume {
+  const layout = placedLayout(resume, theme, sectionId, placement);
+  return layout ? withLayout(resume, layout, now) : resume;
+}
+
+function placedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, { zone, index }: Placement): Layout | null {
+  const layout = layoutOf(resume, theme);
+  const from = zoneOf(layout, theme, sectionId);
+  if (!from || !theme.zones.includes(zone)) return null;
+  const target = layout[zone] ?? [];
+  if (index < 0 || index > target.length) return null;
+  const pinned = pinnedIds(resume);
+  if (pinned.has(sectionId) || (index === 0 && pinned.has(target[0]))) return null;
+  const without = target.filter((id) => id !== sectionId);
+  const at = target.slice(0, index).filter((id) => id !== sectionId).length;
+  const ids = [...without.slice(0, at), sectionId, ...without.slice(at)];
+  if (from === zone && ids.every((id, i) => id === target[i])) return null;
+  return { ...layout, [from]: (layout[from] ?? []).filter((id) => id !== sectionId), [zone]: ids };
+}
+
 /** The Resume back on its Theme's default Layout. With no Layout saved, it comes back unchanged. */
 export function resetLayout(resume: Resume, { now = new Date() }: EditOptions = {}): Resume {
   return resume.themeSettings.layout === null ? resume : withLayout(resume, null, now);

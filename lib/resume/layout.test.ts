@@ -1,8 +1,10 @@
 import { describe, expect, test } from "vitest";
 import {
+  canPlaceSection,
   layoutOf,
   layoutTag,
   moveSection,
+  placeSection,
   positionInZone,
   resetLayout,
   type ThemeLayout,
@@ -135,6 +137,68 @@ describe("moveSection", () => {
 
   test("an unknown Section id changes nothing", () => {
     expect(moveSection(sampleResume, twoColumn, "no-such-section", "up", { now })).toBe(sampleResume);
+  });
+});
+
+describe("placeSection", () => {
+  test("places a Section at a gap further down its Zone, and saves the whole Layout", () => {
+    const placed = placeSection(sampleResume, twoColumn, "summary", { zone: "main", index: 3 }, { now });
+
+    expect(placed.themeSettings.layout).toEqual({
+      ...DEFAULT_LAYOUT,
+      main: ["experience", "projects", "summary", "custom-talks", "custom-volunteering"],
+    });
+    expect(placed.metadata.lastEditedAt).toBe("2026-11-11T12:00:00.000Z");
+  });
+
+  test("places a Section at a gap further up its Zone", () => {
+    const placed = placeSection(sampleResume, twoColumn, "custom-talks", { zone: "main", index: 0 }, { now });
+
+    expect(layoutOf(placed, twoColumn).main).toEqual(["custom-talks", "summary", "experience", "projects", "custom-volunteering"]);
+  });
+
+  test("places a Section into another Zone, at the gap given", () => {
+    const placed = placeSection(sampleResume, twoColumn, "projects", { zone: "aside-left", index: 1 }, { now });
+
+    expect(placed.themeSettings.layout).toEqual({
+      header: ["header"],
+      "aside-left": ["skills", "projects", "education"],
+      main: ["summary", "experience", "custom-talks", "custom-volunteering"],
+    });
+    expect(placed.metadata.lastEditedAt).toBe("2026-11-11T12:00:00.000Z");
+  });
+
+  test("places a Section at the end of another Zone", () => {
+    const placed = placeSection(sampleResume, twoColumn, "skills", { zone: "main", index: 5 }, { now });
+
+    expect(layoutOf(placed, twoColumn)).toEqual({
+      header: ["header"],
+      "aside-left": ["education"],
+      main: ["summary", "experience", "projects", "custom-talks", "custom-volunteering", "skills"],
+    });
+  });
+
+  test("the gaps either side of the Section change nothing", () => {
+    expect(placeSection(sampleResume, twoColumn, "experience", { zone: "main", index: 1 }, { now })).toBe(sampleResume);
+    expect(placeSection(sampleResume, twoColumn, "experience", { zone: "main", index: 2 }, { now })).toBe(sampleResume);
+  });
+
+  test("nothing is placed above the Pinned Header, and the Header itself is never placed", () => {
+    const sharesHeaderZone = withLayout({ ...DEFAULT_LAYOUT, header: ["header", "summary"], main: DEFAULT_LAYOUT.main!.slice(1) });
+
+    expect(placeSection(sharesHeaderZone, twoColumn, "summary", { zone: "header", index: 0 }, { now })).toBe(sharesHeaderZone);
+    expect(placeSection(sampleResume, twoColumn, "skills", { zone: "header", index: 0 }, { now })).toBe(sampleResume);
+    expect(placeSection(sampleResume, twoColumn, "header", { zone: "main", index: 2 }, { now })).toBe(sampleResume);
+    expect(canPlaceSection(sampleResume, twoColumn, "skills", { zone: "header", index: 0 })).toBe(false);
+    expect(canPlaceSection(sampleResume, twoColumn, "skills", { zone: "header", index: 1 })).toBe(true);
+  });
+
+  test("an unknown Section, a Zone the Theme doesn't draw, or a gap outside the Zone changes nothing", () => {
+    expect(placeSection(sampleResume, twoColumn, "no-such-section", { zone: "main", index: 0 }, { now })).toBe(sampleResume);
+    expect(placeSection(sampleResume, twoColumn, "skills", { zone: "footer", index: 0 }, { now })).toBe(sampleResume);
+    expect(placeSection(sampleResume, twoColumn, "skills", { zone: "main", index: 6 }, { now })).toBe(sampleResume);
+    expect(placeSection(sampleResume, twoColumn, "skills", { zone: "main", index: -1 }, { now })).toBe(sampleResume);
+    expect(canPlaceSection(sampleResume, twoColumn, "skills", { zone: "main", index: 6 })).toBe(false);
   });
 });
 
