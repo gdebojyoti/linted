@@ -96,18 +96,31 @@ export function canMoveSection(resume: Resume, theme: ThemeLayout, sectionId: st
   return movedLayout(resume, theme, sectionId, direction) !== null;
 }
 
+/** A move is a placement in the gap past the next Section up or down. */
 function movedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, direction: MoveDirection): Layout | null {
   const layout = layoutOf(resume, theme);
   const zone = zoneOf(layout, theme, sectionId);
   if (!zone) return null;
-  const ids = [...(layout[zone] ?? [])];
-  const from = ids.indexOf(sectionId);
-  const to = direction === "up" ? from - 1 : from + 1;
-  if (to < 0 || to >= ids.length) return null;
-  const pinned = pinnedIds(resume);
-  if (pinned.has(sectionId) || pinned.has(ids[to])) return null;
-  [ids[from], ids[to]] = [ids[to], ids[from]];
-  return { ...layout, [zone]: ids };
+  const from = (layout[zone] ?? []).indexOf(sectionId);
+  return placedLayout(resume, theme, sectionId, { zone, index: direction === "up" ? from - 1 : from + 2 });
+}
+
+/** The Zone holding the Section, or null for an unknown Section. */
+export function sectionZone(resume: Resume, theme: ThemeLayout, sectionId: string): Zone | null {
+  return zoneOf(layoutOf(resume, theme), theme, sectionId) ?? null;
+}
+
+/** The gap on this side of the target Section, in its Zone, for a drop beside it. Null for an unknown Section. */
+export function placementBeside(
+  resume: Resume,
+  theme: ThemeLayout,
+  targetId: string,
+  side: "before" | "after",
+): Placement | null {
+  const layout = layoutOf(resume, theme);
+  const zone = zoneOf(layout, theme, targetId);
+  if (!zone) return null;
+  return { zone, index: (layout[zone] ?? []).indexOf(targetId) + (side === "after" ? 1 : 0) };
 }
 
 /**

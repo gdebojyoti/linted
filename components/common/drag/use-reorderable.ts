@@ -4,20 +4,20 @@ import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/clos
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge/extract-closest-edge";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 
-/** Which side of an item a drop lands on. */
+/** Which side of a row a drop lands on. */
 export type DropSide = "before" | "after";
 
-const ITEM = Symbol("reorderable-item");
+const ROW = Symbol("reorderable-row");
 
-type ItemData = { [ITEM]: true; group: string; id: string };
+type RowData = { [ROW]: true; group: string; id: string };
 
-function isItem(data: Record<string | symbol, unknown>): data is ItemData {
-  return data[ITEM] === true;
+function isRow(data: Record<string | symbol, unknown>): data is RowData {
+  return data[ROW] === true;
 }
 
 /**
- * Makes an item of a vertical list draggable, and a place to drop the list's
- * other items, before or after it. Items only meet others of the same group.
+ * Makes a row of a vertical list draggable, and a place to drop the list's
+ * other rows, before or after it. Rows only meet others of the same group.
  * The drag-and-drop library (Pragmatic drag and drop, #88) is used here and
  * nowhere else, so swapping it touches only this file.
  *
@@ -27,13 +27,11 @@ function isItem(data: Record<string | symbol, unknown>): data is ItemData {
 export function useReorderable<T extends HTMLElement>({
   group,
   id,
-  draggable: canDrag = true,
   accepts,
   onDrop,
 }: {
   group: string;
   id: string;
-  draggable?: boolean;
   accepts: (sourceId: string, side: DropSide) => boolean;
   onDrop: (sourceId: string, side: DropSide) => void;
 }) {
@@ -44,7 +42,7 @@ export function useReorderable<T extends HTMLElement>({
   const acceptedSide = useEffectEvent((data: Record<string | symbol, unknown>, source: Record<string, unknown>) => {
     const edge = extractClosestEdge(data);
     const side: DropSide | null = edge === "top" ? "before" : edge === "bottom" ? "after" : null;
-    const sourceId = (source as Partial<ItemData>).id;
+    const sourceId = (source as Partial<RowData>).id;
     return side && typeof sourceId === "string" && accepts(sourceId, side) ? { sourceId, side } : null;
   });
   const drop = useEffectEvent((sourceId: string, side: DropSide) => onDrop(sourceId, side));
@@ -52,21 +50,17 @@ export function useReorderable<T extends HTMLElement>({
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    const data: ItemData = { [ITEM]: true, group, id };
+    const data: RowData = { [ROW]: true, group, id };
     return combine(
-      ...(canDrag
-        ? [
-            draggable({
-              element,
-              getInitialData: () => data,
-              onDragStart: () => setDragging(true),
-              onDrop: () => setDragging(false),
-            }),
-          ]
-        : []),
+      draggable({
+        element,
+        getInitialData: () => data,
+        onDragStart: () => setDragging(true),
+        onDrop: () => setDragging(false),
+      }),
       dropTargetForElements({
         element,
-        canDrop: ({ source }) => isItem(source.data) && source.data.group === group,
+        canDrop: ({ source }) => isRow(source.data) && source.data.group === group,
         getData: ({ input }) => attachClosestEdge(data, { element, input, allowedEdges: ["top", "bottom"] }),
         onDrag: ({ self, source }) => setDropSide(acceptedSide(self.data, source.data)?.side ?? null),
         onDragLeave: () => setDropSide(null),
@@ -77,7 +71,7 @@ export function useReorderable<T extends HTMLElement>({
         },
       }),
     );
-  }, [group, id, canDrag]);
+  }, [group, id]);
 
   return { ref, dragging, dropSide };
 }

@@ -11,8 +11,10 @@ import {
   layoutOf,
   moveSection,
   placeSection,
+  placementBeside,
   positionInZone,
   resetLayout,
+  sectionZone,
   type MoveDirection,
   type Placement,
 } from "@/lib/resume/layout";
@@ -21,7 +23,11 @@ import { PinnedRow } from "./pinned-row";
 import { SectionChip } from "./section-chip";
 
 /** What was last done, to read out: a move or a drop, worded from the Resume as it now is, or a fixed message. */
-type LastAction = { sectionId: string; direction: MoveDirection | "dropped" } | { message: string } | null;
+type LastAction =
+  | { kind: "move"; sectionId: string; direction: MoveDirection }
+  | { kind: "drop"; sectionId: string }
+  | { kind: "message"; message: string }
+  | null;
 
 /**
  * The Layout tab: the Resume's Sections as chips, in Layout order, for its
@@ -52,32 +58,29 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
 
   const sectionsById = new Map(resume.content.sections.map((section) => [section.id, section]));
   const layout = layoutOf(resume, theme);
-  const zoneOfSection = new Map(theme.zones.flatMap((zone) => (layout[zone] ?? []).map((id) => [id, zone] as const)));
   const sections = theme.zones
     .flatMap((zone) => layout[zone] ?? [])
     .flatMap((id) => sectionsById.get(id) ?? []);
 
   const announcement = (): string => {
     if (lastAction === null) return "";
-    if ("message" in lastAction) return lastAction.message;
+    if (lastAction.kind === "message") return lastAction.message;
     const section = sectionsById.get(lastAction.sectionId);
     const place = positionInZone(resume, theme, lastAction.sectionId);
     if (!section || !place) return "";
-    const how = lastAction.direction === "dropped" ? "dropped" : `moved ${lastAction.direction}`;
+    const how = lastAction.kind === "drop" ? "dropped" : `moved ${lastAction.direction}`;
     return `${section.title} ${how}, position ${place.position} of ${place.count}.`;
   };
 
   const move = (sectionId: string, direction: MoveDirection) => {
     onEdit((current) => moveSection(current, theme, sectionId, direction));
-    setLastAction({ sectionId, direction });
+    setLastAction({ kind: "move", sectionId, direction });
   };
 
-  /** Where a chip dropped on this side of the target chip lands: in the target's Zone, which must be its own. */
+  /** Where a chip dropped beside the target chip lands. Ledger's single list takes drops only within a chip's own Zone. */
   const placementFor = (sourceId: string, targetId: string, side: DropSide): Placement | null => {
-    const zone = zoneOfSection.get(targetId);
-    if (!zone || zone !== zoneOfSection.get(sourceId)) return null;
-    const index = (layout[zone] ?? []).indexOf(targetId) + (side === "after" ? 1 : 0);
-    return { zone, index };
+    const placement = placementBeside(resume, theme, targetId, side);
+    return placement && placement.zone === sectionZone(resume, theme, sourceId) ? placement : null;
   };
 
   const accepts = (sourceId: string, targetId: string, side: DropSide) => {
@@ -85,17 +88,18 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
     return placement !== null && canPlaceSection(resume, theme, sourceId, placement);
   };
 
+  /** Only called once `accepts` has said yes. */
   const drop = (sourceId: string, targetId: string, side: DropSide) => {
-    const placement = placementFor(sourceId, targetId, side);
-    if (!placement) return;
+    const placement = placementFor(sourceId, targetId, side)!;
     onEdit((current) => placeSection(current, theme, sourceId, placement));
-    setLastAction({ sectionId: sourceId, direction: "dropped" });
+    setLastAction({ kind: "drop", sectionId: sourceId });
   };
 
   function reset() {
     const saved = resume.themeSettings.layout !== null;
     onEdit((current) => resetLayout(current));
     setLastAction({
+      kind: "message",
       message: saved ? "Layout reset to the theme's default." : "The layout is already the theme's default.",
     });
   }
@@ -111,7 +115,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
         </div>
         <ul
           aria-label="Sections"
-          className="flex flex-col gap-1.5 rounded-lg border border-dashed border-line-input bg-surface p-2.5 focus-within:border-accent/50"
+          className="flex flex-col gap-(--chip-gap) rounded-lg [--chip-gap:6px] border border-dashed border-line-input bg-surface p-2.5 focus-within:border-accent/50"
         >
           {sections.map((section) =>
             isPinned(section) ? (

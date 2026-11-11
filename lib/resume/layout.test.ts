@@ -5,8 +5,10 @@ import {
   layoutTag,
   moveSection,
   placeSection,
+  placementBeside,
   positionInZone,
   resetLayout,
+  sectionZone,
   type ThemeLayout,
 } from "./layout";
 import { newResume } from "./new-resume";
@@ -199,6 +201,26 @@ describe("placeSection", () => {
     expect(placeSection(sampleResume, twoColumn, "skills", { zone: "main", index: 6 }, { now })).toBe(sampleResume);
     expect(placeSection(sampleResume, twoColumn, "skills", { zone: "main", index: -1 }, { now })).toBe(sampleResume);
     expect(canPlaceSection(sampleResume, twoColumn, "skills", { zone: "main", index: 6 })).toBe(false);
+  });
+});
+
+describe("placementBeside", () => {
+  test("is the gap before or after the target Section, in its Zone", () => {
+    expect(placementBeside(sampleResume, twoColumn, "projects", "before")).toEqual({ zone: "main", index: 2 });
+    expect(placementBeside(sampleResume, twoColumn, "projects", "after")).toEqual({ zone: "main", index: 3 });
+    expect(placementBeside(sampleResume, twoColumn, "education", "after")).toEqual({ zone: "aside-left", index: 2 });
+  });
+
+  test("is null for an unknown Section", () => {
+    expect(placementBeside(sampleResume, twoColumn, "no-such-section", "before")).toBeNull();
+  });
+});
+
+describe("sectionZone", () => {
+  test("is the Zone holding the Section, or null for an unknown Section", () => {
+    expect(sectionZone(sampleResume, twoColumn, "skills")).toBe("aside-left");
+    expect(sectionZone(sampleResume, twoColumn, "header")).toBe("header");
+    expect(sectionZone(sampleResume, twoColumn, "no-such-section")).toBeNull();
   });
 });
 
