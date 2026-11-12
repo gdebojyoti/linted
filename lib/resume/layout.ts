@@ -96,18 +96,76 @@ export function canMoveSection(resume: Resume, theme: ThemeLayout, sectionId: st
   return movedLayout(resume, theme, sectionId, direction) !== null;
 }
 
+/** A move is a placement in the gap past the next Section up or down. */
 function movedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, direction: MoveDirection): Layout | null {
   const layout = layoutOf(resume, theme);
   const zone = zoneOf(layout, theme, sectionId);
   if (!zone) return null;
-  const ids = [...(layout[zone] ?? [])];
-  const from = ids.indexOf(sectionId);
-  const to = direction === "up" ? from - 1 : from + 1;
-  if (to < 0 || to >= ids.length) return null;
+  const from = (layout[zone] ?? []).indexOf(sectionId);
+  return placedLayout(resume, theme, sectionId, { zone, index: direction === "up" ? from - 1 : from + 2 });
+}
+
+/** The Zone holding the Section, or null for an unknown Section. */
+export function sectionZone(resume: Resume, theme: ThemeLayout, sectionId: string): Zone | null {
+  return zoneOf(layoutOf(resume, theme), theme, sectionId) ?? null;
+}
+
+/** The gap on this side of the target Section, in its Zone, for a drop beside it. Null for an unknown Section. */
+export function placementBeside(
+  resume: Resume,
+  theme: ThemeLayout,
+  targetId: string,
+  side: "before" | "after",
+): Placement | null {
+  const layout = layoutOf(resume, theme);
+  const zone = zoneOf(layout, theme, targetId);
+  if (!zone) return null;
+  return { zone, index: (layout[zone] ?? []).indexOf(targetId) + (side === "after" ? 1 : 0) };
+}
+
+/**
+ * Where a dropped Section lands: a Zone, and the gap between its Sections,
+ * counted as the Zone is now (0 is before the first, the Zone's length after
+ * the last).
+ */
+export type Placement = { zone: Zone; index: number };
+
+/** Whether placeSection would move the Section, so a drop marker shows only where a drop does something. */
+export function canPlaceSection(resume: Resume, theme: ThemeLayout, sectionId: string, placement: Placement): boolean {
+  return placedLayout(resume, theme, sectionId, placement) !== null;
+}
+
+/**
+ * The Resume with the Section placed at this gap, in its own Zone or another,
+ * and the whole Layout saved. A placement that can't happen (of a Pinned
+ * Section, above a Pinned Section, into a Zone the Theme doesn't draw, at a
+ * gap outside the Zone) or that changes nothing gives back the Resume
+ * unchanged.
+ */
+export function placeSection(
+  resume: Resume,
+  theme: ThemeLayout,
+  sectionId: string,
+  placement: Placement,
+  { now = new Date() }: EditOptions = {},
+): Resume {
+  const layout = placedLayout(resume, theme, sectionId, placement);
+  return layout ? withLayout(resume, layout, now) : resume;
+}
+
+function placedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, { zone, index }: Placement): Layout | null {
+  const layout = layoutOf(resume, theme);
+  const from = zoneOf(layout, theme, sectionId);
+  if (!from || !theme.zones.includes(zone)) return null;
+  const target = layout[zone] ?? [];
+  if (index < 0 || index > target.length) return null;
   const pinned = pinnedIds(resume);
-  if (pinned.has(sectionId) || pinned.has(ids[to])) return null;
-  [ids[from], ids[to]] = [ids[to], ids[from]];
-  return { ...layout, [zone]: ids };
+  if (pinned.has(sectionId) || (index === 0 && pinned.has(target[0]))) return null;
+  const without = target.filter((id) => id !== sectionId);
+  const at = target.slice(0, index).filter((id) => id !== sectionId).length;
+  const ids = [...without.slice(0, at), sectionId, ...without.slice(at)];
+  if (from === zone && ids.every((id, i) => id === target[i])) return null;
+  return { ...layout, [from]: (layout[from] ?? []).filter((id) => id !== sectionId), [zone]: ids };
 }
 
 /** The Resume back on its Theme's default Layout. With no Layout saved, it comes back unchanged. */
