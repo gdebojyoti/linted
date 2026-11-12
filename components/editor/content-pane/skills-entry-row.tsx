@@ -2,7 +2,7 @@ import type { SkillsEntry } from "@/lib/resume/types";
 import type { SkillsEntryChanges } from "@/lib/resume/update-skills-entry";
 import { TextField } from "@/components/common/text-field";
 import { DeleteEntryButton } from "./delete-entry-button";
-import type { EntryReorder } from "./entry-reorder";
+import type { RowReorder } from "@/components/common/drag/row-reorder";
 import { MovableEntryRow } from "./movable-entry-row";
 
 /** A Skills Entry: its label and its Skills as one line of text. It can be moved within the Section. */
@@ -18,7 +18,7 @@ export function SkillsEntryRow({
   entry: SkillsEntry;
   /** Names the Entry for screen readers, e.g. "Languages entry". */
   name: string;
-  reorder: EntryReorder;
+  reorder: RowReorder;
   onUpdate: (changes: SkillsEntryChanges) => void;
   onEnabledChange: (enabled: boolean) => void;
   onDelete: () => void;

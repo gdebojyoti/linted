@@ -3,8 +3,8 @@ import type { ResumeEdit } from "@/lib/resume/types";
 import { LiveMessage } from "@/components/common/live-message";
 import { AddEntryButton } from "./add-entry-button";
 import { entryHeading, entryName, type CardSection, type EntryHeading } from "./entry-name";
-import type { EntryReorder } from "./entry-reorder";
-import { movableEntryListClass } from "./movable-entry-classes";
+import type { RowReorder } from "@/components/common/drag/row-reorder";
+import { movableListClass } from "@/components/common/drag/movable-row-classes";
 import { useEntryList } from "./use-entry-list";
 import { useEntryMoves } from "./use-entry-moves";
 
@@ -19,7 +19,7 @@ export type EntryCardProps = {
   expanded: boolean;
   onToggle: () => void;
   isNew: boolean;
-  reorder: EntryReorder;
+  reorder: RowReorder;
 };
 
 /**
@@ -46,7 +46,7 @@ export function EntryCardList<S extends CardSection>({
   return (
     <div className="flex flex-col gap-3">
       {section.entries.length > 0 && (
-        <ul className={`${movableEntryListClass} [--entry-gap:8px]`}>
+        <ul className={`${movableListClass} [--row-gap:8px]`}>
           {section.entries.map((entry: S["entries"][number], index: number) => (
             <Fragment key={entry.id}>
               {card(entry, {

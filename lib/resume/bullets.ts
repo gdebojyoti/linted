@@ -1,10 +1,13 @@
 import { editEntry, editSections, type EditOptions } from "./edit-sections";
 import type { AddOptions } from "./entries";
+import type { MoveDirection } from "./layout";
 import type { Bullet, Entry, Resume } from "./types";
 
 // Bullet operations. Experience, Projects, Education and Custom Entries have
 // Bullets; other Entries don't. Bullets go two levels deep: top-level
 // Bullets and their children. A child Bullet has no children of its own.
+// Moving a Bullet never changes its level, so it can't make a third one:
+// only nesting and un-nesting do that.
 
 /** The Resume with an Empty, Enabled Bullet added at the end of the Entry's top level. */
 export function addBullet(
@@ -114,6 +117,103 @@ export function unnestBullet(resume: Resume, bulletId: string, options: EditOpti
   );
 }
 
+/**
+ * The Resume with the Bullet placed at this gap in its Entry's Bullets,
+ * counted in reading order as they are now (0 is before the first Bullet,
+ * the number of Bullets after the last), for dropping a dragged Bullet.
+ */
+export function placeBullet(resume: Resume, bulletId: string, index: number, options: EditOptions = {}): Resume {
+  return editInReadingOrder(resume, bulletId, (flat, from) => placedInReadingOrder(flat, from, index), options);
+}
+
+/**
+ * The Resume with the Bullet moved one place up or down, for its arrows. A
+ * top-level Bullet moves past the next top-level Bullet, children and all. A
+ * child moves one place in reading order: past the end of its parent's
+ * children, it becomes the last child of the Bullet above or the first of the
+ * one below. When it can't move, the given Resume comes back unchanged.
+ */
+export function moveBullet(resume: Resume, bulletId: string, direction: MoveDirection, options: EditOptions = {}): Resume {
+  return editInReadingOrder(
+    resume,
+    bulletId,
+    (flat, from) => placedInReadingOrder(flat, from, moveGap(flat, from, direction)),
+    options,
+  );
+}
+
+/** Whether moveBullet would move the Bullet among these, so the editor can disable the arrow. */
+export function canMoveBullet(bullets: Bullet[], bulletId: string, direction: MoveDirection): boolean {
+  return movedBullets(bullets, bulletId, direction) !== null;
+}
+
+/**
+ * The Bullets with this one moved up or down, as moveBullet moves it, or
+ * null when it can't move.
+ */
+export function movedBullets(bullets: Bullet[], bulletId: string, direction: MoveDirection): Bullet[] | null {
+  const flat = flatten(bullets);
+  const from = indexOf(flat, bulletId);
+  const moved = placedInReadingOrder(flat, from, moveGap(flat, from, direction));
+  return moved && unflatten(moved);
+}
+
+/** Whether placeBullet would move the Bullet among these, so a drop marker shows only where a drop does something. */
+export function canPlaceBullet(bullets: Bullet[], bulletId: string, index: number): boolean {
+  return placedBullets(bullets, bulletId, index) !== null;
+}
+
+/**
+ * The Bullets with this one placed at the gap, as placeBullet places it, or
+ * null when the placement can't happen or changes nothing.
+ */
+export function placedBullets(bullets: Bullet[], bulletId: string, index: number): Bullet[] | null {
+  const flat = flatten(bullets);
+  const placed = placedInReadingOrder(flat, indexOf(flat, bulletId), index);
+  return placed && unflatten(placed);
+}
+
+/**
+ * The Bullets in reading order with the one at `from` placed at the gap, or
+ * null when the placement can't happen or changes nothing.
+ */
+function placedInReadingOrder(flat: FlatBullet[], from: number, index: number): FlatBullet[] | null {
+  if (from === -1 || index < 0 || index > flat.length) return null;
+  const end = blockEnd(flat, from);
+  if (index >= from && index <= end) return null;
+  const block = flat.slice(from, end);
+  const rest = [...flat.slice(0, from), ...flat.slice(end)];
+  const at = index > from ? index - block.length : index;
+  // A top-level Bullet only goes where a top-level Bullet starts, or at the end.
+  if (!flat[from].nested && rest[at]?.nested) return null;
+  // A child Bullet needs a top-level Bullet before it, to be its parent.
+  if (flat[from].nested && at === 0) return null;
+  return [...rest.slice(0, at), ...block, ...rest.slice(at)];
+}
+
+/**
+ * The gap a move up or down places the Bullet at `from` in, which may be
+ * outside the list when there's nowhere to go. See moveBullet.
+ */
+function moveGap(flat: FlatBullet[], from: number, direction: MoveDirection): number {
+  if (from === -1) return -1;
+  if (flat[from].nested) return direction === "up" ? from - 1 : from + 2;
+  if (direction === "up") {
+    let start = from - 1;
+    while (start >= 0 && flat[start].nested) start--;
+    return start;
+  }
+  const next = blockEnd(flat, from);
+  return next < flat.length ? blockEnd(flat, next) : flat.length + 1;
+}
+
+/** Where the Bullet at `from` ends in reading order: after its children, if it's top-level. */
+function blockEnd(flat: FlatBullet[], from: number): number {
+  let end = from + 1;
+  if (!flat[from].nested) while (end < flat.length && flat[end].nested) end++;
+  return end;
+}
+
 /** An Entry that has Bullets. */
 type EntryWithBullets = Extract<Entry, { bullets: Bullet[] }>;
 
@@ -164,10 +264,7 @@ function editInReadingOrder(
     (entry) => flatten(entry.bullets).some((f) => f.bullet.id === bulletId),
     (bullets) => {
       const flat = flatten(bullets);
-      const edited = edit(
-        flat,
-        flat.findIndex((f) => f.bullet.id === bulletId),
-      );
+      const edited = edit(flat, indexOf(flat, bulletId));
       return edited ? unflatten(edited) : bullets;
     },
     options,
@@ -180,6 +277,10 @@ function flatten(bullets: Bullet[]): FlatBullet[] {
     { bullet: { ...bullet, children: [] }, nested: false },
     ...bullet.children.map((child) => ({ bullet: child, nested: true })),
   ]);
+}
+
+function indexOf(flat: FlatBullet[], bulletId: string): number {
+  return flat.findIndex((f) => f.bullet.id === bulletId);
 }
 
 /** Groups each nested Bullet under the top-level Bullet before it. */

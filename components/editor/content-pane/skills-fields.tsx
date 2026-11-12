@@ -4,7 +4,7 @@ import { LiveMessage } from "@/components/common/live-message";
 import { AddEntryButton } from "./add-entry-button";
 import { entryName } from "./entry-name";
 import { SkillsEntryRow } from "./skills-entry-row";
-import { movableEntryListClass } from "./movable-entry-classes";
+import { movableListClass } from "@/components/common/drag/movable-row-classes";
 import { useEntryList } from "./use-entry-list";
 import { useEntryMoves } from "./use-entry-moves";
 
@@ -26,7 +26,7 @@ export function SkillsFields({
   return (
     <div className="flex flex-col gap-3">
       {section.entries.length > 0 && (
-        <ul className={`${movableEntryListClass} [--entry-gap:12px]`}>
+        <ul className={`${movableListClass} [--row-gap:12px]`}>
           {section.entries.map((entry, index) => (
             <SkillsEntryRow
               key={entry.id}
