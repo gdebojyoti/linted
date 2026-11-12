@@ -6,8 +6,10 @@ import {
   canPlaceBullet,
   deleteBullet,
   moveBullet,
+  movedBullets,
   nestBullet,
   placeBullet,
+  placedBullets,
   setBulletEnabled,
   unnestBullet,
   updateBullet,
@@ -359,6 +361,19 @@ describe("canMoveBullet", () => {
     expect(canMoveBullet(bullets, "exp-paystream-b1-1", "up")).toBe(false);
     expect(canMoveBullet(bullets, "exp-paystream-b1-2", "down")).toBe(true);
     expect(canMoveBullet(bullets, "exp-paystream-b3", "down")).toBe(false);
+  });
+});
+
+describe("placedBullets and movedBullets", () => {
+  test("give the Bullets as placeBullet and moveBullet leave them, for wording the move, or null when nothing moves", () => {
+    const bullets = bulletsOf(sampleResume, paystream);
+    const ids = (list: Bullet[] | null) =>
+      list?.map((b) => [b.id.replace(`${paystream}-`, ""), ...b.children.map((c) => c.id.replace(`${paystream}-`, ""))]);
+
+    expect(ids(placedBullets(bullets, "exp-paystream-b1-1", 4))).toEqual([["b1", "b1-2"], ["b2", "b1-1"], ["b3"]]);
+    expect(ids(movedBullets(bullets, "exp-paystream-b2", "up"))).toEqual([["b2"], ["b1", "b1-1", "b1-2"], ["b3"]]);
+    expect(placedBullets(bullets, "exp-paystream-b2", 2)).toBeNull();
+    expect(movedBullets(bullets, "exp-paystream-b1", "up")).toBeNull();
   });
 });
 

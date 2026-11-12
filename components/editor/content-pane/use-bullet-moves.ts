@@ -2,7 +2,14 @@ import { useState } from "react";
 import type { RowReorder } from "@/components/common/drag/row-reorder";
 import type { DropSide } from "@/components/common/drag/use-reorderable";
 import { bulletLines } from "@/lib/resume/bullet-lines";
-import { bulletMoveGap, canMoveBullet, canPlaceBullet, placeBullet, placedBullets } from "@/lib/resume/bullets";
+import {
+  canMoveBullet,
+  canPlaceBullet,
+  moveBullet,
+  movedBullets,
+  placeBullet,
+  placedBullets,
+} from "@/lib/resume/bullets";
 import type { MoveDirection } from "@/lib/resume/layout";
 import type { Bullet, ResumeEdit } from "@/lib/resume/types";
 
@@ -26,12 +33,20 @@ export function useBulletMoves(entryId: string, bullets: Bullet[], onEdit: (edit
   const numberIn = (list: Bullet[], bulletId: string) =>
     bulletLines(list).find((line) => line.bullet.id === bulletId)?.number;
 
-  /** Places the Bullet at the gap, and words the move from the Bullets as they are now. */
-  function place(bulletId: string, index: number, wording: string) {
-    const placed = placedBullets(bullets, bulletId, index);
-    if (!placed) return;
-    onEdit((resume) => placeBullet(resume, bulletId, index));
-    setAnnouncement(`Bullet ${numberIn(bullets, bulletId)} ${wording}, now Bullet ${numberIn(placed, bulletId)}.`);
+  /** Makes the edit, and words the move from the Bullets as they are now and as they'll be. */
+  function apply(bulletId: string, after: Bullet[] | null, edit: ResumeEdit, wording: string) {
+    if (!after) return;
+    onEdit(edit);
+    setAnnouncement(`Bullet ${numberIn(bullets, bulletId)} ${wording}, now Bullet ${numberIn(after, bulletId)}.`);
+  }
+
+  function place(bulletId: string, index: number) {
+    apply(bulletId, placedBullets(bullets, bulletId, index), (r) => placeBullet(r, bulletId, index), "dropped");
+  }
+
+  function move(bulletId: string, direction: MoveDirection) {
+    const after = movedBullets(bullets, bulletId, direction);
+    apply(bulletId, after, (r) => moveBullet(r, bulletId, direction), `moved ${direction}`);
   }
 
   function reorder(bulletId: string): RowReorder {
@@ -39,11 +54,10 @@ export function useBulletMoves(entryId: string, bullets: Bullet[], onEdit: (edit
       group: `bullets-${entryId}`,
       id: bulletId,
       canMove: (direction) => canMoveBullet(bullets, bulletId, direction),
-      onMove: (direction: MoveDirection) =>
-        place(bulletId, bulletMoveGap(bullets, bulletId, direction), `moved ${direction}`),
+      onMove: (direction) => move(bulletId, direction),
       accepts: (sourceId, side) => canPlaceBullet(bullets, sourceId, gapBeside(bulletId, side)),
       /** Only called once `accepts` has said yes. */
-      onDrop: (sourceId, side) => place(sourceId, gapBeside(bulletId, side), "dropped"),
+      onDrop: (sourceId, side) => place(sourceId, gapBeside(bulletId, side)),
     };
   }
 

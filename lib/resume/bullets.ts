@@ -144,13 +144,18 @@ export function moveBullet(resume: Resume, bulletId: string, direction: MoveDire
 
 /** Whether moveBullet would move the Bullet among these, so the editor can disable the arrow. */
 export function canMoveBullet(bullets: Bullet[], bulletId: string, direction: MoveDirection): boolean {
-  return placedBullets(bullets, bulletId, bulletMoveGap(bullets, bulletId, direction)) !== null;
+  return movedBullets(bullets, bulletId, direction) !== null;
 }
 
-/** The gap in reading order that moveBullet places the Bullet at. */
-export function bulletMoveGap(bullets: Bullet[], bulletId: string, direction: MoveDirection): number {
+/**
+ * The Bullets with this one moved up or down, as moveBullet moves it, or
+ * null when it can't move.
+ */
+export function movedBullets(bullets: Bullet[], bulletId: string, direction: MoveDirection): Bullet[] | null {
   const flat = flatten(bullets);
-  return moveGap(flat, indexOf(flat, bulletId), direction);
+  const from = indexOf(flat, bulletId);
+  const moved = placedInReadingOrder(flat, from, moveGap(flat, from, direction));
+  return moved && unflatten(moved);
 }
 
 /** Whether placeBullet would move the Bullet among these, so a drop marker shows only where a drop does something. */
