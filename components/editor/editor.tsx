@@ -13,6 +13,7 @@ import { EditorFrame } from "./editor-frame";
 import { usePdfExport } from "./export/use-pdf-export";
 import { LayoutPane } from "./layout-pane/layout-pane";
 import { LeftPane } from "./left-pane";
+import { usePdfFile } from "./pdf/use-pdf-file";
 import { PreviewPane } from "./preview-pane/preview-pane";
 import { FIRST_TAB } from "./tabs/editor-tab";
 import { EditorTabPanel } from "./tabs/editor-tab-panel";
@@ -33,7 +34,8 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
   /** The Duplicate button, which gets focus back when the dialog closes. */
   const duplicateRef = useRef<HTMLElement>(null);
   useAutosave(resume, initialResume);
-  const { canExport, exporting, exportPdf } = usePdfExport(resume);
+  const pdf = usePdfFile(resume);
+  const { canExport, exporting, exportPdf } = usePdfExport(resume.metadata.title, pdf);
 
   /** Every edit is a Resume module function, applied to the latest Resume. */
   function handleEdit(edit: ResumeEdit) {
@@ -92,7 +94,7 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
             <TabPlaceholder title="Theme settings are coming soon">You&apos;ll customize Ledger here.</TabPlaceholder>
           </EditorTabPanel>
         </LeftPane>
-        <PreviewPane resume={resume} />
+        <PreviewPane pdf={pdf.preview} />
         <ResumeTitleDialog
           open={naming}
           onOpenChange={(open) => !duplicating && setNaming(open)}

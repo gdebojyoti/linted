@@ -2,9 +2,9 @@ import { StyleSheet } from "@react-pdf/renderer";
 import { LEDGER_FONT_FAMILY } from "./fonts";
 
 /*
- * Ledger's look, the same as the HTML Ledger (../ledger.module.css). The
- * design is drawn on a 612 x 792 page, so its px values are used as pt, on an
- * A4 page. react-pdf's lengths are in pt.
+ * Ledger's look (docs/design/linted-editor-design/). The design is drawn on
+ * a 612 x 792 page, so its px values are used as pt, on an A4 page.
+ * react-pdf's lengths are in pt.
  */
 
 export const colors = {

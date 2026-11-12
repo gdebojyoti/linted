@@ -1,54 +1,36 @@
 import { Notice } from "@/components/common/notice";
-import { layoutOf } from "@/lib/resume/layout";
-import { renderableView } from "@/lib/resume/renderable-view";
-import type { Resume } from "@/lib/resume/types";
-import { placeSections } from "@/lib/theme/place-sections";
-import { useTheme } from "@/components/editor/theme/use-theme";
+import type { PreviewState } from "@/components/editor/pdf/use-pdf-file";
+import { PdfPreview } from "./pdf-preview";
 
 /**
- * The preview area belongs to the app; everything inside the page belongs to
- * the Theme. The page is shown at its real A4 size. It is the Theme's HTML
- * page, while Export draws the Theme's PDF, so the two may differ slightly
- * until the preview shows the PDF too (ADR 0006).
+ * The preview area belongs to the app; the page inside it is the Resume's
+ * PDF, the same file Export downloads (ADR 0006). It updates a moment after
+ * an edit, once the PDF is rebuilt.
  *
- * Drawn straight from the Resume it is given, so it updates whenever that
- * Resume changes, its Layout included (ADR 0005).
- *
- * Until both the Resume and its Theme have loaded, one note says the preview
- * is loading. After that, a note shows only when nothing is Enabled and
- * filled in.
+ * Until the Resume, its Theme and its first PDF are ready, one note says the
+ * preview is loading. After that, a note shows only when nothing is Enabled
+ * and filled in.
  */
-export function PreviewPane({
-  resume,
-}: {
-  /** Null while the Resume is read. */
-  resume: Resume | null;
-}) {
-  const theme = useTheme(resume?.themeSettings.themeId ?? null);
-
+export function PreviewPane({ pdf }: { pdf: PreviewState }) {
   function page() {
-    if (!resume || !theme) {
-      return (
-        <div className="pt-32">
-          <Notice title="Loading preview…" />
-        </div>
-      );
+    switch (pdf.status) {
+      case "loading":
+        return (
+          <div className="pt-32">
+            <Notice title="Loading preview…" />
+          </div>
+        );
+      case "empty":
+        return (
+          <div className="pt-32">
+            <Notice title="Nothing to preview yet">
+              Fill in any section on the left to see your resume here. Disabled sections aren&apos;t shown.
+            </Notice>
+          </div>
+        );
+      case "ready":
+        return <PdfPreview file={pdf.file} />;
     }
-    const { sections } = renderableView(resume);
-    if (sections.length === 0) {
-      return (
-        <div className="pt-32">
-          <Notice title="Nothing to preview yet">
-            Fill in any section on the left to see your resume here. Disabled sections aren&apos;t shown.
-          </Notice>
-        </div>
-      );
-    }
-    return (
-      <div className="h-fit shrink-0 shadow-page">
-        <theme.Page zones={placeSections(sections, layoutOf(resume, theme))} />
-      </div>
-    );
   }
 
   return (
@@ -56,7 +38,7 @@ export function PreviewPane({
       <div className="flex h-11 shrink-0 items-center border-b border-line bg-app px-5">
         <span className="text-[13px] font-semibold">Preview</span>
       </div>
-      <div className="flex grow justify-center overflow-auto p-6">{page()}</div>
+      <div className="flex grow justify-center overflow-auto">{page()}</div>
     </main>
   );
 }
