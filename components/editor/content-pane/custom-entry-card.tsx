@@ -18,6 +18,7 @@ import type { EntryCardProps } from "./entry-card-list";
 export function CustomEntryCard({
   entry,
   name,
+  heading,
   reorder,
   onEdit,
   onEnabledChange,
@@ -29,10 +30,6 @@ export function CustomEntryCard({
   entry: CustomEntry;
   onEdit: (edit: ResumeEdit) => void;
 } & EntryCardProps) {
-  const title = entry.title.trim();
-  const subtitle = entry.subtitle.trim();
-  const named = title || subtitle;
-
   return (
     <EntryCard
       name={name}
@@ -42,17 +39,7 @@ export function CustomEntryCard({
       expanded={expanded}
       onToggle={onToggle}
       reorder={reorder}
-      title={
-        named ? (
-          <>
-            {title && <span className="font-semibold">{title}</span>}
-            {title && subtitle && " "}
-            {subtitle && <span className="text-ink-muted">{subtitle}</span>}
-          </>
-        ) : (
-          <span className="text-ink-meta">New entry</span>
-        )
-      }
+      heading={heading}
       meta={entry.dates.current ? <Badge>Current</Badge> : formatDateRange(entry.dates)}
     >
       <div className="flex flex-col gap-4">

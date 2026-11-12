@@ -2,7 +2,7 @@ import { Fragment, useState, type ReactNode } from "react";
 import type { ResumeEdit } from "@/lib/resume/types";
 import { LiveMessage } from "@/components/common/live-message";
 import { AddEntryButton } from "./add-entry-button";
-import { entryName, type MovableSection } from "./entry-name";
+import { entryHeading, entryName, type CardSection, type EntryHeading } from "./entry-name";
 import type { EntryReorder } from "./entry-reorder";
 import { movableEntryListClass } from "./movable-entry-classes";
 import { useEntryList } from "./use-entry-list";
@@ -12,6 +12,8 @@ import { useEntryMoves } from "./use-entry-moves";
 export type EntryCardProps = {
   /** Names the Entry for screen readers, e.g. "Paystream entry". */
   name: string;
+  /** What the card's header line shows, e.g. the company and role. */
+  heading: EntryHeading;
   onEnabledChange: (enabled: boolean) => void;
   onDelete: () => void;
   expanded: boolean;
@@ -28,7 +30,7 @@ export type EntryCardProps = {
  * Cards are dragged or moved with their arrows within the Section, and each
  * move is read out to screen readers.
  */
-export function EntryCardList<S extends MovableSection>({
+export function EntryCardList<S extends CardSection>({
   section,
   onEdit,
   card,
@@ -49,6 +51,7 @@ export function EntryCardList<S extends MovableSection>({
             <Fragment key={entry.id}>
               {card(entry, {
                 name: entryName(section, index),
+                heading: entryHeading(section, index),
                 onEnabledChange: (enabled) => setEnabled(entry.id, enabled),
                 onDelete: () => remove(entry.id),
                 expanded: entry.id === openId,

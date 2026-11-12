@@ -5,6 +5,7 @@ import { MoveArrows } from "@/components/common/drag/move-arrows";
 import { useReorderable } from "@/components/common/drag/use-reorderable";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DeleteEntryButton } from "./delete-entry-button";
+import type { EntryHeading } from "./entry-name";
 import type { EntryReorder } from "./entry-reorder";
 import { ExpandButton } from "./expand-button";
 import { isControlClick } from "./is-control-click";
@@ -12,11 +13,11 @@ import { arrowsOnHoverOrFocusClass, movableEntryClass } from "./movable-entry-cl
 
 /**
  * An Entry with many fields (a job, a project, a degree) as a card: a header
- * line with its grip, its Enabled checkbox, a short description of it, its
- * move arrows, its delete button and a chevron. Clicking anywhere on the
+ * line with its grip, its Enabled checkbox, its heading (e.g. the company in
+ * bold and the role in grey), its move arrows, its delete button and a chevron. Clicking anywhere on the
  * line opens or closes its fields, except on its controls; keyboard and
  * screen reader users get the chevron button. Whether it's open is up to the
- * parent, which keeps one card open at a time. The description is grey
+ * parent, which keeps one card open at a time. The heading is grey
  * while the Entry is Disabled.
  *
  * Open or closed, the card is dragged by its grip, within its Section; a
@@ -31,7 +32,7 @@ export function EntryCard({
   enabled,
   onEnabledChange,
   onDelete,
-  title,
+  heading: { main, detail },
   meta,
   expanded,
   onToggle,
@@ -43,8 +44,8 @@ export function EntryCard({
   enabled: boolean;
   onEnabledChange: (enabled: boolean) => void;
   onDelete: () => void;
-  /** What the Entry is, e.g. its company and role. */
-  title: ReactNode;
+  /** What the Entry is, e.g. its company and role; "New entry" while both are blank. */
+  heading: EntryHeading;
   /** Shown on the right of the header line, e.g. its dates. */
   meta?: ReactNode;
   expanded: boolean;
@@ -71,7 +72,15 @@ export function EntryCard({
           aria-label={`${name} enabled`}
         />
         <div className={`min-w-0 grow truncate text-[13px] ${enabled ? "text-ink" : "text-ink-disabled"}`}>
-          {title}
+          {main || detail ? (
+            <>
+              {main && <span className="font-semibold">{main}</span>}
+              {main && detail && " "}
+              {detail && <span className="text-ink-muted">{detail}</span>}
+            </>
+          ) : (
+            <span className="text-ink-meta">New entry</span>
+          )}
         </div>
         {meta && <div className="shrink-0 text-xs text-ink-meta">{meta}</div>}
         <MoveArrows

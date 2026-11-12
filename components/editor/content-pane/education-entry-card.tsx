@@ -18,6 +18,7 @@ import type { EntryCardProps } from "./entry-card-list";
 export function EducationEntryCard({
   entry,
   name,
+  heading,
   reorder,
   onEdit,
   onEnabledChange,
@@ -29,10 +30,6 @@ export function EducationEntryCard({
   entry: EducationEntry;
   onEdit: (edit: ResumeEdit) => void;
 } & EntryCardProps) {
-  const institution = entry.institution.trim();
-  const degree = entry.degree.trim();
-  const named = institution || degree;
-
   return (
     <EntryCard
       name={name}
@@ -42,17 +39,7 @@ export function EducationEntryCard({
       expanded={expanded}
       onToggle={onToggle}
       reorder={reorder}
-      title={
-        named ? (
-          <>
-            {institution && <span className="font-semibold">{institution}</span>}
-            {institution && degree && " "}
-            {degree && <span className="text-ink-muted">{degree}</span>}
-          </>
-        ) : (
-          <span className="text-ink-meta">New entry</span>
-        )
-      }
+      heading={heading}
       meta={entry.dates.current ? <Badge>Current</Badge> : formatDateRange(entry.dates)}
     >
       <div className="flex flex-col gap-4">
