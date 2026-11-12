@@ -5,6 +5,7 @@ import { MoveArrows } from "@/components/common/drag/move-arrows";
 import { useReorderable } from "@/components/common/drag/use-reorderable";
 import type { EntryReorder } from "./entry-reorder";
 import { EntryRow } from "./entry-row";
+import { arrowsOnHoverOrFocusClass, movableEntryClass } from "./movable-entry-classes";
 
 /**
  * An EntryRow that can be moved within its Section (a Skills or Summary
@@ -13,9 +14,8 @@ import { EntryRow } from "./entry-row";
  * row's action, and show while the pointer is over the row or focus is in
  * it.
  *
- * The list sets `--entry-gap`, the space between rows, and is `isolate`. A
- * row takes drops over its own half of the gap either side (its `before:`
- * layer, behind the row), so no drop between rows is lost.
+ * A row takes drops over its own half of the gap either side (see
+ * movable-entry-classes), so no drop between rows is lost.
  */
 export function MovableEntryRow({
   reorder,
@@ -29,14 +29,14 @@ export function MovableEntryRow({
       {...props}
       ref={ref}
       grip={<DragGrip ref={handleRef} />}
-      className={`group/entry relative before:absolute before:inset-x-0 before:-inset-y-[calc(var(--entry-gap)/2)] before:-z-10 ${dragging ? "opacity-40" : ""}`}
+      className={`${movableEntryClass(dragging)} before:-inset-y-[calc(var(--entry-gap)/2)]`}
       action={
         <>
           <MoveArrows
             name={props.name}
             canMove={reorder.canMove}
             onMove={reorder.onMove}
-            className="opacity-0 group-hover/entry:opacity-100 group-focus-within/entry:opacity-100"
+            className={arrowsOnHoverOrFocusClass}
           />
           {action}
         </>

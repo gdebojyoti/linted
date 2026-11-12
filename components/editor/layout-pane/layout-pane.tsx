@@ -1,5 +1,6 @@
 import { Info, RotateCcw } from "lucide-react";
 import { useState } from "react";
+import { LiveMessage } from "@/components/common/live-message";
 import { Notice } from "@/components/common/notice";
 import { Button } from "@/components/ui/button";
 import type { DropSide } from "@/components/common/drag/use-reorderable";
@@ -138,9 +139,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
         Drag a section to move it, or point to it or Tab to it and use its arrows. Empty and disabled sections can be placed too; they
         won&apos;t appear in your resume.
       </p>
-      <p aria-live="polite" className="sr-only">
-        {announcement()}
-      </p>
+      <LiveMessage message={announcement()} />
     </div>
   );
 }

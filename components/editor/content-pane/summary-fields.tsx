@@ -1,8 +1,10 @@
 import type { ResumeEdit, SummarySection } from "@/lib/resume/types";
 import { updateSummaryEntry } from "@/lib/resume/update-summary-entry";
+import { LiveMessage } from "@/components/common/live-message";
 import { AddEntryButton } from "./add-entry-button";
 import { entryName } from "./entry-name";
 import { SummaryEntryRow } from "./summary-entry-row";
+import { movableEntryListClass } from "./movable-entry-classes";
 import { useEntryList } from "./use-entry-list";
 import { useEntryMoves } from "./use-entry-moves";
 
@@ -25,7 +27,7 @@ export function SummaryFields({
   return (
     <div className="flex flex-col gap-3">
       {section.entries.length > 0 && (
-        <ul className="isolate flex flex-col gap-(--entry-gap) [--entry-gap:16px]">
+        <ul className={`${movableEntryListClass} [--entry-gap:16px]`}>
           {section.entries.map((entry, index) => (
             <SummaryEntryRow
               key={entry.id}
@@ -43,9 +45,7 @@ export function SummaryFields({
       <AddEntryButton ref={addButtonRef} onClick={add}>
         Add summary
       </AddEntryButton>
-      <p aria-live="polite" className="sr-only">
-        {announcement}
-      </p>
+      <LiveMessage message={announcement} />
     </div>
   );
 }

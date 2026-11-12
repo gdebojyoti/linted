@@ -1,8 +1,10 @@
 import type { ResumeEdit, SkillsSection } from "@/lib/resume/types";
 import { updateSkillsEntry } from "@/lib/resume/update-skills-entry";
+import { LiveMessage } from "@/components/common/live-message";
 import { AddEntryButton } from "./add-entry-button";
 import { entryName } from "./entry-name";
 import { SkillsEntryRow } from "./skills-entry-row";
+import { movableEntryListClass } from "./movable-entry-classes";
 import { useEntryList } from "./use-entry-list";
 import { useEntryMoves } from "./use-entry-moves";
 
@@ -24,7 +26,7 @@ export function SkillsFields({
   return (
     <div className="flex flex-col gap-3">
       {section.entries.length > 0 && (
-        <ul className="isolate flex flex-col gap-(--entry-gap) [--entry-gap:12px]">
+        <ul className={`${movableEntryListClass} [--entry-gap:12px]`}>
           {section.entries.map((entry, index) => (
             <SkillsEntryRow
               key={entry.id}
@@ -42,9 +44,7 @@ export function SkillsFields({
       <AddEntryButton ref={addButtonRef} onClick={add}>
         Add entry
       </AddEntryButton>
-      <p aria-live="polite" className="sr-only">
-        {announcement}
-      </p>
+      <LiveMessage message={announcement} />
     </div>
   );
 }

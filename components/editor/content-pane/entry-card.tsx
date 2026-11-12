@@ -8,6 +8,7 @@ import { DeleteEntryButton } from "./delete-entry-button";
 import type { EntryReorder } from "./entry-reorder";
 import { ExpandButton } from "./expand-button";
 import { isControlClick } from "./is-control-click";
+import { arrowsOnHoverOrFocusClass, movableEntryClass } from "./movable-entry-classes";
 
 /**
  * An Entry with many fields (a job, a project, a degree) as a card: a header
@@ -22,9 +23,8 @@ import { isControlClick } from "./is-control-click";
  * marker shows where it will land. Its arrows are the keyboard path: they
  * show while the pointer is over the card or focus is in it.
  *
- * The list sets `--entry-gap`, the space between cards, and is `isolate`. A
- * card takes drops over its own half of the gap either side (its `before:`
- * layer, behind the card), so no drop between cards is lost.
+ * A card takes drops over its own half of the gap either side, past its
+ * 1px border (see movable-entry-classes), so no drop between cards is lost.
  */
 export function EntryCard({
   name,
@@ -58,7 +58,7 @@ export function EntryCard({
   return (
     <li
       ref={ref}
-      className={`group/entry relative rounded-lg border border-line bg-surface before:absolute before:inset-x-0 before:-inset-y-[calc(var(--entry-gap)/2_+_1px)] before:-z-10 ${dragging ? "opacity-40" : ""}`}
+      className={`${movableEntryClass(dragging)} rounded-lg border border-line bg-surface before:-inset-y-[calc(var(--entry-gap)/2_+_1px)]`}
     >
       <div
         onClick={(event) => !isControlClick(event) && onToggle()}
@@ -78,7 +78,7 @@ export function EntryCard({
           name={name}
           canMove={reorder.canMove}
           onMove={reorder.onMove}
-          className="opacity-0 group-hover/entry:opacity-100 group-focus-within/entry:opacity-100"
+          className={arrowsOnHoverOrFocusClass}
         />
         <DeleteEntryButton label={`Delete ${name}`} onClick={onDelete} />
         <ExpandButton expanded={expanded} onClick={onToggle} controls={bodyId} name={name} />

@@ -1,8 +1,10 @@
 import { Fragment, useState, type ReactNode } from "react";
 import type { ResumeEdit } from "@/lib/resume/types";
+import { LiveMessage } from "@/components/common/live-message";
 import { AddEntryButton } from "./add-entry-button";
 import { entryName, type MovableSection } from "./entry-name";
 import type { EntryReorder } from "./entry-reorder";
+import { movableEntryListClass } from "./movable-entry-classes";
 import { useEntryList } from "./use-entry-list";
 import { useEntryMoves } from "./use-entry-moves";
 
@@ -42,7 +44,7 @@ export function EntryCardList<S extends MovableSection>({
   return (
     <div className="flex flex-col gap-3">
       {section.entries.length > 0 && (
-        <ul className="isolate flex flex-col gap-(--entry-gap) [--entry-gap:8px]">
+        <ul className={`${movableEntryListClass} [--entry-gap:8px]`}>
           {section.entries.map((entry: S["entries"][number], index: number) => (
             <Fragment key={entry.id}>
               {card(entry, {
@@ -61,9 +63,7 @@ export function EntryCardList<S extends MovableSection>({
       <AddEntryButton ref={addButtonRef} onClick={() => setOpenId(add())}>
         Add entry
       </AddEntryButton>
-      <p aria-live="polite" className="sr-only">
-        {announcement}
-      </p>
+      <LiveMessage message={announcement} />
     </div>
   );
 }
