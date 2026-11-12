@@ -9,7 +9,7 @@ import type { EntryHeading } from "./entry-name";
 import type { RowReorder } from "@/components/common/drag/row-reorder";
 import { ExpandButton } from "./expand-button";
 import { isControlClick } from "./is-control-click";
-import { arrowsOnHoverOrFocusClass, movableEntryClass } from "./movable-entry-classes";
+import { arrowsOnHoverOrFocusClass, movableRowClass } from "@/components/common/drag/movable-row-classes";
 
 /**
  * An Entry with many fields (a job, a project, a degree) as a card: a header
@@ -25,7 +25,7 @@ import { arrowsOnHoverOrFocusClass, movableEntryClass } from "./movable-entry-cl
  * show while the pointer is over the card or focus is in it.
  *
  * A card takes drops over its own half of the gap either side, past its
- * 1px border (see movable-entry-classes), so no drop between cards is lost.
+ * 1px border (see movable-row-classes), so no drop between cards is lost.
  */
 export function EntryCard({
   name,
@@ -59,7 +59,7 @@ export function EntryCard({
   return (
     <li
       ref={ref}
-      className={`${movableEntryClass(dragging)} rounded-lg border border-line bg-surface before:-inset-y-[calc(var(--entry-gap)/2_+_1px)]`}
+      className={`${movableRowClass("entry", dragging)} before:inset-x-0 rounded-lg border border-line bg-surface before:-inset-y-[calc(var(--row-gap)/2_+_1px)]`}
     >
       <div
         onClick={(event) => !isControlClick(event) && onToggle()}
@@ -87,7 +87,7 @@ export function EntryCard({
           name={name}
           canMove={reorder.canMove}
           onMove={reorder.onMove}
-          className={arrowsOnHoverOrFocusClass}
+          className={arrowsOnHoverOrFocusClass("entry")}
         />
         <DeleteEntryButton label={`Delete ${name}`} onClick={onDelete} />
         <ExpandButton expanded={expanded} onClick={onToggle} controls={bodyId} name={name} />
@@ -95,7 +95,7 @@ export function EntryCard({
       <div id={bodyId} hidden={!expanded} className="border-t border-line-soft px-3 pt-3 pb-4">
         {children}
       </div>
-      {dropSide && <DropMarker side={dropSide} outset="var(--entry-gap) / 2 + 2px" />}
+      {dropSide && <DropMarker side={dropSide} outset="var(--row-gap) / 2 + 2px" />}
     </li>
   );
 }

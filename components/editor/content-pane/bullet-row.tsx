@@ -2,6 +2,7 @@ import { IndentDecrease, IndentIncrease } from "lucide-react";
 import { useId } from "react";
 import { DragGrip } from "@/components/common/drag/drag-grip";
 import { DropMarker } from "@/components/common/drag/drop-marker";
+import { arrowsOnHoverOrFocusClass, movableRowClass } from "@/components/common/drag/movable-row-classes";
 import { MoveArrows } from "@/components/common/drag/move-arrows";
 import type { RowReorder } from "@/components/common/drag/row-reorder";
 import { useReorderable } from "@/components/common/drag/use-reorderable";
@@ -74,9 +75,9 @@ export function BulletRow({
   return (
     <li
       ref={ref}
-      className={`group/bullet relative py-1 before:absolute before:inset-y-0 before:right-0 before:-z-10 ${
+      className={`${movableRowClass("bullet", dragging || faded)} py-1 before:inset-y-0 before:right-0 ${
         nested ? "ml-6.5 border-l border-line pl-2.5 before:-left-6.75" : "before:left-0"
-      } ${dragging || faded ? "opacity-40" : ""}`}
+      }`}
     >
       <div className="flex items-start gap-2">
         <div className="flex h-9 shrink-0 items-center gap-2">
@@ -112,7 +113,7 @@ export function BulletRow({
             name={name}
             canMove={reorder.canMove}
             onMove={reorder.onMove}
-            className="opacity-0 group-hover/bullet:opacity-100 group-focus-within/bullet:opacity-100"
+            className={arrowsOnHoverOrFocusClass("bullet")}
           />
           <Button
             variant="ghost"

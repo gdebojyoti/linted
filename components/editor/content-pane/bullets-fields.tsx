@@ -1,4 +1,5 @@
 import { useId, useRef, useState } from "react";
+import { movableListClass } from "@/components/common/drag/movable-row-classes";
 import { LiveMessage } from "@/components/common/live-message";
 import { bulletLines } from "@/lib/resume/bullet-lines";
 import {
@@ -80,7 +81,7 @@ export function BulletsFields({
         </span>
       </div>
       {lines.length > 0 && (
-        <ul className="isolate flex flex-col">
+        <ul className={`${movableListClass} [--row-gap:0px]`}>
           {lines.map((line) => {
             const bulletId = line.bullet.id;
             return (

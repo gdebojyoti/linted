@@ -5,7 +5,7 @@ import { MoveArrows } from "@/components/common/drag/move-arrows";
 import { useReorderable } from "@/components/common/drag/use-reorderable";
 import type { RowReorder } from "@/components/common/drag/row-reorder";
 import { EntryRow } from "./entry-row";
-import { arrowsOnHoverOrFocusClass, movableEntryClass } from "./movable-entry-classes";
+import { arrowsOnHoverOrFocusClass, movableRowClass } from "@/components/common/drag/movable-row-classes";
 
 /**
  * An EntryRow that can be moved within its Section (a Skills or Summary
@@ -15,7 +15,7 @@ import { arrowsOnHoverOrFocusClass, movableEntryClass } from "./movable-entry-cl
  * it.
  *
  * A row takes drops over its own half of the gap either side (see
- * movable-entry-classes), so no drop between rows is lost.
+ * movable-row-classes), so no drop between rows is lost.
  */
 export function MovableEntryRow({
   reorder,
@@ -29,19 +29,19 @@ export function MovableEntryRow({
       {...props}
       ref={ref}
       grip={<DragGrip ref={handleRef} />}
-      className={`${movableEntryClass(dragging)} before:-inset-y-[calc(var(--entry-gap)/2)]`}
+      className={`${movableRowClass("entry", dragging)} before:inset-x-0 before:-inset-y-[calc(var(--row-gap)/2)]`}
       action={
         <>
           <MoveArrows
             name={props.name}
             canMove={reorder.canMove}
             onMove={reorder.onMove}
-            className={arrowsOnHoverOrFocusClass}
+            className={arrowsOnHoverOrFocusClass("entry")}
           />
           {action}
         </>
       }
-      overlay={dropSide && <DropMarker side={dropSide} outset="var(--entry-gap) / 2 + 1px" />}
+      overlay={dropSide && <DropMarker side={dropSide} outset="var(--row-gap) / 2 + 1px" />}
     />
   );
 }
