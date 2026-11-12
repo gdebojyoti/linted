@@ -1,5 +1,6 @@
 import {
   DEFAULT_RESUME_TITLE,
+  NO_THEME_OPTIONS_PICKED,
   DEFAULT_THEME_ID,
   SCHEMA_VERSION,
   FIXED_CONTACT_KINDS,
@@ -34,7 +35,7 @@ export function newResume({
       createdAt: timestamp,
       lastEditedAt: timestamp,
     },
-    themeSettings: { themeId: DEFAULT_THEME_ID, layout: null },
+    themeSettings: { themeId: DEFAULT_THEME_ID, layout: null, options: { ...NO_THEME_OPTIONS_PICKED } },
     content: {
       sections: [
         {
