@@ -4,7 +4,8 @@ import type { Rendered } from "@/lib/resume/renderable-view";
 import type { SummarySection as StoredSummarySection } from "@/lib/resume/types";
 import { ProseText } from "./prose-text";
 import { SectionTitle } from "./section-title";
-import { SPACE_BETWEEN_PARAGRAPHS, TWO_LINES } from "./styles";
+import { useLedgerLook } from "./look";
+import { SPACE_BETWEEN_PARAGRAPHS } from "./styles";
 
 /**
  * A Summary: its title, then a paragraph per Entry, keeping the line breaks
@@ -20,9 +21,10 @@ export function SummarySection({
   section: Rendered<StoredSummarySection>;
   spaceBefore: number;
 }) {
+  const { twoLines } = useLedgerLook();
   return (
     <>
-      <SectionTitle title={section.title} spaceBefore={spaceBefore} keepWithNext={TWO_LINES} />
+      <SectionTitle title={section.title} spaceBefore={spaceBefore} keepWithNext={twoLines} />
       {section.entries.map((entry, i) => (
         <Text key={entry.id} style={{ marginTop: i === 0 ? 0 : SPACE_BETWEEN_PARAGRAPHS }}>
           <ProseText nodes={parseProse(entry.text)} />

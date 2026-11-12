@@ -1,4 +1,5 @@
 import { View } from "@react-pdf/renderer";
+import { useLedgerLook } from "./look";
 import { styles } from "./styles";
 
 /**
@@ -7,8 +8,10 @@ import { styles } from "./styles";
  * never depends on the font having one.
  */
 export function BulletMarker({ hollow }: { hollow: boolean }) {
+  // As tall as a line of text, so the dot sits beside the first line.
+  const { oneLine } = useLedgerLook();
   return (
-    <View style={styles.bulletMarker}>
+    <View style={[styles.bulletMarker, { height: oneLine }]}>
       <View style={hollow ? styles.bulletDotHollow : styles.bulletDot} />
     </View>
   );

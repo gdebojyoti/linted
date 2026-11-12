@@ -1,4 +1,5 @@
 import { Text } from "@react-pdf/renderer";
+import { useLedgerLook } from "./look";
 import { styles } from "./styles";
 
 /**
@@ -14,8 +15,9 @@ export function SectionTitle({
   spaceBefore?: number;
   keepWithNext?: number;
 }) {
+  const { accent } = useLedgerLook();
   return (
-    <Text style={[styles.sectionTitle, { marginTop: spaceBefore }]} minPresenceAhead={keepWithNext}>
+    <Text style={[styles.sectionTitle, { marginTop: spaceBefore, color: accent }]} minPresenceAhead={keepWithNext}>
       {title}
     </Text>
   );

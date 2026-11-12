@@ -1,6 +1,7 @@
 import { Link } from "@react-pdf/renderer";
 import type { ReactNode } from "react";
 import { linkHref } from "@/lib/format/link-href";
+import { useLedgerLook } from "./look";
 import { styles } from "./styles";
 
 /**
@@ -8,10 +9,11 @@ import { styles } from "./styles";
  * missing or unsafe. Drawn inside a `<Text>`.
  */
 export function TextLink({ url, children }: { url: string; children: ReactNode }) {
+  const { accent } = useLedgerLook();
   const href = linkHref(url);
   if (!href) return <>{children}</>;
   return (
-    <Link src={href} style={styles.link}>
+    <Link src={href} style={[styles.link, { color: accent }]}>
       {children}
     </Link>
   );

@@ -1,4 +1,5 @@
-import { Fragment, isValidElement, type ReactElement, type ReactNode } from "react";
+import { pdf, type DocumentProps } from "@react-pdf/renderer";
+import type { ReactElement } from "react";
 
 /** A react-pdf primitive ("VIEW", "TEXT", "LINK"…) with its style flattened into one object. */
 export type Primitive = {
@@ -10,28 +11,34 @@ export type Primitive = {
 
 export type PrimitiveNode = Primitive | string;
 
+/** A node as react-pdf builds it while rendering, before any layout. */
+type RenderedNode = {
+  type: string;
+  value?: string;
+  props?: Record<string, unknown>;
+  style?: unknown;
+  children?: RenderedNode[];
+};
+
 /**
- * Expands a Theme's components into the react-pdf primitives they draw, so
- * tests can check what reading the PDF back can't: colours, sizes, and which
- * parts are kept together on a page. Theme components are plain functions of
- * their props (no hooks), so each is simply called.
+ * Renders a Theme's Document with react-pdf, without laying it out, and gives
+ * the primitives it drew, so tests can check what reading the PDF back can't:
+ * colours, sizes, and which parts are kept together on a page. Hooks and
+ * context work, as in a real render.
  */
-export function primitiveTree(node: ReactNode): PrimitiveNode[] {
-  if (node === null || node === undefined || typeof node === "boolean") return [];
-  if (typeof node === "string" || typeof node === "number") return [String(node)];
-  if (Array.isArray(node)) return node.flatMap(primitiveTree);
-  if (!isValidElement(node)) throw new Error(`Can't expand ${String(node)}`);
+export function primitiveTree(document: ReactElement<DocumentProps>): PrimitiveNode[] {
+  const root = (pdf(document).container as { document: RenderedNode | null }).document;
+  return root ? [toPrimitive(root)] : [];
+}
 
-  const element = node as ReactElement<Record<string, unknown> & { children?: ReactNode }>;
-  if (element.type === Fragment) return primitiveTree(element.props.children);
-  if (typeof element.type === "function") {
-    const component = element.type as (props: Record<string, unknown>) => ReactNode;
-    return primitiveTree(component(element.props));
-  }
-  if (typeof element.type !== "string") throw new Error("Can't expand this element type");
-
-  const { children, style, ...props } = element.props;
-  return [{ type: element.type, props, style: flattenStyle(style), children: primitiveTree(children) }];
+function toPrimitive(node: RenderedNode): PrimitiveNode {
+  if (node.type === "TEXT_INSTANCE") return node.value ?? "";
+  return {
+    type: node.type,
+    props: node.props ?? {},
+    style: flattenStyle(node.style),
+    children: (node.children ?? []).map(toPrimitive),
+  };
 }
 
 /** All the text inside a node, joined. */

@@ -1,9 +1,9 @@
 import { StyleSheet } from "@react-pdf/renderer";
-import { LEDGER_FONT_FAMILY } from "./fonts";
 
 /*
- * Ledger's look (docs/design/linted-editor-design/). The design is drawn on
- * a 612 x 792 page, so its px values are used as pt, on an A4 page.
+ * Ledger's look (docs/design/linted-editor-design/), apart from what the
+ * Theme Options change, which is in ./look.ts. The design is drawn on a
+ * 612 x 792 page, so its px values are used as pt, on an A4 page.
  * react-pdf's lengths are in pt.
  */
 
@@ -11,22 +11,12 @@ export const colors = {
   ink: "#1f1f1d",
   inkMuted: "#45453f",
   rule: "#d6d6d0",
-  /** Pine green (docs/design/NOTES.md), for headings and links. */
-  accent: "#17784a",
 };
 
-const BODY_SIZE = 9.5;
+/** The size of body text, in pt. */
+export const BODY_SIZE = 9.5;
 const META_SIZE = 8.75;
 const SECTION_TITLE_SIZE = 8.55;
-
-/** The height of one line of body text, in pt. */
-const BODY_LINE_HEIGHT = BODY_SIZE * 1.42;
-
-/** Two lines of body text, in pt: the least that must follow a title on its page. */
-export const TWO_LINES = BODY_LINE_HEIGHT * 2;
-
-/** Space between Sections, in pt. */
-export const SPACE_BETWEEN_SECTIONS = 14;
 
 /** Space between a Summary's paragraphs, in pt. */
 export const SPACE_BETWEEN_PARAGRAPHS = 5;
@@ -43,9 +33,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 42,
     backgroundColor: "#ffffff",
     color: colors.ink,
-    fontFamily: LEDGER_FONT_FAMILY,
     fontSize: BODY_SIZE,
-    lineHeight: 1.42,
     // No "fi", "ff" or "ft" ligatures: some PDF readers, such as applicant
     // tracking systems, read a ligature as one letter ("trafc").
     fontFeatureSettings: { liga: false },
@@ -60,7 +48,6 @@ export const styles = StyleSheet.create({
     fontStyle: "italic",
   },
   link: {
-    color: colors.accent,
     textDecoration: "none",
   },
 
@@ -99,7 +86,6 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 0.75,
     borderBottomColor: colors.rule,
     borderBottomStyle: "solid",
-    color: colors.accent,
     fontSize: SECTION_TITLE_SIZE,
     fontWeight: 600,
     letterSpacing: SECTION_TITLE_SIZE * 0.12,
@@ -145,7 +131,6 @@ export const styles = StyleSheet.create({
   bulletMarker: {
     flexShrink: 0,
     width: BULLET_INDENT,
-    height: BODY_LINE_HEIGHT,
     alignItems: "flex-end",
     justifyContent: "center",
     paddingRight: 5.5,
