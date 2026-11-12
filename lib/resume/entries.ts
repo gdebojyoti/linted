@@ -1,6 +1,7 @@
 import { editEntry, editSections, withEntries, type EditOptions } from "./edit-sections";
 import { emptyEntry } from "./empty-entry";
 import type { MoveDirection } from "./layout";
+import { placedInList } from "./place-in-list";
 import type { Entry, Resume, Section } from "./types";
 
 // Entry operations that work the same in every Section. Editing an Entry's
@@ -121,11 +122,7 @@ export function placeEntry(
 export function placedEntries(section: Section, entryId: string, index: number): Entry[] | null {
   if (section.type === "header") return null;
   const entry = section.entries.find((e) => e.id === entryId);
-  if (!entry || index < 0 || index > section.entries.length) return null;
-  const without = section.entries.filter((e) => e !== entry);
-  const at = section.entries.slice(0, index).filter((e) => e !== entry).length;
-  const entries = [...without.slice(0, at), entry, ...without.slice(at)];
-  return entries.every((e, i) => e === section.entries[i]) ? null : entries;
+  return entry ? placedInList<Entry>(section.entries, entry, index) : null;
 }
 
 /** Whether this is one of the Header's email, phone and location items, which can't be deleted. */

@@ -1,5 +1,6 @@
 import type { Layout, Resume, Section, SectionType, Zone } from "./types";
 import type { EditOptions } from "./edit-sections";
+import { placedInList } from "./place-in-list";
 import { hasShownContent } from "./renderable-view";
 
 // The Layout rules (ADR 0005, ADR 0006): which Zone each Section sits in and
@@ -158,13 +159,10 @@ function placedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, { z
   const from = zoneOf(layout, theme, sectionId);
   if (!from || !theme.zones.includes(zone)) return null;
   const target = layout[zone] ?? [];
-  if (index < 0 || index > target.length) return null;
   const pinned = pinnedIds(resume);
   if (pinned.has(sectionId) || (index === 0 && pinned.has(target[0]))) return null;
-  const without = target.filter((id) => id !== sectionId);
-  const at = target.slice(0, index).filter((id) => id !== sectionId).length;
-  const ids = [...without.slice(0, at), sectionId, ...without.slice(at)];
-  if (from === zone && ids.every((id, i) => id === target[i])) return null;
+  const ids = placedInList(target, sectionId, index);
+  if (!ids) return null;
   return { ...layout, [from]: (layout[from] ?? []).filter((id) => id !== sectionId), [zone]: ids };
 }
 
