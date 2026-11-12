@@ -28,17 +28,22 @@ function isRow(data: Record<string | symbol, unknown>): data is RowData {
  * then only the grip starts a drag, still showing the whole row as it goes.
  * A row holding text fields needs a grip, as browsers don't let text be
  * selected inside a draggable element.
+ *
+ * `onDragChange` hears when the row starts and stops being dragged, for
+ * rows that go with it (a Bullet's children).
  */
 export function useReorderable<T extends HTMLElement>({
   group,
   id,
   accepts,
   onDrop,
+  onDragChange,
 }: {
   group: string;
   id: string;
   accepts: (sourceId: string, side: DropSide) => boolean;
   onDrop: (sourceId: string, side: DropSide) => void;
+  onDragChange?: (dragging: boolean) => void;
 }) {
   const ref = useRef<T>(null);
   const handleRef = useRef<HTMLElement>(null);
@@ -52,6 +57,10 @@ export function useReorderable<T extends HTMLElement>({
     return side && typeof sourceId === "string" && accepts(sourceId, side) ? { sourceId, side } : null;
   });
   const drop = useEffectEvent((sourceId: string, side: DropSide) => onDrop(sourceId, side));
+  const dragChange = useEffectEvent((isDragging: boolean) => {
+    setDragging(isDragging);
+    onDragChange?.(isDragging);
+  });
 
   useEffect(() => {
     const element = ref.current;
@@ -68,8 +77,8 @@ export function useReorderable<T extends HTMLElement>({
           const { clientX, clientY } = location.current.input;
           nativeSetDragImage(element, clientX - rect.left, clientY - rect.top);
         },
-        onDragStart: () => setDragging(true),
-        onDrop: () => setDragging(false),
+        onDragStart: () => dragChange(true),
+        onDrop: () => dragChange(false),
       }),
       dropTargetForElements({
         element,

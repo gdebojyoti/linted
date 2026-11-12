@@ -3,7 +3,7 @@ import { DragGrip } from "@/components/common/drag/drag-grip";
 import { DropMarker } from "@/components/common/drag/drop-marker";
 import { MoveArrows } from "@/components/common/drag/move-arrows";
 import { useReorderable } from "@/components/common/drag/use-reorderable";
-import type { EntryReorder } from "./entry-reorder";
+import type { RowReorder } from "@/components/common/drag/row-reorder";
 import { EntryRow } from "./entry-row";
 import { arrowsOnHoverOrFocusClass, movableEntryClass } from "./movable-entry-classes";
 
@@ -21,7 +21,7 @@ export function MovableEntryRow({
   reorder,
   action,
   ...props
-}: { reorder: EntryReorder } & Omit<ComponentProps<typeof EntryRow>, "ref" | "grip" | "className" | "overlay">) {
+}: { reorder: RowReorder } & Omit<ComponentProps<typeof EntryRow>, "ref" | "grip" | "className" | "overlay">) {
   const { ref, handleRef, dragging, dropSide } = useReorderable<HTMLLIElement>(reorder);
 
   return (

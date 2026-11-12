@@ -6,7 +6,7 @@ import { useReorderable } from "@/components/common/drag/use-reorderable";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DeleteEntryButton } from "./delete-entry-button";
 import type { EntryHeading } from "./entry-name";
-import type { EntryReorder } from "./entry-reorder";
+import type { RowReorder } from "@/components/common/drag/row-reorder";
 import { ExpandButton } from "./expand-button";
 import { isControlClick } from "./is-control-click";
 import { arrowsOnHoverOrFocusClass, movableEntryClass } from "./movable-entry-classes";
@@ -50,7 +50,7 @@ export function EntryCard({
   meta?: ReactNode;
   expanded: boolean;
   onToggle: () => void;
-  reorder: EntryReorder;
+  reorder: RowReorder;
   children: ReactNode;
 }) {
   const bodyId = useId();

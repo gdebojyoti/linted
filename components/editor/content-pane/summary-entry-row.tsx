@@ -4,7 +4,7 @@ import { brokenLinks } from "@/lib/prose/parse-prose";
 import type { SummaryEntry } from "@/lib/resume/types";
 import { BrokenLinksMessage } from "./broken-links-message";
 import { DeleteEntryButton } from "./delete-entry-button";
-import type { EntryReorder } from "./entry-reorder";
+import type { RowReorder } from "@/components/common/drag/row-reorder";
 import { MovableEntryRow } from "./movable-entry-row";
 
 /**
@@ -29,7 +29,7 @@ export function SummaryEntryRow({
   entry: SummaryEntry;
   /** "Summary 1", "Summary 2"…, from its place in the Section. */
   name: string;
-  reorder: EntryReorder;
+  reorder: RowReorder;
   onTextChange: (text: string) => void;
   onEnabledChange: (enabled: boolean) => void;
   onDelete: () => void;

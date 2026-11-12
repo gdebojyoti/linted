@@ -65,7 +65,7 @@ Free-text Content that supports inline formatting (bold, italic, links): Summari
 _Avoid_: Rich text, description
 
 **Bullet**:
-A single point of text belonging to an Entry. A Bullet can have child Bullets, at most two levels deep: a child Bullet has no children of its own. Nesting a Bullet puts it under the Bullet above it, and un-nesting moves it back out; neither changes the order Bullets are read in. Deleting a Bullet deletes its children. Entries can be reordered within their Section (except the Header's contact items, which keep a fixed order); Bullets keep the order they were added in, and reordering them comes later.
+A single point of text belonging to an Entry. A Bullet can have child Bullets, at most two levels deep: a child Bullet has no children of its own. Nesting a Bullet puts it under the Bullet above it, and un-nesting moves it back out; neither changes the order Bullets are read in. Deleting a Bullet deletes its children. Entries can be reordered within their Section (except the Header's contact items, which keep a fixed order). Bullets can be reordered within their Entry, keeping their level: a top-level Bullet moves with its children, and a child Bullet can move under any top-level Bullet, so reordering never makes a third level.
 _Avoid_: Point, line, highlight
 
 **Skill**:

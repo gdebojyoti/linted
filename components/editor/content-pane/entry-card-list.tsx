@@ -3,7 +3,7 @@ import type { ResumeEdit } from "@/lib/resume/types";
 import { LiveMessage } from "@/components/common/live-message";
 import { AddEntryButton } from "./add-entry-button";
 import { entryHeading, entryName, type CardSection, type EntryHeading } from "./entry-name";
-import type { EntryReorder } from "./entry-reorder";
+import type { RowReorder } from "@/components/common/drag/row-reorder";
 import { movableEntryListClass } from "./movable-entry-classes";
 import { useEntryList } from "./use-entry-list";
 import { useEntryMoves } from "./use-entry-moves";
@@ -19,7 +19,7 @@ export type EntryCardProps = {
   expanded: boolean;
   onToggle: () => void;
   isNew: boolean;
-  reorder: EntryReorder;
+  reorder: RowReorder;
 };
 
 /**

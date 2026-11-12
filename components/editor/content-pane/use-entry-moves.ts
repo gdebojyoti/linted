@@ -5,7 +5,7 @@ import { canMoveEntry, canPlaceEntry, moveGap, placedEntries, placeEntry } from 
 import type { MoveDirection } from "@/lib/resume/layout";
 import type { ResumeEdit } from "@/lib/resume/types";
 import { entryName, type MovableSection } from "./entry-name";
-import type { EntryReorder } from "./entry-reorder";
+import type { RowReorder } from "@/components/common/drag/row-reorder";
 
 /**
  * Moving a Section's Entries. `reorder` gives an Entry's row what it needs to
@@ -33,7 +33,7 @@ export function useEntryMoves(section: MovableSection, onEdit: (edit: ResumeEdit
     setAnnouncement(`${name} ${wording}, position ${at + 1} of ${entries.length}.`);
   }
 
-  function reorder(entryId: string): EntryReorder {
+  function reorder(entryId: string): RowReorder {
     return {
       group: `entries-${sectionId}`,
       id: entryId,

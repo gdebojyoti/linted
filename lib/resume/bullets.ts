@@ -144,15 +144,28 @@ export function moveBullet(resume: Resume, bulletId: string, direction: MoveDire
 
 /** Whether moveBullet would move the Bullet among these, so the editor can disable the arrow. */
 export function canMoveBullet(bullets: Bullet[], bulletId: string, direction: MoveDirection): boolean {
+  return placedBullets(bullets, bulletId, bulletMoveGap(bullets, bulletId, direction)) !== null;
+}
+
+/** The gap in reading order that moveBullet places the Bullet at. */
+export function bulletMoveGap(bullets: Bullet[], bulletId: string, direction: MoveDirection): number {
   const flat = flatten(bullets);
-  const from = indexOf(flat, bulletId);
-  return placedInReadingOrder(flat, from, moveGap(flat, from, direction)) !== null;
+  return moveGap(flat, indexOf(flat, bulletId), direction);
 }
 
 /** Whether placeBullet would move the Bullet among these, so a drop marker shows only where a drop does something. */
 export function canPlaceBullet(bullets: Bullet[], bulletId: string, index: number): boolean {
+  return placedBullets(bullets, bulletId, index) !== null;
+}
+
+/**
+ * The Bullets with this one placed at the gap, as placeBullet places it, or
+ * null when the placement can't happen or changes nothing.
+ */
+export function placedBullets(bullets: Bullet[], bulletId: string, index: number): Bullet[] | null {
   const flat = flatten(bullets);
-  return placedInReadingOrder(flat, indexOf(flat, bulletId), index) !== null;
+  const placed = placedInReadingOrder(flat, indexOf(flat, bulletId), index);
+  return placed && unflatten(placed);
 }
 
 /**
