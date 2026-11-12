@@ -17,7 +17,7 @@ import { usePdfFile } from "./pdf/use-pdf-file";
 import { PreviewPane } from "./preview-pane/preview-pane";
 import { FIRST_TAB } from "./tabs/editor-tab";
 import { EditorTabPanel } from "./tabs/editor-tab-panel";
-import { TabPlaceholder } from "./tabs/tab-placeholder";
+import { ThemePane } from "./theme-pane/theme-pane";
 import { TopBar } from "./top-bar/top-bar";
 import { useAutosave } from "./use-autosave";
 
@@ -91,7 +91,7 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
             <LayoutPane resume={resume} onEdit={handleEdit} />
           </EditorTabPanel>
           <EditorTabPanel value="theme">
-            <TabPlaceholder title="Theme settings are coming soon">You&apos;ll customize Ledger here.</TabPlaceholder>
+            <ThemePane resume={resume} onEdit={handleEdit} />
           </EditorTabPanel>
         </LeftPane>
         <PreviewPane pdf={pdf.preview} />
