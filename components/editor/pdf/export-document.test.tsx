@@ -2,25 +2,12 @@ import { describe, expect, test } from "vitest";
 import { moveSection } from "@/lib/resume/layout";
 import { sampleResume } from "@/lib/resume/sample-resume";
 import type { Resume } from "@/lib/resume/types";
-import { LEDGER_LAYOUT } from "@/themes/ledger/default-layout";
-import { LedgerDocument } from "@/themes/ledger/pdf/ledger-document";
+import { ledger } from "@/themes/ledger/ledger";
 import { pageText, readPdf } from "@/themes/testing/read-pdf";
-import type { Theme } from "@/themes/theme";
 import { exportDocument } from "./export-document";
 
-/**
- * Ledger without its HTML page, which needs next/font and so can't load in
- * tests. Export only uses the Theme's Document.
- */
-const ledgerForExport: Theme = {
-  id: "ledger",
-  ...LEDGER_LAYOUT,
-  Page: () => null,
-  Document: LedgerDocument,
-};
-
 async function exportedText(resume: Resume): Promise<string> {
-  const pdfDocument = exportDocument(resume, ledgerForExport);
+  const pdfDocument = exportDocument(resume, ledger);
   if (!pdfDocument) throw new Error("Nothing was exported");
   const pages = await readPdf(pdfDocument);
   return pages.map(pageText).join("");
@@ -46,14 +33,14 @@ describe("exportDocument", () => {
 
   test("follows the saved Layout", async () => {
     const defaultText = await exportedText(sampleResume);
-    const movedText = await exportedText(moveSection(sampleResume, ledgerForExport, "summary", "down"));
+    const movedText = await exportedText(moveSection(sampleResume, ledger, "summary", "down"));
 
     expect(defaultText.indexOf("Backend engineer with 8 years")).toBeLessThan(defaultText.indexOf("Paystream"));
     expect(movedText.indexOf("Paystream")).toBeLessThan(movedText.indexOf("Backend engineer with 8 years"));
   });
 
   test("keeps links clickable", async () => {
-    const pdfDocument = exportDocument(sampleResume, ledgerForExport);
+    const pdfDocument = exportDocument(sampleResume, ledger);
     if (!pdfDocument) throw new Error("Nothing was exported");
     const [page] = await readPdf(pdfDocument);
 
@@ -63,6 +50,6 @@ describe("exportDocument", () => {
   test("gives nothing to export when no Content is Enabled and filled in", () => {
     const disabled = sampleResume.content.sections.map((section) => ({ ...section, enabled: false }));
 
-    expect(exportDocument({ ...sampleResume, content: { sections: disabled } }, ledgerForExport)).toBeNull();
+    expect(exportDocument({ ...sampleResume, content: { sections: disabled } }, ledger)).toBeNull();
   });
 });

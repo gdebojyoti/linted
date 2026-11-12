@@ -56,7 +56,7 @@ const eslintConfig = defineConfig([
   },
   {
     files: ["components/**/*.{ts,tsx}"],
-    ignores: ["components/editor/preview-pane/**", "components/editor/export/**", "components/editor/theme/**"],
+    ignores: ["components/editor/pdf/**", "components/editor/theme/**"],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -66,7 +66,7 @@ const eslintConfig = defineConfig([
             {
               group: ["@/themes/**"],
               message:
-                "App components must not use Theme code. Only the preview pane, Export (components/editor/export/) and components/editor/theme/ may.",
+                "App components must not use Theme code. Only the Resume's PDF (components/editor/pdf/) and components/editor/theme/ may.",
             },
           ],
         },

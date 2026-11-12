@@ -44,7 +44,7 @@ export function EditorLoader({ id }: { id: string }) {
       return (
         <EditorFrame topBar={<TopBar status="loading" />}>
           <ContentPaneSkeleton />
-          <PreviewPane resume={null} />
+          <PreviewPane pdf={{ status: "loading" }} />
         </EditorFrame>
       );
     case "not-found":
