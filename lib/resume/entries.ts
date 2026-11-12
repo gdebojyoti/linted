@@ -1,5 +1,6 @@
 import { editEntry, editSections, withEntries, type EditOptions } from "./edit-sections";
 import { emptyEntry } from "./empty-entry";
+import type { MoveDirection } from "./layout";
 import type { Entry, Resume, Section } from "./types";
 
 // Entry operations that work the same in every Section. Editing an Entry's
@@ -59,7 +60,7 @@ export function moveEntry(
   resume: Resume,
   sectionId: string,
   entryId: string,
-  direction: "up" | "down",
+  direction: MoveDirection,
   options: EditOptions = {},
 ): Resume {
   return editSections(
@@ -74,12 +75,12 @@ export function moveEntry(
 }
 
 /** Whether moveEntry would move the Entry in this Section, so the editor can disable the arrow. */
-export function canMoveEntry(section: Section, entryId: string, direction: "up" | "down"): boolean {
+export function canMoveEntry(section: Section, entryId: string, direction: MoveDirection): boolean {
   return placedEntries(section, entryId, moveGap(section, entryId, direction)) !== null;
 }
 
 /** A move is a placement in the gap past the next Entry up or down. */
-function moveGap(section: Section, entryId: string, direction: "up" | "down"): number {
+export function moveGap(section: Section, entryId: string, direction: MoveDirection): number {
   const from = section.entries.findIndex((e) => e.id === entryId);
   return direction === "up" ? from - 1 : from + 2;
 }
@@ -117,7 +118,7 @@ export function placeEntry(
  * placement can't happen (an unknown Entry, a gap outside the Section, the
  * Header) or changes nothing.
  */
-function placedEntries(section: Section, entryId: string, index: number): Entry[] | null {
+export function placedEntries(section: Section, entryId: string, index: number): Entry[] | null {
   if (section.type === "header") return null;
   const entry = section.entries.find((e) => e.id === entryId);
   if (!entry || index < 0 || index > section.entries.length) return null;

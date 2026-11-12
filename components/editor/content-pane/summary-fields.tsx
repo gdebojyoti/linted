@@ -1,8 +1,8 @@
 import type { ResumeEdit, SummarySection } from "@/lib/resume/types";
 import { updateSummaryEntry } from "@/lib/resume/update-summary-entry";
 import { AddEntryButton } from "./add-entry-button";
-import { SummaryEntryRow } from "./summary-entry-row";
 import { entryName } from "./entry-name";
+import { SummaryEntryRow } from "./summary-entry-row";
 import { useEntryList } from "./use-entry-list";
 import { useEntryMoves } from "./use-entry-moves";
 
