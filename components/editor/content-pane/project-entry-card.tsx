@@ -18,7 +18,9 @@ import { LinkField } from "./link-field";
  */
 export function ProjectEntryCard({
   entry,
-  index,
+  name,
+  heading,
+  reorder,
   onEdit,
   onEnabledChange,
   onDelete,
@@ -29,29 +31,16 @@ export function ProjectEntryCard({
   entry: ProjectEntry;
   onEdit: (edit: ResumeEdit) => void;
 } & EntryCardProps) {
-  const name = entry.name.trim();
-  const techStack = entry.techStack.trim();
-  const named = name || techStack;
-
   return (
     <EntryCard
-      name={named ? `${named} entry` : `Entry ${index + 1}`}
+      name={name}
       enabled={entry.enabled}
       onEnabledChange={onEnabledChange}
       onDelete={onDelete}
       expanded={expanded}
       onToggle={onToggle}
-      title={
-        named ? (
-          <>
-            {name && <span className="font-semibold">{name}</span>}
-            {name && techStack && " "}
-            {techStack && <span className="text-ink-muted">{techStack}</span>}
-          </>
-        ) : (
-          <span className="text-ink-meta">New entry</span>
-        )
-      }
+      reorder={reorder}
+      heading={heading}
       meta={entry.dates.current ? <Badge>Current</Badge> : formatDateRange(entry.dates)}
     >
       <div className="flex flex-col gap-4">

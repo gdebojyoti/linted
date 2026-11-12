@@ -16,7 +16,9 @@ import type { EntryCardProps } from "./entry-card-list";
  */
 export function ExperienceEntryCard({
   entry,
-  index,
+  name,
+  heading,
+  reorder,
   onEdit,
   onEnabledChange,
   onDelete,
@@ -27,29 +29,16 @@ export function ExperienceEntryCard({
   entry: ExperienceEntry;
   onEdit: (edit: ResumeEdit) => void;
 } & EntryCardProps) {
-  const company = entry.company.trim();
-  const role = entry.role.trim();
-  const named = company || role;
-
   return (
     <EntryCard
-      name={named ? `${named} entry` : `Entry ${index + 1}`}
+      name={name}
       enabled={entry.enabled}
       onEnabledChange={onEnabledChange}
       onDelete={onDelete}
       expanded={expanded}
       onToggle={onToggle}
-      title={
-        named ? (
-          <>
-            {company && <span className="font-semibold">{company}</span>}
-            {company && role && " "}
-            {role && <span className="text-ink-muted">{role}</span>}
-          </>
-        ) : (
-          <span className="text-ink-meta">New entry</span>
-        )
-      }
+      reorder={reorder}
+      heading={heading}
       meta={entry.dates.current ? <Badge>Current</Badge> : formatDateRange(entry.dates)}
     >
       <div className="flex flex-col gap-4">

@@ -4,7 +4,7 @@ import { DropMarker } from "@/components/common/drag/drop-marker";
 import { useReorderable, type DropSide } from "@/components/common/drag/use-reorderable";
 import { layoutTag, type MoveDirection } from "@/lib/resume/layout";
 import type { Section } from "@/lib/resume/types";
-import { MoveButton } from "./move-button";
+import { MoveArrows } from "@/components/common/drag/move-arrows";
 
 /**
  * A Section in the Layout tab. It can be dragged, and other chips dropped
@@ -47,10 +47,12 @@ export function SectionChip({
       <span className="text-[13.5px] font-medium">{section.title}</span>
       {tag && <Badge>{tag}</Badge>}
       <span className="grow" />
-      <div className="relative flex gap-px opacity-0 group-hover:opacity-100 group-focus-within:opacity-100">
-        <MoveButton direction="up" sectionTitle={section.title} enabled={canMove("up")} onMove={onMove} />
-        <MoveButton direction="down" sectionTitle={section.title} enabled={canMove("down")} onMove={onMove} />
-      </div>
+      <MoveArrows
+        name={section.title}
+        canMove={canMove}
+        onMove={onMove}
+        className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
+      />
       {dropSide && <DropMarker side={dropSide} outset="var(--chip-gap) / 2 + 2px" />}
     </li>
   );

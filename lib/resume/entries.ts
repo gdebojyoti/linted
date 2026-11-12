@@ -1,6 +1,8 @@
 import { editEntry, editSections, withEntries, type EditOptions } from "./edit-sections";
 import { emptyEntry } from "./empty-entry";
-import type { Entry, Resume } from "./types";
+import type { MoveDirection } from "./layout";
+import { placedInList } from "./place-in-list";
+import type { Entry, Resume, Section } from "./types";
 
 // Entry operations that work the same in every Section. Editing an Entry's
 // own fields is per type (updateContact, updateSkillsEntry).
@@ -59,22 +61,68 @@ export function moveEntry(
   resume: Resume,
   sectionId: string,
   entryId: string,
-  direction: "up" | "down",
+  direction: MoveDirection,
   options: EditOptions = {},
 ): Resume {
   return editSections(
     resume,
     (section) => {
-      if (section.id !== sectionId || section.type === "header") return section;
-      const from = section.entries.findIndex((e) => e.id === entryId);
-      const to = direction === "up" ? from - 1 : from + 1;
-      if (from === -1 || to < 0 || to >= section.entries.length) return section;
-      const entries = [...section.entries];
-      [entries[from], entries[to]] = [entries[to], entries[from]];
-      return withEntries(section, entries);
+      if (section.id !== sectionId) return section;
+      const entries = placedEntries(section, entryId, moveGap(section, entryId, direction));
+      return entries ? withEntries(section, entries) : section;
     },
     options,
   );
+}
+
+/** Whether moveEntry would move the Entry in this Section, so the editor can disable the arrow. */
+export function canMoveEntry(section: Section, entryId: string, direction: MoveDirection): boolean {
+  return placedEntries(section, entryId, moveGap(section, entryId, direction)) !== null;
+}
+
+/** A move is a placement in the gap past the next Entry up or down. */
+export function moveGap(section: Section, entryId: string, direction: MoveDirection): number {
+  const from = section.entries.findIndex((e) => e.id === entryId);
+  return direction === "up" ? from - 1 : from + 2;
+}
+
+/** Whether placeEntry would move the Entry in this Section, so a drop marker shows only where a drop does something. */
+export function canPlaceEntry(section: Section, entryId: string, index: number): boolean {
+  return placedEntries(section, entryId, index) !== null;
+}
+
+/**
+ * The Resume with the Entry placed at this gap in its Section, counted as the
+ * Section is now (0 is before the first Entry, the Section's length after the
+ * last), for dropping a dragged Entry.
+ */
+export function placeEntry(
+  resume: Resume,
+  sectionId: string,
+  entryId: string,
+  index: number,
+  options: EditOptions = {},
+): Resume {
+  return editSections(
+    resume,
+    (section) => {
+      if (section.id !== sectionId) return section;
+      const entries = placedEntries(section, entryId, index);
+      return entries ? withEntries(section, entries) : section;
+    },
+    options,
+  );
+}
+
+/**
+ * The Section's Entries with this one placed at the gap, or null when the
+ * placement can't happen (an unknown Entry, a gap outside the Section, the
+ * Header) or changes nothing.
+ */
+export function placedEntries(section: Section, entryId: string, index: number): Entry[] | null {
+  if (section.type === "header") return null;
+  const entry = section.entries.find((e) => e.id === entryId);
+  return entry ? placedInList<Entry>(section.entries, entry, index) : null;
 }
 
 /** Whether this is one of the Header's email, phone and location items, which can't be deleted. */

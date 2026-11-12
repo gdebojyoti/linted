@@ -23,6 +23,11 @@ function isRow(data: Record<string | symbol, unknown>): data is RowData {
  *
  * `accepts` says whether a drop on this side would do something; only then
  * is `dropSide` set, for drawing a marker, and only then does `onDrop` run.
+ *
+ * The whole row is dragged, unless `handleRef` is put on a grip inside it:
+ * then only the grip starts a drag, still showing the whole row as it goes.
+ * A row holding text fields needs a grip, as browsers don't let text be
+ * selected inside a draggable element.
  */
 export function useReorderable<T extends HTMLElement>({
   group,
@@ -36,6 +41,7 @@ export function useReorderable<T extends HTMLElement>({
   onDrop: (sourceId: string, side: DropSide) => void;
 }) {
   const ref = useRef<T>(null);
+  const handleRef = useRef<HTMLElement>(null);
   const [dragging, setDragging] = useState(false);
   const [dropSide, setDropSide] = useState<DropSide | null>(null);
 
@@ -50,11 +56,18 @@ export function useReorderable<T extends HTMLElement>({
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
+    const handle = handleRef.current;
     const data: RowData = { [ROW]: true, group, id };
     return combine(
       draggable({
-        element,
+        element: handle ?? element,
         getInitialData: () => data,
+        onGenerateDragPreview: ({ nativeSetDragImage, location }) => {
+          if (!handle || !nativeSetDragImage) return;
+          const rect = element.getBoundingClientRect();
+          const { clientX, clientY } = location.current.input;
+          nativeSetDragImage(element, clientX - rect.left, clientY - rect.top);
+        },
         onDragStart: () => setDragging(true),
         onDrop: () => setDragging(false),
       }),
@@ -73,5 +86,5 @@ export function useReorderable<T extends HTMLElement>({
     );
   }, [group, id]);
 
-  return { ref, dragging, dropSide };
+  return { ref, handleRef, dragging, dropSide };
 }

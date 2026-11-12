@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { addEntry, deleteEntry, moveEntry, setEntryEnabled } from "./entries";
+import { addEntry, canMoveEntry, canPlaceEntry, deleteEntry, moveEntry, placeEntry, setEntryEnabled } from "./entries";
 import { renderableView } from "./renderable-view";
 import { sampleResume } from "./sample-resume";
 import type { Resume, Section } from "./types";
@@ -156,5 +156,40 @@ describe("moveEntry", () => {
     moveEntry(sampleResume, "summary", "summary-backend", "down", { now });
 
     expect(sampleResume).toEqual(before);
+  });
+});
+
+describe("placeEntry", () => {
+  test("places an Entry at a gap in its Section, counted as the Section is now, and updates last-edited-at", () => {
+    const last = placeEntry(sampleResume, "skills", "skills-languages", 3, { now });
+    expect(entryIds(last, "skills")).toEqual(["skills-infra", "skills-frontend", "skills-languages"]);
+    expect(last.metadata.lastEditedAt).toBe(now.toISOString());
+
+    const first = placeEntry(sampleResume, "skills", "skills-frontend", 0, { now });
+    expect(entryIds(first, "skills")).toEqual(["skills-frontend", "skills-languages", "skills-infra"]);
+  });
+});
+
+describe("placeEntry, when nothing would move", () => {
+  test("gives back the same Resume for a gap beside the Entry, a gap outside the Section, an unknown Entry, or the Header", () => {
+    expect(placeEntry(sampleResume, "skills", "skills-infra", 1, { now })).toBe(sampleResume);
+    expect(placeEntry(sampleResume, "skills", "skills-infra", 2, { now })).toBe(sampleResume);
+    expect(placeEntry(sampleResume, "skills", "skills-infra", -1, { now })).toBe(sampleResume);
+    expect(placeEntry(sampleResume, "skills", "skills-infra", 4, { now })).toBe(sampleResume);
+    expect(placeEntry(sampleResume, "skills", "no-such-entry", 0, { now })).toBe(sampleResume);
+    expect(placeEntry(sampleResume, "header", "contact-phone", 0, { now })).toBe(sampleResume);
+  });
+});
+
+describe("canPlaceEntry and canMoveEntry", () => {
+  test("say whether the Entry would move, so a drop marker or an arrow only offers a real move", () => {
+    expect(canPlaceEntry(sectionOf(sampleResume, "skills"), "skills-infra", 0)).toBe(true);
+    expect(canPlaceEntry(sectionOf(sampleResume, "skills"), "skills-infra", 2)).toBe(false);
+    expect(canPlaceEntry(sectionOf(sampleResume, "header"), "contact-phone", 0)).toBe(false);
+
+    expect(canMoveEntry(sectionOf(sampleResume, "skills"), "skills-languages", "up")).toBe(false);
+    expect(canMoveEntry(sectionOf(sampleResume, "skills"), "skills-languages", "down")).toBe(true);
+    expect(canMoveEntry(sectionOf(sampleResume, "skills"), "skills-frontend", "down")).toBe(false);
+    expect(canMoveEntry(sectionOf(sampleResume, "header"), "contact-phone", "down")).toBe(false);
   });
 });

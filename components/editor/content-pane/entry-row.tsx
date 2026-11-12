@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 /**
@@ -9,7 +9,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 const alignWithInput = "flex h-9 shrink-0 items-center";
 const labelOffset = "mt-5.5";
 
-/** One Entry in a Section's fields: its Enabled checkbox, its fields, and an optional action. */
+/**
+ * One Entry in a Section's fields: its Enabled checkbox, its fields, and an
+ * optional action. MovableEntryRow fills in `ref`, `grip`, `className` and
+ * `overlay` to make it draggable.
+ */
 export function EntryRow({
   name,
   enabled,
@@ -17,6 +21,10 @@ export function EntryRow({
   action,
   columns = "grid-flow-col auto-cols-fr",
   labelledFields = true,
+  ref,
+  grip,
+  className = "",
+  overlay,
   children,
 }: {
   /** Names the Entry for screen readers, e.g. "Email" or "GitHub link". */
@@ -28,12 +36,19 @@ export function EntryRow({
   columns?: string;
   /** Whether the fields show labels above them. False when they're named for screen readers only. */
   labelledFields?: boolean;
+  ref?: Ref<HTMLLIElement>;
+  /** Drawn before the checkbox, lined up with it. */
+  grip?: ReactNode;
+  className?: string;
+  /** Drawn over the row, e.g. a drop marker. */
+  overlay?: ReactNode;
   children: ReactNode;
 }) {
   const align = labelledFields ? `${labelOffset} ${alignWithInput}` : alignWithInput;
 
   return (
-    <li className="flex items-start gap-2.5">
+    <li ref={ref} className={`flex items-start gap-2.5 ${className}`}>
+      {grip && <div className={align}>{grip}</div>}
       <div className={align}>
         <Checkbox
           checked={enabled}
@@ -42,7 +57,8 @@ export function EntryRow({
         />
       </div>
       <div className={`grid min-w-0 grow gap-3 ${columns}`}>{children}</div>
-      {action && <div className={align}>{action}</div>}
+      {action && <div className={`${align} gap-1`}>{action}</div>}
+      {overlay}
     </li>
   );
 }

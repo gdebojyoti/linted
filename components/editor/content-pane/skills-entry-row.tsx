@@ -2,28 +2,34 @@ import type { SkillsEntry } from "@/lib/resume/types";
 import type { SkillsEntryChanges } from "@/lib/resume/update-skills-entry";
 import { TextField } from "@/components/common/text-field";
 import { DeleteEntryButton } from "./delete-entry-button";
-import { EntryRow } from "./entry-row";
+import type { EntryReorder } from "./entry-reorder";
+import { MovableEntryRow } from "./movable-entry-row";
 
-/** A Skills Entry: its label and its Skills as one line of text. */
+/** A Skills Entry: its label and its Skills as one line of text. It can be moved within the Section. */
 export function SkillsEntryRow({
   entry,
+  name,
+  reorder,
   onUpdate,
   onEnabledChange,
   onDelete,
   autoFocus,
 }: {
   entry: SkillsEntry;
+  /** Names the Entry for screen readers, e.g. "Languages entry". */
+  name: string;
+  reorder: EntryReorder;
   onUpdate: (changes: SkillsEntryChanges) => void;
   onEnabledChange: (enabled: boolean) => void;
   onDelete: () => void;
   autoFocus?: boolean;
 }) {
   const label = entry.label.trim();
-  const name = label ? `${label} entry` : "Entry";
 
   return (
-    <EntryRow
+    <MovableEntryRow
       name={name}
+      reorder={reorder}
       enabled={entry.enabled}
       onEnabledChange={onEnabledChange}
       columns="grid-cols-[1fr_2fr]"
@@ -42,6 +48,6 @@ export function SkillsEntryRow({
         value={entry.skills}
         onChange={(skills) => onUpdate({ skills })}
       />
-    </EntryRow>
+    </MovableEntryRow>
   );
 }

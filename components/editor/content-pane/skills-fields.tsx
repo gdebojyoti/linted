@@ -1,10 +1,18 @@
 import type { ResumeEdit, SkillsSection } from "@/lib/resume/types";
 import { updateSkillsEntry } from "@/lib/resume/update-skills-entry";
+import { LiveMessage } from "@/components/common/live-message";
 import { AddEntryButton } from "./add-entry-button";
+import { entryName } from "./entry-name";
 import { SkillsEntryRow } from "./skills-entry-row";
+import { movableEntryListClass } from "./movable-entry-classes";
 import { useEntryList } from "./use-entry-list";
+import { useEntryMoves } from "./use-entry-moves";
 
-/** The Skills Section's Entries, each a label and a line of Skills. */
+/**
+ * The Skills Section's Entries, each a label and a line of Skills. They are
+ * dragged or moved with their arrows within the Section, and each move is
+ * read out to screen readers.
+ */
 export function SkillsFields({
   section,
   onEdit,
@@ -13,15 +21,18 @@ export function SkillsFields({
   onEdit: (edit: ResumeEdit) => void;
 }) {
   const { addedId, addButtonRef, add, remove, setEnabled } = useEntryList(section.id, onEdit);
+  const { reorder, announcement } = useEntryMoves(section, onEdit);
 
   return (
     <div className="flex flex-col gap-3">
       {section.entries.length > 0 && (
-        <ul className="flex flex-col gap-3">
-          {section.entries.map((entry) => (
+        <ul className={`${movableEntryListClass} [--entry-gap:12px]`}>
+          {section.entries.map((entry, index) => (
             <SkillsEntryRow
               key={entry.id}
               entry={entry}
+              name={entryName(section, index)}
+              reorder={reorder(entry.id)}
               onUpdate={(changes) => onEdit((r) => updateSkillsEntry(r, entry.id, changes))}
               onEnabledChange={(enabled) => setEnabled(entry.id, enabled)}
               onDelete={() => remove(entry.id)}
@@ -33,6 +44,7 @@ export function SkillsFields({
       <AddEntryButton ref={addButtonRef} onClick={add}>
         Add entry
       </AddEntryButton>
+      <LiveMessage message={announcement} />
     </div>
   );
 }
