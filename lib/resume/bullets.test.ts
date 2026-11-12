@@ -2,8 +2,12 @@ import { describe, expect, test } from "vitest";
 import {
   addBullet,
   addBulletAfter,
+  canMoveBullet,
+  canPlaceBullet,
   deleteBullet,
+  moveBullet,
   nestBullet,
+  placeBullet,
   setBulletEnabled,
   unnestBullet,
   updateBullet,
@@ -259,6 +263,117 @@ describe("unnestBullet", () => {
   });
 });
 
+describe("placeBullet", () => {
+  // Gaps are counted in reading order, as the Bullets are now:
+  // 0 b1 1 b1-1 2 b1-2 3 b2 4 b3 5
+
+  test("places a top-level Bullet at a gap between top-level Bullets, its children coming along", () => {
+    const updated = placeBullet(sampleResume, "exp-paystream-b1", 4, { now });
+
+    expect(outline(updated, paystream)).toEqual(["b2", "b1", "  b1-1", "  b1-2", "b3"]);
+    expect(updated.metadata.lastEditedAt).toBe(now.toISOString());
+  });
+
+  test("a top-level Bullet can't go among another Bullet's children, or its own, so there's never a third level", () => {
+    expect(placeBullet(sampleResume, "exp-paystream-b2", 1, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "exp-paystream-b2", 2, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "exp-paystream-b1", 2, { now })).toBe(sampleResume);
+  });
+
+  test("a child Bullet stays a child, of the top-level Bullet before the gap", () => {
+    expect(outline(placeBullet(sampleResume, "exp-paystream-b1-1", 3, { now }), paystream)).toEqual([
+      "b1",
+      "  b1-2",
+      "  b1-1",
+      "b2",
+      "b3",
+    ]);
+    expect(outline(placeBullet(sampleResume, "exp-paystream-b1-1", 4, { now }), paystream)).toEqual([
+      "b1",
+      "  b1-2",
+      "b2",
+      "  b1-1",
+      "b3",
+    ]);
+    expect(outline(placeBullet(sampleResume, "exp-paystream-b1-2", 5, { now }), paystream)).toEqual([
+      "b1",
+      "  b1-1",
+      "b2",
+      "b3",
+      "  b1-2",
+    ]);
+  });
+
+  test("a child Bullet can't go first, where it would have no parent", () => {
+    expect(placeBullet(sampleResume, "exp-paystream-b1-1", 0, { now })).toBe(sampleResume);
+  });
+
+  test("gives back the same Resume for a gap beside the Bullet, a gap outside the Entry, or an unknown Bullet", () => {
+    expect(placeBullet(sampleResume, "exp-paystream-b2", 3, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "exp-paystream-b2", 4, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "exp-paystream-b1", 0, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "exp-paystream-b1", 3, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "exp-paystream-b1-2", 2, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "exp-paystream-b1-2", 3, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "exp-paystream-b2", -1, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "exp-paystream-b2", 6, { now })).toBe(sampleResume);
+    expect(placeBullet(sampleResume, "no-such-bullet", 0, { now })).toBe(sampleResume);
+  });
+});
+
+describe("moveBullet", () => {
+  test("moves a top-level Bullet past the next one up or down, children and all", () => {
+    const up = moveBullet(sampleResume, "exp-paystream-b2", "up", { now });
+    expect(outline(up, paystream)).toEqual(["b2", "b1", "  b1-1", "  b1-2", "b3"]);
+    expect(up.metadata.lastEditedAt).toBe(now.toISOString());
+
+    const down = moveBullet(sampleResume, "exp-paystream-b1", "down", { now });
+    expect(outline(down, paystream)).toEqual(["b2", "b1", "  b1-1", "  b1-2", "b3"]);
+  });
+
+  test("moves a child Bullet one place in reading order, into the next parent past the end of its own", () => {
+    const up = moveBullet(sampleResume, "exp-paystream-b1-2", "up", { now });
+    expect(outline(up, paystream)).toEqual(["b1", "  b1-2", "  b1-1", "b2", "b3"]);
+
+    const intoB2 = moveBullet(sampleResume, "exp-paystream-b1-2", "down", { now });
+    expect(outline(intoB2, paystream)).toEqual(["b1", "  b1-1", "b2", "  b1-2", "b3"]);
+
+    const backIntoB1 = moveBullet(intoB2, "exp-paystream-b1-2", "up", { now });
+    expect(outline(backIntoB1, paystream)).toEqual(["b1", "  b1-1", "  b1-2", "b2", "b3"]);
+  });
+
+  test("gives back the same Resume at either end, or for a child of the first Bullet moving above it", () => {
+    expect(moveBullet(sampleResume, "exp-paystream-b1", "up", { now })).toBe(sampleResume);
+    expect(moveBullet(sampleResume, "exp-paystream-b3", "down", { now })).toBe(sampleResume);
+    expect(moveBullet(sampleResume, "exp-paystream-b1-1", "up", { now })).toBe(sampleResume);
+    expect(moveBullet(sampleResume, "no-such-bullet", "up", { now })).toBe(sampleResume);
+  });
+});
+
+describe("canMoveBullet", () => {
+  test("says whether moveBullet would move the Bullet, so the editor can disable the arrow", () => {
+    const bullets = bulletsOf(sampleResume, paystream);
+
+    expect(canMoveBullet(bullets, "exp-paystream-b1", "up")).toBe(false);
+    expect(canMoveBullet(bullets, "exp-paystream-b1", "down")).toBe(true);
+    expect(canMoveBullet(bullets, "exp-paystream-b1-1", "up")).toBe(false);
+    expect(canMoveBullet(bullets, "exp-paystream-b1-2", "down")).toBe(true);
+    expect(canMoveBullet(bullets, "exp-paystream-b3", "down")).toBe(false);
+  });
+});
+
+describe("canPlaceBullet", () => {
+  test("says whether placeBullet would move the Bullet, so a drop marker only shows where a drop does something", () => {
+    const bullets = bulletsOf(sampleResume, paystream);
+
+    expect(canPlaceBullet(bullets, "exp-paystream-b1", 4)).toBe(true);
+    expect(canPlaceBullet(bullets, "exp-paystream-b2", 2)).toBe(false);
+    expect(canPlaceBullet(bullets, "exp-paystream-b1-1", 4)).toBe(true);
+    expect(canPlaceBullet(bullets, "exp-paystream-b1-1", 0)).toBe(false);
+    expect(canPlaceBullet(bullets, "exp-paystream-b2", 3)).toBe(false);
+  });
+});
+
 test("Bullet edits don't change the given Resume", () => {
   const before = structuredClone(sampleResume);
 
@@ -269,6 +384,8 @@ test("Bullet edits don't change the given Resume", () => {
   setBulletEnabled(sampleResume, "exp-paystream-b1", false, { now });
   nestBullet(sampleResume, "exp-paystream-b2", { now });
   unnestBullet(sampleResume, "exp-paystream-b1-1", { now });
+  placeBullet(sampleResume, "exp-paystream-b1", 4, { now });
+  moveBullet(sampleResume, "exp-paystream-b1-2", "down", { now });
 
   expect(sampleResume).toEqual(before);
 });
