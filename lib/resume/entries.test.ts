@@ -183,13 +183,13 @@ describe("placeEntry, when nothing would move", () => {
 
 describe("canPlaceEntry and canMoveEntry", () => {
   test("say whether the Entry would move, so a drop marker or an arrow only offers a real move", () => {
-    expect(canPlaceEntry(sampleResume, "skills", "skills-infra", 0)).toBe(true);
-    expect(canPlaceEntry(sampleResume, "skills", "skills-infra", 2)).toBe(false);
-    expect(canPlaceEntry(sampleResume, "header", "contact-phone", 0)).toBe(false);
+    expect(canPlaceEntry(sectionOf(sampleResume, "skills"), "skills-infra", 0)).toBe(true);
+    expect(canPlaceEntry(sectionOf(sampleResume, "skills"), "skills-infra", 2)).toBe(false);
+    expect(canPlaceEntry(sectionOf(sampleResume, "header"), "contact-phone", 0)).toBe(false);
 
-    expect(canMoveEntry(sampleResume, "skills", "skills-languages", "up")).toBe(false);
-    expect(canMoveEntry(sampleResume, "skills", "skills-languages", "down")).toBe(true);
-    expect(canMoveEntry(sampleResume, "skills", "skills-frontend", "down")).toBe(false);
-    expect(canMoveEntry(sampleResume, "header", "contact-phone", "down")).toBe(false);
+    expect(canMoveEntry(sectionOf(sampleResume, "skills"), "skills-languages", "up")).toBe(false);
+    expect(canMoveEntry(sectionOf(sampleResume, "skills"), "skills-languages", "down")).toBe(true);
+    expect(canMoveEntry(sectionOf(sampleResume, "skills"), "skills-frontend", "down")).toBe(false);
+    expect(canMoveEntry(sectionOf(sampleResume, "header"), "contact-phone", "down")).toBe(false);
   });
 });

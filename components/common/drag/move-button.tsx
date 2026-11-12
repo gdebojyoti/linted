@@ -4,19 +4,20 @@ import { Button } from "@/components/ui/button";
 import type { MoveDirection } from "@/lib/resume/layout";
 
 /**
- * An arrow that moves a Section chip one place up or down. When the
- * move can't happen it is disabled but stays focusable, so focus isn't lost
- * when a move takes the chip to the end of its Zone. Focus stays on the
- * arrow after the move, even though the chip changes place in the list.
+ * An arrow that moves a row (a Section chip, an Entry) one place up or
+ * down; `name` names the row, as in "Move Skills up". When the move can't
+ * happen it is disabled but stays focusable, so focus isn't lost when a
+ * move takes the row to the end of its list. Focus stays on the arrow after
+ * the move, even though the row changes place in the list.
  */
 export function MoveButton({
   direction,
-  sectionTitle,
+  name,
   enabled,
   onMove,
 }: {
   direction: MoveDirection;
-  sectionTitle: string;
+  name: string;
   enabled: boolean;
   onMove: (direction: MoveDirection) => void;
 }) {
@@ -27,7 +28,7 @@ export function MoveButton({
       size="icon-sm"
       disabled={!enabled}
       focusableWhenDisabled
-      aria-label={`Move ${sectionTitle} ${direction}`}
+      aria-label={`Move ${name} ${direction}`}
       onClick={(event) => {
         const button = event.currentTarget;
         flushSync(() => onMove(direction));

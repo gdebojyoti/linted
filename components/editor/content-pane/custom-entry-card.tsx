@@ -17,7 +17,8 @@ import type { EntryCardProps } from "./entry-card-list";
  */
 export function CustomEntryCard({
   entry,
-  index,
+  name,
+  reorder,
   onEdit,
   onEnabledChange,
   onDelete,
@@ -34,12 +35,13 @@ export function CustomEntryCard({
 
   return (
     <EntryCard
-      name={named ? `${named} entry` : `Entry ${index + 1}`}
+      name={name}
       enabled={entry.enabled}
       onEnabledChange={onEnabledChange}
       onDelete={onDelete}
       expanded={expanded}
       onToggle={onToggle}
+      reorder={reorder}
       title={
         named ? (
           <>

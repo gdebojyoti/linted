@@ -4,40 +4,44 @@ import { brokenLinks } from "@/lib/prose/parse-prose";
 import type { SummaryEntry } from "@/lib/resume/types";
 import { BrokenLinksMessage } from "./broken-links-message";
 import { DeleteEntryButton } from "./delete-entry-button";
-import { EntryRow } from "./entry-row";
+import type { EntryReorder } from "./entry-reorder";
+import { MovableEntryRow } from "./movable-entry-row";
 
 /**
  * A Summary Entry: one piece of Prose, typed as Markdown (ADR 0004), in a
  * field that grows with its text. It has no visible label, since it sits in
  * the Summary Section; screen readers hear "Summary 1", "Summary 2"… A link
  * that can't become a link is still saved as typed, but the field names it
- * and says how to fix it.
+ * and says how to fix it. It can be moved within the Section.
  *
  * The resize handle is hidden only where the field grows by itself
  * (`field-sizing: content`), so older browsers can still enlarge it.
  */
 export function SummaryEntryRow({
   entry,
-  index,
+  name,
+  reorder,
   onTextChange,
   onEnabledChange,
   onDelete,
   autoFocus,
 }: {
   entry: SummaryEntry;
-  index: number;
+  /** "Summary 1", "Summary 2"…, from its place in the Section. */
+  name: string;
+  reorder: EntryReorder;
   onTextChange: (text: string) => void;
   onEnabledChange: (enabled: boolean) => void;
   onDelete: () => void;
   autoFocus?: boolean;
 }) {
   const errorId = useId();
-  const name = `Summary ${index + 1}`;
   const broken = brokenLinks(entry.text);
 
   return (
-    <EntryRow
+    <MovableEntryRow
       name={name}
+      reorder={reorder}
       enabled={entry.enabled}
       onEnabledChange={onEnabledChange}
       columns="grid-cols-1"
@@ -56,6 +60,6 @@ export function SummaryEntryRow({
         />
         <BrokenLinksMessage id={errorId} links={broken} />
       </div>
-    </EntryRow>
+    </MovableEntryRow>
   );
 }

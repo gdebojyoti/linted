@@ -62,31 +62,31 @@ export function moveEntry(
   direction: "up" | "down",
   options: EditOptions = {},
 ): Resume {
-  const index = moveGap(resume, sectionId, entryId, direction);
-  return index === null ? resume : placeEntry(resume, sectionId, entryId, index, options);
+  return editSections(
+    resume,
+    (section) => {
+      if (section.id !== sectionId) return section;
+      const entries = placedEntries(section, entryId, moveGap(section, entryId, direction));
+      return entries ? withEntries(section, entries) : section;
+    },
+    options,
+  );
 }
 
-/** Whether moveEntry would move the Entry, so the editor can disable the arrow. */
-export function canMoveEntry(resume: Resume, sectionId: string, entryId: string, direction: "up" | "down"): boolean {
-  const index = moveGap(resume, sectionId, entryId, direction);
-  return index !== null && canPlaceEntry(resume, sectionId, entryId, index);
+/** Whether moveEntry would move the Entry in this Section, so the editor can disable the arrow. */
+export function canMoveEntry(section: Section, entryId: string, direction: "up" | "down"): boolean {
+  return placedEntries(section, entryId, moveGap(section, entryId, direction)) !== null;
 }
 
-/** A move is a placement in the gap past the next Entry up or down. Null for an unknown Entry. */
-function moveGap(resume: Resume, sectionId: string, entryId: string, direction: "up" | "down"): number | null {
-  const from = findSection(resume, sectionId)?.entries.findIndex((e) => e.id === entryId) ?? -1;
-  if (from === -1) return null;
+/** A move is a placement in the gap past the next Entry up or down. */
+function moveGap(section: Section, entryId: string, direction: "up" | "down"): number {
+  const from = section.entries.findIndex((e) => e.id === entryId);
   return direction === "up" ? from - 1 : from + 2;
 }
 
-function findSection(resume: Resume, sectionId: string): Section | undefined {
-  return resume.content.sections.find((section) => section.id === sectionId);
-}
-
-/** Whether placeEntry would move the Entry, so a drop marker shows only where a drop does something. */
-export function canPlaceEntry(resume: Resume, sectionId: string, entryId: string, index: number): boolean {
-  const section = findSection(resume, sectionId);
-  return section !== undefined && placedEntries(section, entryId, index) !== null;
+/** Whether placeEntry would move the Entry in this Section, so a drop marker shows only where a drop does something. */
+export function canPlaceEntry(section: Section, entryId: string, index: number): boolean {
+  return placedEntries(section, entryId, index) !== null;
 }
 
 /**
