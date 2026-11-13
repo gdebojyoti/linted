@@ -91,14 +91,19 @@ export const styles = StyleSheet.create({
     letterSpacing: SECTION_TITLE_SIZE * 0.12,
     textTransform: "uppercase",
   },
+  // No gap: an Entry's pieces sit straight in here (see EntryBlock), so the
+  // space between them is set on each piece.
   entries: {
     flexDirection: "column",
-    gap: 8,
   },
   // An Entry's lines and first Bullet, which stay together on one page.
   entryHead: {
     flexDirection: "column",
     gap: 3,
+  },
+  // Space above every Entry's head but the first.
+  laterEntry: {
+    marginTop: 8,
   },
 
   // A line with the main facts on the left and dates or results on the right.
@@ -119,13 +124,12 @@ export const styles = StyleSheet.create({
 
   // Bullets
 
-  bulletsAfterFirst: {
-    flexDirection: "column",
-    gap: 2,
-    marginTop: 2,
-  },
   bullet: {
     flexDirection: "row",
+  },
+  // Space above every Bullet of an Entry after its first.
+  bulletAfterFirst: {
+    marginTop: 2,
   },
   // The marker sits in the indent, like a list marker on the web.
   bulletMarker: {

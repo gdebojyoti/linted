@@ -6,10 +6,25 @@ import { BulletMarker } from "./bullet-marker";
 import { ProseText } from "./prose-text";
 import { BULLET_INDENT, styles } from "./styles";
 
-/** One Bullet, indented by its depth, never split across pages. */
-export function BulletRow({ bullet, depth }: { bullet: Rendered<Bullet>; depth: number }) {
+/**
+ * One Bullet, indented by its depth, never split across pages. `afterFirst`
+ * is for every Bullet after an Entry's first, which sits a little below the
+ * one above it.
+ */
+export function BulletRow({
+  bullet,
+  depth,
+  afterFirst = false,
+}: {
+  bullet: Rendered<Bullet>;
+  depth: number;
+  afterFirst?: boolean;
+}) {
   return (
-    <View style={[styles.bullet, { paddingLeft: depth * BULLET_INDENT }]} wrap={false}>
+    <View
+      style={[styles.bullet, afterFirst ? styles.bulletAfterFirst : {}, { paddingLeft: depth * BULLET_INDENT }]}
+      wrap={false}
+    >
       <BulletMarker hollow={depth > 0} />
       <Text style={styles.bulletText}>
         <ProseText nodes={parseProse(bullet.text)} />

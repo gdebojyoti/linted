@@ -245,6 +245,74 @@ describe("LedgerDocument", () => {
     }
   });
 
+  test("never draws a Section past the bottom margin, wherever on the page it starts (#100)", async () => {
+    // More and more Skills rows above a Custom Section, so that its title,
+    // its Entry and each of its Bullets in turn land at the bottom of page 1.
+    for (let skills = 34; skills <= 46; skills++) {
+      const pages = await ledgerPdf({
+        ...sampleResume,
+        content: {
+          sections: [
+            sampleResume.content.sections[0],
+            {
+              id: "skills",
+              type: "skills",
+              title: "Skills",
+              enabled: true,
+              entries: Array.from({ length: skills }, (_, i) => ({
+                id: `skill-${i}`,
+                enabled: true,
+                label: `Label-${i + 1}`,
+                skills: "Go, Python",
+              })),
+            },
+            {
+              id: "custom-talks",
+              type: "custom",
+              title: "Talks",
+              enabled: true,
+              entries: [
+                {
+                  id: "talk-1",
+                  enabled: true,
+                  title: "Talk-Title",
+                  subtitle: "",
+                  dates: { start: null, current: false, end: null },
+                  bullets: ["First-point", "Second-point", "Third-point"].map((text) => ({
+                    id: text,
+                    enabled: true,
+                    text,
+                    children: [],
+                  })),
+                },
+              ],
+            },
+          ],
+        },
+      });
+      const pageOf = (text: string) =>
+        pages.findIndex((page) => squash(pageText(page)).includes(squash(text)));
+      const yOf = (text: string) =>
+        pages[pageOf(text)].text.find((run) => squash(run.text).includes(squash(text)))!.y;
+
+      for (const [number, page] of pages.entries()) {
+        for (const run of page.text) {
+          // y is the text's baseline; Ledger's bottom margin is 42 pt.
+          expect(run.y, `${skills} Skills, page ${number + 1}: "${run.text}"`).toBeLessThanOrEqual(page.height - 42);
+        }
+      }
+      expect(pageOf("TALKS"), `${skills} Skills`).toBe(pageOf("Talk-Title"));
+      expect(pageOf("Talk-Title"), `${skills} Skills`).toBe(pageOf("First-point"));
+      // Bullets keep their order, never drawn over one another.
+      const order = ["First-point", "Second-point", "Third-point"].map((text) => [pageOf(text), yOf(text)]);
+      for (let i = 1; i < order.length; i++) {
+        const [page, y] = order[i];
+        const [pageBefore, yBefore] = order[i - 1];
+        expect(page > pageBefore || (page === pageBefore && y > yBefore), `${skills} Skills, Bullet ${i + 1}`).toBe(true);
+      }
+    }
+  });
+
   test("breaks an Entry with many Bullets between Bullets, keeping every one", async () => {
     const bullets = Array.from({ length: 90 }, (_, i) => `Point-${i + 1} of a very long Entry.`);
     const pages = await ledgerPdf(withExperience([experienceEntry("Role-01", bullets)]));
