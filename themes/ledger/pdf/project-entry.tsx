@@ -15,9 +15,11 @@ import { TextLink } from "./text-link";
 export function ProjectEntry({
   entry,
   heading,
+  spaceAfter,
 }: {
   entry: Rendered<StoredProjectEntry>;
   heading?: ReactNode;
+  spaceAfter: number;
 }) {
   const dates = formatDateRange(entry.dates);
   const linkText = entry.linkLabel || entry.link;
@@ -32,6 +34,7 @@ export function ProjectEntry({
   return (
     <EntryBlock
       heading={heading}
+      spaceAfter={spaceAfter}
       lines={<EntryLine strong={entry.name} rest={entry.techStack} separator=" — " meta={meta} />}
       bullets={entry.bullets}
     />

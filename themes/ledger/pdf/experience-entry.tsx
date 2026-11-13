@@ -12,13 +12,16 @@ import { EntryLine } from "./entry-line";
 export function ExperienceEntry({
   entry,
   heading,
+  spaceAfter,
 }: {
   entry: Rendered<StoredExperienceEntry>;
   heading?: ReactNode;
+  spaceAfter: number;
 }) {
   return (
     <EntryBlock
       heading={heading}
+      spaceAfter={spaceAfter}
       lines={
         <EntryLine
           strong={entry.role}

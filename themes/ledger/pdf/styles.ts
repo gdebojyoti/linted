@@ -21,6 +21,15 @@ const SECTION_TITLE_SIZE = 8.55;
 /** Space between a Summary's paragraphs, in pt. */
 export const SPACE_BETWEEN_PARAGRAPHS = 5;
 
+/** Space between Entries, in pt. */
+export const SPACE_BETWEEN_ENTRIES = 8;
+
+/** Space between an Entry's Bullets, in pt. */
+export const SPACE_BETWEEN_BULLETS = 2;
+
+/** The page's bottom margin, in pt: nothing is drawn below it. */
+export const PAGE_BOTTOM_MARGIN = 42;
+
 /** How far each level of Bullets is indented, in pt. */
 export const BULLET_INDENT = 14;
 
@@ -30,7 +39,7 @@ export const styles = StyleSheet.create({
   page: {
     paddingTop: 46,
     paddingHorizontal: 48,
-    paddingBottom: 42,
+    paddingBottom: PAGE_BOTTOM_MARGIN,
     backgroundColor: "#ffffff",
     color: colors.ink,
     fontSize: BODY_SIZE,
@@ -91,9 +100,10 @@ export const styles = StyleSheet.create({
     letterSpacing: SECTION_TITLE_SIZE * 0.12,
     textTransform: "uppercase",
   },
+  // No gap: an Entry's pieces sit straight in here (see EntryBlock), and
+  // each sets the space below it.
   entries: {
     flexDirection: "column",
-    gap: 8,
   },
   // An Entry's lines and first Bullet, which stay together on one page.
   entryHead: {
@@ -119,11 +129,6 @@ export const styles = StyleSheet.create({
 
   // Bullets
 
-  bulletsAfterFirst: {
-    flexDirection: "column",
-    gap: 2,
-    marginTop: 2,
-  },
   bullet: {
     flexDirection: "row",
   },
