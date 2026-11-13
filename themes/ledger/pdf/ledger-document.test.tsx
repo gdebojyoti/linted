@@ -1,14 +1,15 @@
 import { describe, expect, test } from "vitest";
 import { renderableView } from "@/lib/resume/renderable-view";
 import { sampleResume } from "@/lib/resume/sample-resume";
-import type { CustomSection, ExperienceEntry, Resume } from "@/lib/resume/types";
+import type { CustomSection, ExperienceEntry, Resume, SkillsSection } from "@/lib/resume/types";
 import { layoutOf } from "@/lib/resume/layout";
 import { placeSections } from "@/lib/theme/place-sections";
-import { pageText, readPdf } from "@/themes/testing/read-pdf";
+import { pageText, readPdf, type PdfPage } from "@/themes/testing/read-pdf";
 import { setThemeOption, themeOptionsOf } from "@/lib/resume/theme-options";
 import { LEDGER_DEFAULT_OPTIONS } from "@/themes/ledger/default-options";
 import { LEDGER_LAYOUT } from "@/themes/ledger/default-layout";
 import { LedgerDocument } from "./ledger-document";
+import { PAGE_BOTTOM_MARGIN } from "./styles";
 
 function ledgerPdf(resume: Resume) {
   const zones = placeSections(renderableView(resume).sections, layoutOf(resume, LEDGER_LAYOUT));
@@ -62,6 +63,22 @@ function experienceEntry(role: string, bullets: string[]): ExperienceEntry {
     location: "London",
     dates: { start: { year: 2022, month: 3, day: null }, current: true, end: null },
     bullets: bullets.map((text, i) => ({ id: `${role}-${i}`, enabled: true, text, children: [] })),
+  };
+}
+
+/** A Skills Section of `rows` Skills Entries, one line each. */
+function skillsSection(rows: number): SkillsSection {
+  return {
+    id: "skills",
+    type: "skills",
+    title: "Skills",
+    enabled: true,
+    entries: Array.from({ length: rows }, (_, i) => ({
+      id: `skill-${i}`,
+      enabled: true,
+      label: `Label-${i + 1}`,
+      skills: "Go, Python",
+    })),
   };
 }
 
@@ -254,18 +271,7 @@ describe("LedgerDocument", () => {
         content: {
           sections: [
             sampleResume.content.sections[0],
-            {
-              id: "skills",
-              type: "skills",
-              title: "Skills",
-              enabled: true,
-              entries: Array.from({ length: skills }, (_, i) => ({
-                id: `skill-${i}`,
-                enabled: true,
-                label: `Label-${i + 1}`,
-                skills: "Go, Python",
-              })),
-            },
+            skillsSection(skills),
             {
               id: "custom-talks",
               type: "custom",
@@ -297,8 +303,10 @@ describe("LedgerDocument", () => {
 
       for (const [number, page] of pages.entries()) {
         for (const run of page.text) {
-          // y is the text's baseline; Ledger's bottom margin is 42 pt.
-          expect(run.y, `${skills} Skills, page ${number + 1}: "${run.text}"`).toBeLessThanOrEqual(page.height - 42);
+          // y is the text's baseline.
+          expect(run.y, `${skills} Skills, page ${number + 1}: "${run.text}"`).toBeLessThanOrEqual(
+            page.height - PAGE_BOTTOM_MARGIN,
+          );
         }
       }
       expect(pageOf("TALKS"), `${skills} Skills`).toBe(pageOf("Talk-Title"));
@@ -311,6 +319,49 @@ describe("LedgerDocument", () => {
         expect(page > pageBefore || (page === pageBefore && y > yBefore), `${skills} Skills, Bullet ${i + 1}`).toBe(true);
       }
     }
+  });
+
+  test("starts a later page at its top margin, whether an Entry or a Bullet comes first", async () => {
+    // Where a line of body text starts on a later page: a long Summary
+    // paragraph carries on there with no space of its own above it.
+    const [, summaryPage] = await ledgerPdf(withSummary(Array.from({ length: 1200 }, () => "word").join(" ")));
+    // The page's first line in body text, leaving out smaller text such as dates.
+    const topLine = (page: PdfPage) =>
+      page.text
+        .filter((run) => /^(word|Role-|Bullet-)/.test(run.text))
+        .reduce((top, run) => (run.y < top.y ? run : top));
+    const expected = topLine(summaryPage).y;
+
+    // Entries of 1 to 4 Bullets, behind more and more Skills rows, so that
+    // later pages start with an Entry in some and with a Bullet in others.
+    const startedBy = new Set<string>();
+    for (let skills = 0; skills < 8; skills++) {
+      const entries = Array.from({ length: 30 }, (_, i) => {
+        const n = String(i + 1).padStart(2, "0");
+        return experienceEntry(
+          `Role-${n}`,
+          Array.from({ length: (i % 4) + 1 }, (_, j) => `Bullet-${n}-${j + 1} of a long Resume.`),
+        );
+      });
+      const resume = withExperience(entries);
+      const pages = await ledgerPdf({
+        ...resume,
+        content: { sections: [...resume.content.sections, skillsSection(skills)] },
+      });
+      const withSkillsFirst = await ledgerPdf({
+        ...resume,
+        content: {
+          sections: [resume.content.sections[0], skillsSection(skills), resume.content.sections[1]],
+        },
+      });
+      for (const [number, page] of [...pages.slice(1), ...withSkillsFirst.slice(1)].entries()) {
+        const top = topLine(page);
+        startedBy.add(top.text.startsWith("Bullet-") ? "a Bullet" : top.text.startsWith("Role-") ? "an Entry" : top.text);
+        expect(top.y, `${skills} Skills, page ${number + 2}: "${top.text}"`).toBeCloseTo(expected, 1);
+      }
+    }
+    expect(startedBy).toContain("an Entry");
+    expect(startedBy).toContain("a Bullet");
   });
 
   test("breaks an Entry with many Bullets between Bullets, keeping every one", async () => {

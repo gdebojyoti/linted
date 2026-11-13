@@ -6,23 +6,19 @@ import { BulletMarker } from "./bullet-marker";
 import { ProseText } from "./prose-text";
 import { BULLET_INDENT, styles } from "./styles";
 
-/**
- * One Bullet, indented by its depth, never split across pages. `afterFirst`
- * is for every Bullet after an Entry's first, which sits a little below the
- * one above it.
- */
+/** One Bullet, indented by its depth, never split across pages, `spaceAfter` pt above what follows. */
 export function BulletRow({
   bullet,
   depth,
-  afterFirst = false,
+  spaceAfter = 0,
 }: {
   bullet: Rendered<Bullet>;
   depth: number;
-  afterFirst?: boolean;
+  spaceAfter?: number;
 }) {
   return (
     <View
-      style={[styles.bullet, afterFirst ? styles.bulletAfterFirst : {}, { paddingLeft: depth * BULLET_INDENT }]}
+      style={[styles.bullet, { paddingLeft: depth * BULLET_INDENT, marginBottom: spaceAfter }]}
       wrap={false}
     >
       <BulletMarker hollow={depth > 0} />

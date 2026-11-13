@@ -13,15 +13,18 @@ import { EntryLine } from "./entry-line";
 export function EducationEntry({
   entry,
   heading,
+  spaceAfter,
 }: {
   entry: Rendered<StoredEducationEntry>;
   heading?: ReactNode;
+  spaceAfter: number;
 }) {
   const firstLine = joinMeta(entry.location, formatDateRange(entry.dates));
 
   return (
     <EntryBlock
       heading={heading}
+      spaceAfter={spaceAfter}
       lines={
         <>
           {(entry.institution || firstLine) && (

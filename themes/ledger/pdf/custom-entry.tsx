@@ -11,13 +11,16 @@ import { EntryLine } from "./entry-line";
 export function CustomEntry({
   entry,
   heading,
+  spaceAfter,
 }: {
   entry: Rendered<StoredCustomEntry>;
   heading?: ReactNode;
+  spaceAfter: number;
 }) {
   return (
     <EntryBlock
       heading={heading}
+      spaceAfter={spaceAfter}
       lines={
         <EntryLine
           strong={entry.title}
