@@ -82,32 +82,32 @@
 
 ## The Margin page (`linted-editor-tabs-design/PreviewTwoCol.dc.html`)
 
-**Margin** is the second Theme: a full-width top, then a narrow sidebar on the left beside a main column. Its look comes from `PreviewTwoCol`: a 164px sidebar, 28px between the columns, and 30px (Comfortable) or 20px (Compact) between the top and the columns, all used as pt, as Ledger does. Decided in #105.
+**Margin** is the second Theme: the `header` Zone across the full width, then the sidebar (`aside-left`) on the left beside `main`. Its look comes from `PreviewTwoCol`: a 164px sidebar, 28px between the sidebar and `main`, and 30px (Comfortable) or 20px (Compact) below the `header` Zone, all used as pt, as Ledger does. Line height and the space between Sections follow Density as in Ledger (1.42 and 14pt, or 1.32 and 9pt). Decided in #105.
 
 **Zones and defaults:**
 
-- **Zones:** `header` (the full-width top), `aside-left` (the sidebar) and `main`.
+- **Zones:** `header` (full width), `aside-left` (the sidebar) and `main`.
 - **Default Layout**, as in the design: the Header (Pinned) and Summary in `header`; Skills and Education in `aside-left`; Experience, Projects and Custom Sections in `main`.
 - **Default Theme Options:** Pine, Serif (Source Serif 4) and Comfortable, the same as Ledger's.
 
-**Across pages** (checked with a throwaway react-pdf Document in #105):
+**Across pages** (checked with a throwaway react-pdf `<Document>`; findings on #105):
 
-- The top is on page 1 only, and breaks like Ledger if it's ever longer than a page. When it draws nothing, the columns start at the top margin, with no gap above them.
-- The sidebar and main each carry on onto later pages **in their own column**. Where one has ended, its column is left white. Main never widens on a later page: react-pdf can't change a column's width from one page to the next.
-- Main has a **fixed width pushed to the right** (`marginLeft: "auto"`), not a flex-grown width. In a plain flex row, once the sidebar ends react-pdf moves main to the left edge on the next page at its narrow width, leaving the right of the page empty.
-- When the sidebar has **nothing to draw** (every Section in `aside-left` is Empty or Disabled, or none is there), main takes the full width, and the page reads as one column.
-- Inside a column, Ledger's rules hold: a Section's title stays on one page with its first Entry's lines and first Bullet, each piece that stays on one page sits straight in its Section's View (#100), and each piece sets the space below it, never above.
+- The `header` Zone starts on page 1 and isn't repeated; if it's ever longer than a page, it breaks like Ledger. When it draws nothing, the sidebar and `main` start at the top margin, with no gap above them.
+- The sidebar and `main` each carry on onto later pages **in their own place**: the sidebar on the left, `main` on the right. Where one has ended, its place is left white. Neither widens on a later page: react-pdf can't change a View's width from one page to the next.
+- `main` has a **fixed width pushed to the right** (`marginLeft: "auto"`), not a flex-grown width. In a plain flex row, once the sidebar ends react-pdf moves `main` to the left edge on the next page at its narrow width, leaving the right of the page empty.
+- When the sidebar has **nothing to draw** (every Section in `aside-left` is Empty or Disabled, or none is there), `main` takes the full width. When `main` has nothing to draw, the sidebar takes the full width. Either way the page reads as one column.
+- Inside the sidebar and `main`, Ledger's rules hold: a Section's title stays on one page with its first Entry's lines and first Bullet, each piece that stays on one page sits straight in its Section's View (#100), and each Entry and Bullet sets the space below it, never above.
 
 Where we build something different from `PreviewTwoCol`:
 
 | The design shows | Build this instead |
 |---|---|
-| A US Letter page (612 × 792), cut off at the bottom | An **A4** page, so main is about 307pt wide, not 324. A long Resume **flows onto more pages**, as above |
+| A US Letter page (612 × 792), cut off at the bottom | An **A4** page, so `main` is about 307pt wide, not 324. A long Resume **flows onto more pages**, as above |
 | Zones named `top`, `side`, `main` | **Our Zones**: `top` is `header`, `side` is `aside-left` |
 | A grip, a pin, a move toolbar, Zone and selection outlines, and Ghosted Sections with "Empty" and "Disabled" tags | **None.** The preview is the Export (ADR 0006); Sections are arranged in the Layout tab |
-| Skills and Education only ever in the sidebar | **Any Section in either column, drawn the same way in both.** Each uses a form that fits the 164pt sidebar: Skills with the label above its list, as in the design, and an Entry's dates moving below its main line when they don't fit beside it (the design's wrapping line) |
+| Skills and Education only ever in the sidebar | **Any Section but the Header in any Zone, drawn the same way in each.** Each uses a form that fits the 164pt sidebar: Skills with the label above its list, as in the design, and an Entry's dates moving below its main line when they don't fit beside it (the design's wrapping line) |
 | A "Talks" Section | An example of a **Custom Section** |
-| Header links shown as the address (e.g. "github.com/asharao") | **As specced.** Each link shows its label, or its URL when it has none, as in Ledger (row 9 of the first table) |
+| Header links shown as the address (e.g. "github.com/asharao") | **As in Ledger** (row 9 of the first table): each link shows its label, or its URL when it has no label |
 | Pine green and Source Serif 4 only | Margin's **defaults**. Its accent, typeface and density come from its Theme Options, as Ledger's do |
 
 ## The delete confirmation (no design yet)
