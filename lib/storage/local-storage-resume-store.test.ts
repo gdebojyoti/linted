@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { newResume } from "@/lib/resume/new-resume";
+import type { Resume } from "@/lib/resume/types";
 import { fakeStorage } from "./fake-storage";
 import { localStorageResumeStore } from "./local-storage-resume-store";
 import { resumeStoreContract } from "./resume-store-contract";
@@ -37,6 +38,23 @@ describe("localStorageResumeStore", () => {
     const store = localStorageResumeStore();
 
     await expect(store.list()).rejects.toThrow();
+  });
+
+  test("a Resume saved before Theme Options existed reads with none picked", async () => {
+    const resume = newResume();
+    const oldThemeSettings: Partial<Resume["themeSettings"]> = { ...resume.themeSettings };
+    delete oldThemeSettings.options;
+    const storage = fakeStorage({
+      [`linted:resume:${resume.metadata.id}`]: JSON.stringify({ ...resume, themeSettings: oldThemeSettings }),
+    });
+    const store = localStorageResumeStore(storage);
+
+    expect((await store.get(resume.metadata.id))?.themeSettings.options).toEqual({
+      accent: null,
+      typeface: null,
+      density: null,
+    });
+    expect(await store.list()).toEqual([resume]);
   });
 
   test("ignores keys that aren't Resumes", async () => {

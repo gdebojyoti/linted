@@ -5,18 +5,22 @@ import type { Resume } from "@/lib/resume/types";
 import { layoutOf } from "@/lib/resume/layout";
 import { placeSections } from "@/lib/theme/place-sections";
 import { findByText, pathTo, primitiveTree, textOf, type Primitive } from "@/themes/testing/primitive-tree";
+import { setThemeOption, themeOptionsOf } from "@/lib/resume/theme-options";
+import { LEDGER_DEFAULT_OPTIONS } from "@/themes/ledger/default-options";
 import { LEDGER_LAYOUT } from "@/themes/ledger/default-layout";
 import { LedgerDocument } from "./ledger-document";
 import { colors } from "./styles";
 
 // What reading the PDF back can't show: colours, sizes and what is kept together.
 
-const PINE = colors.accent;
+/** The accents' colours, from the design (docs/design/linted-editor-tabs-design/tokens.css). */
+const PINE = "#17784a";
+const COBALT = "#2456c7";
 const MUTED = colors.inkMuted;
 
 function ledgerTree(resume: Resume = sampleResume) {
   const zones = placeSections(renderableView(resume).sections, layoutOf(resume, LEDGER_LAYOUT));
-  return primitiveTree(<LedgerDocument zones={zones} />);
+  return primitiveTree(<LedgerDocument zones={zones} options={themeOptionsOf(resume, LEDGER_DEFAULT_OPTIONS)} />);
 }
 
 /** The innermost part around `text` that a page never splits. */
@@ -54,6 +58,13 @@ describe("LedgerDocument's look", () => {
     expect(link.type).toBe("LINK");
     expect(link.props.src).toBe("https://www.linkedin.com/in/example-maya");
     expect(link.style).toMatchObject({ color: PINE });
+  });
+
+  test("draws Section titles and links in the accent picked", () => {
+    const tree = ledgerTree(setThemeOption(sampleResume, "accent", "cobalt"));
+
+    expect(findByText(tree, "Education").style).toMatchObject({ color: COBALT });
+    expect(findByText(tree, "LinkedIn").style).toMatchObject({ color: COBALT });
   });
 
   test("marks top-level Bullets with a dot and nested ones with a ring, indented", () => {

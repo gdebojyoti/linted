@@ -34,7 +34,34 @@ export type ThemeSettings = {
   themeId: string;
   /** null = the Theme's default Layout. Reset to null when the Theme changes. */
   layout: Layout | null;
+  options: ThemeOptions;
 };
+
+export const ACCENT_IDS = ["pine", "cobalt", "ink", "rust", "plum", "teal", "wine", "slate", "ochre"] as const;
+export type AccentId = (typeof ACCENT_IDS)[number];
+
+export const TYPEFACE_IDS = ["serif", "sans", "classic"] as const;
+export type TypefaceId = (typeof TYPEFACE_IDS)[number];
+
+export const DENSITY_IDS = ["comfortable", "compact"] as const;
+export type DensityId = (typeof DENSITY_IDS)[number];
+
+/**
+ * The Theme Options picked for this Resume, each stored by name (#89). null =
+ * the Theme's default, and all three go back to null when the Theme changes.
+ * A name the app doesn't know (hand-edited or future data) also means the
+ * default.
+ */
+export type ThemeOptions = {
+  accent: AccentId | null;
+  typeface: TypefaceId | null;
+  density: DensityId | null;
+};
+
+export type ThemeOption = keyof ThemeOptions;
+
+/** No Theme Option picked: every one is the Theme's default. */
+export const NO_THEME_OPTIONS_PICKED: ThemeOptions = { accent: null, typeface: null, density: null };
 
 /** Every Zone a Theme may define. Each Theme uses some of them. */
 export const ZONES = ["header", "aside-left", "main", "aside-right", "footer"] as const;

@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 import { copyTitle, duplicateResume } from "./duplicate-resume";
 import { addEntry } from "./entries";
 import { renderableView } from "./renderable-view";
+import { setThemeOption } from "./theme-options";
 import { sampleResume } from "./sample-resume";
 import type { Bullet, Resume } from "./types";
 import { updateContact } from "./update-contact";
@@ -62,6 +63,16 @@ describe("duplicateResume", () => {
     expect(withoutIds(copy)).toEqual(withoutIds(sampleResume));
     expect(renderableView(copy).sections.map((s) => s.title)).toEqual(renderableView(sampleResume).sections.map((s) => s.title));
     expect(copy.themeSettings).toEqual(sampleResume.themeSettings);
+  });
+
+  test("keeps the original's Theme Options", () => {
+    const original = setThemeOption(setThemeOption(sampleResume, "accent", "wine", { now }), "density", "compact", { now });
+
+    expect(duplicateResume(original, { now }).themeSettings.options).toEqual({
+      accent: "wine",
+      typeface: null,
+      density: "compact",
+    });
   });
 
   test("titles the copy \"<title> (copy)\" by default", () => {

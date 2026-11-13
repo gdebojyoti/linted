@@ -1,4 +1,4 @@
-import { SCHEMA_VERSION, type Resume } from "@/lib/resume/types";
+import { NO_THEME_OPTIONS_PICKED, SCHEMA_VERSION, type Resume } from "@/lib/resume/types";
 import type { ResumeStore } from "./resume-store";
 
 /** The parts of the browser's Storage this store uses. */
@@ -48,7 +48,19 @@ export function localStorageResumeStore(injected?: StringStorage): ResumeStore {
       "schemaVersion" in value &&
       value.schemaVersion === SCHEMA_VERSION &&
       (value as Resume).metadata?.id === key.slice(KEY_PREFIX.length);
-    return readable ? (value as Resume) : null;
+    return readable ? withThemeOptions(value as Resume) : null;
+  }
+
+  /**
+   * A Resume saved before Theme Options existed (#89) has none, so it gets
+   * none picked; so does one whose options aren't an object at all.
+   * SCHEMA_VERSION stays 1 while there are no other users. A Resume with no
+   * Theme Settings is left as it is, as before.
+   */
+  function withThemeOptions(resume: Resume): Resume {
+    const settings = resume.themeSettings as Resume["themeSettings"] | undefined;
+    if (!settings || (typeof settings.options === "object" && settings.options !== null)) return resume;
+    return { ...resume, themeSettings: { ...settings, options: { ...NO_THEME_OPTIONS_PICKED } } };
   }
 
   return {

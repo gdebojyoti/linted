@@ -1,4 +1,4 @@
-import { DEFAULT_THEME_ID, SCHEMA_VERSION, type Resume, type ResumeDate } from "./types";
+import { DEFAULT_THEME_ID, NO_THEME_OPTIONS_PICKED, SCHEMA_VERSION, type Resume, type ResumeDate } from "./types";
 
 function year(year: number): ResumeDate {
   return { year, month: null, day: null };
@@ -27,7 +27,7 @@ export const sampleResume: Resume = {
     createdAt: "2026-08-02T09:15:00.000Z",
     lastEditedAt: "2026-09-21T18:42:00.000Z",
   },
-  themeSettings: { themeId: DEFAULT_THEME_ID, layout: null },
+  themeSettings: { themeId: DEFAULT_THEME_ID, layout: null, options: { ...NO_THEME_OPTIONS_PICKED } },
   content: {
     sections: [
       {

@@ -103,13 +103,14 @@ describe("newResume", () => {
     expect(newResume({ title: "   " }).metadata.title).toBe(DEFAULT_RESUME_TITLE);
   });
 
-  test("carries the current schema version, and the default Theme with its default Layout", () => {
+  test("carries the current schema version, and the default Theme with its default Layout and Theme Options", () => {
     const resume = newResume({ now, newId: sequentialIds() });
 
     expect(resume.schemaVersion).toBe(SCHEMA_VERSION);
     expect(resume.themeSettings).toEqual({
       themeId: DEFAULT_THEME_ID,
       layout: null,
+      options: { accent: null, typeface: null, density: null },
     });
   });
 });

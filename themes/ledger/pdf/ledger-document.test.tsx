@@ -5,12 +5,14 @@ import type { CustomSection, ExperienceEntry, Resume } from "@/lib/resume/types"
 import { layoutOf } from "@/lib/resume/layout";
 import { placeSections } from "@/lib/theme/place-sections";
 import { pageText, readPdf } from "@/themes/testing/read-pdf";
+import { setThemeOption, themeOptionsOf } from "@/lib/resume/theme-options";
+import { LEDGER_DEFAULT_OPTIONS } from "@/themes/ledger/default-options";
 import { LEDGER_LAYOUT } from "@/themes/ledger/default-layout";
 import { LedgerDocument } from "./ledger-document";
 
 function ledgerPdf(resume: Resume) {
   const zones = placeSections(renderableView(resume).sections, layoutOf(resume, LEDGER_LAYOUT));
-  return readPdf(<LedgerDocument zones={zones} />);
+  return readPdf(<LedgerDocument zones={zones} options={themeOptionsOf(resume, LEDGER_DEFAULT_OPTIONS)} />);
 }
 
 /** A Resume with just a Header and a Summary of this one Prose text. */
@@ -137,6 +139,34 @@ describe("LedgerDocument", () => {
     const fontOf = (text: string) => page.text.find((run) => run.text.includes(text))?.font;
 
     expect(fontOf("fast")).toBe("SourceSerif4-SemiBoldItalic");
+  });
+
+  describe.each([
+    ["sans", "IBMPlexSans"],
+    ["classic", "EBGaramond"],
+  ] as const)("in the %s Typeface", (typeface, font) => {
+    test("draws Prose in its fonts, with real bold, italic and bold italic", async () => {
+      const resume = setThemeOption(withSummary("Plain, **bold**, *italic* and ***both***."), "typeface", typeface);
+      const [page] = await ledgerPdf(resume);
+      const fontOf = (text: string) => page.text.find((run) => run.text.includes(text))?.font;
+
+      expect(fontOf("Plain")).toBe(`${font}-Regular`);
+      expect(fontOf("bold")).toBe(`${font}-SemiBold`);
+      expect(fontOf("italic")).toBe(`${font}-Italic`);
+      expect(fontOf("both")).toBe(`${font}-SemiBoldItalic`);
+    });
+  });
+
+  test("Compact Density sets lines closer: 1.32 of the 9.5 pt body text, against Comfortable's 1.42", async () => {
+    const lineGap = async (resume: Resume) => {
+      const [page] = await ledgerPdf(resume);
+      const y = (text: string) => page.text.find((run) => run.text.includes(text))!.y;
+      return y("Second line") - y("First line");
+    };
+    const twoLines = withSummary("First line\nSecond line");
+
+    expect(await lineGap(twoLines)).toBeCloseTo(13.49, 1);
+    expect(await lineGap(setThemeOption(twoLines, "density", "compact"))).toBeCloseTo(12.54, 1);
   });
 
   test("makes Header, Project and Prose links clickable", async () => {

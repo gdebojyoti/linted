@@ -2,6 +2,7 @@ import type { DocumentProps } from "@react-pdf/renderer";
 import type { ReactElement } from "react";
 import { layoutOf } from "@/lib/resume/layout";
 import { renderableView } from "@/lib/resume/renderable-view";
+import { themeOptionsOf } from "@/lib/resume/theme-options";
 import type { Resume } from "@/lib/resume/types";
 import { placeSections } from "@/lib/theme/place-sections";
 import type { Theme } from "@/themes/theme";
@@ -15,5 +16,10 @@ import type { Theme } from "@/themes/theme";
 export function exportDocument(resume: Resume, theme: Theme): ReactElement<DocumentProps> | null {
   const { sections } = renderableView(resume);
   if (sections.length === 0) return null;
-  return <theme.Document zones={placeSections(sections, layoutOf(resume, theme))} />;
+  return (
+    <theme.Document
+      zones={placeSections(sections, layoutOf(resume, theme))}
+      options={themeOptionsOf(resume, theme.defaultOptions)}
+    />
+  );
 }
