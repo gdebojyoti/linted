@@ -77,8 +77,38 @@
 | No drop marker | **A 2px Amethyst line** in the gap where a dragged chip will land, shown only where a drop would move it (#88) |
 | "Empty" and "Disabled" chip tags as filled grey pills | The app's grey **Badge**, as for "Current" |
 | Footer note: "Drag sections between zones, or select one and use the arrows. Empty and disabled sections can be placed too; they won't print. Switching theme resets this layout to the new theme's default." | **"Drag a section to move it, or point to it or Tab to it and use its arrows. Empty and disabled sections can be placed too; they won't appear in your resume."** Switching Theme (a second Theme) adds its sentence when it exists |
-| Theme cards for Ledger and Margin | **Ledger only, so no Theme cards** until a second Theme exists; the Theme tab holds "Customize Ledger". Margin is reference for its own task, which also settles its defaults |
+| Theme cards for Ledger and Margin | **Ledger only, so no Theme cards** until a second Theme exists; the Theme tab holds "Customize Ledger". Margin's page and defaults are settled in its own section below |
 | A 640px left pane beside the preview, at desktop width only | **Desktop only for now.** A mobile layout comes later |
+
+## The Margin page (`linted-editor-tabs-design/PreviewTwoCol.dc.html`)
+
+**Margin** is the second Theme: a full-width top, then a narrow sidebar on the left beside a main column. Its look comes from `PreviewTwoCol`: a 164px sidebar, 28px between the columns, and 30px (Comfortable) or 20px (Compact) between the top and the columns, all used as pt, as Ledger does. Decided in #105.
+
+**Zones and defaults:**
+
+- **Zones:** `header` (the full-width top), `aside-left` (the sidebar) and `main`.
+- **Default Layout**, as in the design: the Header (Pinned) and Summary in `header`; Skills and Education in `aside-left`; Experience, Projects and Custom Sections in `main`.
+- **Default Theme Options:** Pine, Serif (Source Serif 4) and Comfortable, the same as Ledger's.
+
+**Across pages** (checked with a throwaway react-pdf Document in #105):
+
+- The top is on page 1 only, and breaks like Ledger if it's ever longer than a page. When it draws nothing, the columns start at the top margin, with no gap above them.
+- The sidebar and main each carry on onto later pages **in their own column**. Where one has ended, its column is left white. Main never widens on a later page: react-pdf can't change a column's width from one page to the next.
+- Main has a **fixed width pushed to the right** (`marginLeft: "auto"`), not a flex-grown width. In a plain flex row, once the sidebar ends react-pdf moves main to the left edge on the next page at its narrow width, leaving the right of the page empty.
+- When the sidebar has **nothing to draw** (every Section in `aside-left` is Empty or Disabled, or none is there), main takes the full width, and the page reads as one column.
+- Inside a column, Ledger's rules hold: a Section's title stays on one page with its first Entry's lines and first Bullet, each piece that stays on one page sits straight in its Section's View (#100), and each piece sets the space below it, never above.
+
+Where we build something different from `PreviewTwoCol`:
+
+| The design shows | Build this instead |
+|---|---|
+| A US Letter page (612 × 792), cut off at the bottom | An **A4** page, so main is about 307pt wide, not 324. A long Resume **flows onto more pages**, as above |
+| Zones named `top`, `side`, `main` | **Our Zones**: `top` is `header`, `side` is `aside-left` |
+| A grip, a pin, a move toolbar, Zone and selection outlines, and Ghosted Sections with "Empty" and "Disabled" tags | **None.** The preview is the Export (ADR 0006); Sections are arranged in the Layout tab |
+| Skills and Education only ever in the sidebar | **Any Section in either column, drawn the same way in both.** Each uses a form that fits the 164pt sidebar: Skills with the label above its list, as in the design, and an Entry's dates moving below its main line when they don't fit beside it (the design's wrapping line) |
+| A "Talks" Section | An example of a **Custom Section** |
+| Header links shown as the address (e.g. "github.com/asharao") | **As specced.** Each link shows its label, or its URL when it has none, as in Ledger (row 9 of the first table) |
+| Pine green and Source Serif 4 only | Margin's **defaults**. Its accent, typeface and density come from its Theme Options, as Ledger's do |
 
 ## The delete confirmation (no design yet)
 
