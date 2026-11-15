@@ -9,11 +9,21 @@ import { hasShownContent } from "./renderable-view";
 /** Where a Theme puts each type of Section when the Resume has no Layout of its own. */
 export type DefaultLayout = Record<SectionType, Zone>;
 
+/**
+ * How a Theme's Zones sit on the page: one column, top to bottom (Ledger), or
+ * a Zone across the top, then a sidebar beside main (Margin). It decides
+ * which moves cross between Zones.
+ */
+export type ZoneArrangement =
+  | { kind: "one-column" }
+  | { kind: "top-sidebar-main"; top: Zone; sidebar: Zone; main: Zone };
+
 /** What the Layout rules need to know about a Theme. */
 export type ThemeLayout = {
   /** The Zones the Theme draws, in order. */
   zones: readonly Zone[];
   defaultLayout: DefaultLayout;
+  arrangement: ZoneArrangement;
 };
 
 /**
@@ -73,37 +83,79 @@ export function positionInZone(
   return { position: ids.indexOf(sectionId) + 1, count: ids.length };
 }
 
+/** Up or down a list: Sections in a Zone, Entries in a Section, Bullets in an Entry. */
 export type MoveDirection = "up" | "down";
 
+/** A Section can also move left and right, between a sidebar and main. */
+export type SectionMoveDirection = MoveDirection | "left" | "right";
+
 /**
- * The Resume with the Section moved one place up or down within its Zone,
- * and the whole Layout saved. A move that can't happen (off either end of
- * the Zone, above a Pinned Section, or of a Pinned Section) gives back the
- * Resume unchanged.
+ * The Resume with the Section moved one step, and the whole Layout saved.
+ * Up and down move it one place within its Zone. With a top Zone above a
+ * sidebar beside main, moves also cross between Zones: up from the top of
+ * the sidebar or main goes to the end of the top Zone, and down from the end
+ * of the top Zone to the start of main; left goes from main to the end of
+ * the sidebar, and right from the sidebar to the end of main.
+ *
+ * A move that can't happen (off the end of a Zone with nowhere to go, above
+ * a Pinned Section, or of a Pinned Section) gives back the Resume unchanged.
  */
 export function moveSection(
   resume: Resume,
   theme: ThemeLayout,
   sectionId: string,
-  direction: MoveDirection,
+  direction: SectionMoveDirection,
   { now = new Date() }: EditOptions = {},
 ): Resume {
   const layout = movedLayout(resume, theme, sectionId, direction);
   return layout ? withLayout(resume, layout, now) : resume;
 }
 
-/** Whether moveSection would move the Section, so the editor can disable the arrow. */
-export function canMoveSection(resume: Resume, theme: ThemeLayout, sectionId: string, direction: MoveDirection): boolean {
+/** Whether moveSection would move the Section, so the editor can disable or hide the arrow. */
+export function canMoveSection(
+  resume: Resume,
+  theme: ThemeLayout,
+  sectionId: string,
+  direction: SectionMoveDirection,
+): boolean {
   return movedLayout(resume, theme, sectionId, direction) !== null;
 }
 
-/** A move is a placement in the gap past the next Section up or down. */
-function movedLayout(resume: Resume, theme: ThemeLayout, sectionId: string, direction: MoveDirection): Layout | null {
-  const layout = layoutOf(resume, theme);
+/** A move is a placement: in the gap past the next Section up or down, or in another Zone. */
+function movedLayout(
+  resume: Resume,
+  theme: ThemeLayout,
+  sectionId: string,
+  direction: SectionMoveDirection,
+): Layout | null {
+  const placement = movePlacement(layoutOf(resume, theme), theme, sectionId, direction);
+  return placement && placedLayout(resume, theme, sectionId, placement);
+}
+
+function movePlacement(
+  layout: Layout,
+  theme: ThemeLayout,
+  sectionId: string,
+  direction: SectionMoveDirection,
+): Placement | null {
   const zone = zoneOf(layout, theme, sectionId);
   if (!zone) return null;
-  const from = (layout[zone] ?? []).indexOf(sectionId);
-  return placedLayout(resume, theme, sectionId, { zone, index: direction === "up" ? from - 1 : from + 2 });
+  const ids = layout[zone] ?? [];
+  const from = ids.indexOf(sectionId);
+  const columns = theme.arrangement.kind === "top-sidebar-main" ? theme.arrangement : null;
+  const endOf = (target: Zone): Placement => ({ zone: target, index: (layout[target] ?? []).length });
+  switch (direction) {
+    case "up":
+      if (from > 0) return { zone, index: from - 1 };
+      return columns && zone !== columns.top ? endOf(columns.top) : null;
+    case "down":
+      if (from < ids.length - 1) return { zone, index: from + 2 };
+      return columns && zone === columns.top ? { zone: columns.main, index: 0 } : null;
+    case "left":
+      return columns && zone === columns.main ? endOf(columns.sidebar) : null;
+    case "right":
+      return columns && zone === columns.sidebar ? endOf(columns.main) : null;
+  }
 }
 
 /** The Zone holding the Section, or null for an unknown Section. */

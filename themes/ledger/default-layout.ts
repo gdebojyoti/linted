@@ -14,4 +14,8 @@ export const LEDGER_DEFAULT_LAYOUT: Record<SectionType, LedgerZone> = {
 };
 
 /** What the Layout rules need to know about Ledger. */
-export const LEDGER_LAYOUT: ThemeLayout = { zones: LEDGER_ZONES, defaultLayout: LEDGER_DEFAULT_LAYOUT };
+export const LEDGER_LAYOUT: ThemeLayout = {
+  zones: LEDGER_ZONES,
+  defaultLayout: LEDGER_DEFAULT_LAYOUT,
+  arrangement: { kind: "one-column" },
+};
