@@ -13,6 +13,9 @@ export const DEFAULT_CUSTOM_SECTION_TITLE = "Untitled Section";
 /** v1 ships exactly one Theme. */
 export const DEFAULT_THEME_ID = "ledger";
 
+/** The two-column Theme (#105). A Resume can only have it through stored data until switching Theme exists. */
+export const MARGIN_THEME_ID = "margin";
+
 export type Resume = {
   schemaVersion: typeof SCHEMA_VERSION;
   metadata: Metadata;

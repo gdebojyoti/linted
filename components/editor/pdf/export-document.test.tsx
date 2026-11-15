@@ -3,6 +3,7 @@ import { moveSection } from "@/lib/resume/layout";
 import { sampleResume } from "@/lib/resume/sample-resume";
 import type { Resume } from "@/lib/resume/types";
 import { ledger } from "@/themes/ledger/ledger";
+import { margin } from "@/themes/margin/margin";
 import { pageText, readPdf } from "@/themes/testing/read-pdf";
 import { exportDocument } from "./export-document";
 
@@ -45,6 +46,17 @@ describe("exportDocument", () => {
     const [page] = await readPdf(pdfDocument);
 
     expect(page.links.map((link) => link.url)).toContain("https://github.com/example-maya");
+  });
+
+  test("draws the Theme it's given, such as Margin with its default Layout", async () => {
+    const pdfDocument = exportDocument(sampleResume, margin);
+    if (!pdfDocument) throw new Error("Nothing was exported");
+    const [page] = await readPdf(pdfDocument);
+    const xOf = (text: string) => page.text.find((run) => run.text.startsWith(text))?.x;
+
+    // Skills in the sidebar at the left margin, Experience in main beside it.
+    expect(xOf("Languages")).toBeCloseTo(48, 0);
+    expect(xOf("Mentor to four engineers")).toBeGreaterThan(48 + 164);
   });
 
   test("gives nothing to export when no Content is Enabled and filled in", () => {
