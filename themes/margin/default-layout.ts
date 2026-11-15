@@ -17,4 +17,8 @@ export const MARGIN_DEFAULT_LAYOUT: Record<SectionType, MarginZone> = {
 };
 
 /** What the Layout rules need to know about Margin. */
-export const MARGIN_LAYOUT: ThemeLayout = { zones: MARGIN_ZONES, defaultLayout: MARGIN_DEFAULT_LAYOUT };
+export const MARGIN_LAYOUT: ThemeLayout = {
+  zones: MARGIN_ZONES,
+  defaultLayout: MARGIN_DEFAULT_LAYOUT,
+  arrangement: { kind: "top-sidebar-main", top: "header", sidebar: "aside-left", main: "main" },
+};

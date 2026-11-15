@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import type { DefaultLayout } from "@/lib/resume/layout";
+import type { DefaultLayout, ZoneArrangement } from "@/lib/resume/layout";
 import type { ResolvedThemeOptions } from "@/lib/resume/theme-options";
 import type { PlacedSections } from "@/lib/theme/place-sections";
 import type { Zone } from "@/lib/resume/types";
@@ -13,6 +13,8 @@ export type Theme = {
   /** The Zones the Theme draws. Its default Layout only uses these. */
   zones: readonly Zone[];
   defaultLayout: DefaultLayout;
+  /** How its Zones sit on the page, for moves between them and the Layout tab. */
+  arrangement: ZoneArrangement;
   /** The Theme Options it draws with when the Resume has none picked (#89). */
   defaultOptions: ResolvedThemeOptions;
   /** The PDF that the preview shows and Export downloads: a react-pdf `<Document>` (ADR 0006). */

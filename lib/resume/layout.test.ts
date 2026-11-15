@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import {
+  canMoveSection,
   canPlaceSection,
   layoutOf,
   layoutTag,
@@ -30,7 +31,11 @@ const twoColumn: ThemeLayout = {
     education: "aside-left",
     custom: "main",
   },
+  arrangement: { kind: "top-sidebar-main", top: "header", sidebar: "aside-left", main: "main" },
 };
+
+/** The same Zones, drawn as one column, top to bottom. */
+const oneColumn: ThemeLayout = { ...twoColumn, arrangement: { kind: "one-column" } };
 
 const DEFAULT_LAYOUT: Layout = {
   header: ["header"],
@@ -100,7 +105,11 @@ describe("layoutOf", () => {
 
   test("the Pinned Header is first wherever it sits in the Content", () => {
     const [header, ...rest] = sampleResume.content.sections;
-    const allInMain: ThemeLayout = { zones: ["main"], defaultLayout: { ...twoColumn.defaultLayout, header: "main", skills: "main", education: "main" } };
+    const allInMain: ThemeLayout = {
+      zones: ["main"],
+      defaultLayout: { ...twoColumn.defaultLayout, header: "main", skills: "main", education: "main" },
+      arrangement: { kind: "one-column" },
+    };
 
     expect(layoutOf({ ...sampleResume, content: { sections: [...rest, header] } }, allInMain).main?.[0]).toBe("header");
   });
@@ -124,10 +133,17 @@ describe("moveSection", () => {
     expect(layoutOf(moved, twoColumn)["aside-left"]).toEqual(["education", "skills"]);
   });
 
-  test("moves never leave the Section's Zone: up from the top or down from the bottom changes nothing", () => {
-    expect(moveSection(sampleResume, twoColumn, "summary", "up", { now })).toBe(sampleResume);
-    expect(moveSection(sampleResume, twoColumn, "custom-volunteering", "down", { now })).toBe(sampleResume);
-    expect(moveSection(sampleResume, twoColumn, "skills", "up", { now })).toBe(sampleResume);
+  test("in one column, moves never leave the Section's Zone: up from the top or down from the bottom changes nothing", () => {
+    expect(moveSection(sampleResume, oneColumn, "summary", "up", { now })).toBe(sampleResume);
+    expect(moveSection(sampleResume, oneColumn, "custom-volunteering", "down", { now })).toBe(sampleResume);
+    expect(moveSection(sampleResume, oneColumn, "skills", "up", { now })).toBe(sampleResume);
+  });
+
+  test("in one column, nothing moves left or right", () => {
+    expect(moveSection(sampleResume, oneColumn, "experience", "left", { now })).toBe(sampleResume);
+    expect(moveSection(sampleResume, oneColumn, "skills", "right", { now })).toBe(sampleResume);
+    expect(canMoveSection(sampleResume, oneColumn, "experience", "left")).toBe(false);
+    expect(canMoveSection(sampleResume, oneColumn, "skills", "right")).toBe(false);
   });
 
   test("nothing moves above the Pinned Header, and the Header itself never moves", () => {
@@ -139,6 +155,105 @@ describe("moveSection", () => {
 
   test("an unknown Section id changes nothing", () => {
     expect(moveSection(sampleResume, twoColumn, "no-such-section", "up", { now })).toBe(sampleResume);
+  });
+});
+
+describe("moveSection between Zones, with a top Zone above a sidebar beside main", () => {
+  const sharesHeaderZone = withLayout({ ...DEFAULT_LAYOUT, header: ["header", "summary"], main: DEFAULT_LAYOUT.main!.slice(1) });
+
+  test("left moves a Section from main to the end of the sidebar, and saves the whole Layout", () => {
+    const moved = moveSection(sampleResume, twoColumn, "projects", "left", { now });
+
+    expect(moved.themeSettings.layout).toEqual({
+      header: ["header"],
+      "aside-left": ["skills", "education", "projects"],
+      main: ["summary", "experience", "custom-talks", "custom-volunteering"],
+    });
+    expect(moved.metadata.lastEditedAt).toBe("2026-11-11T12:00:00.000Z");
+  });
+
+  test("right moves a Section from the sidebar to the end of main", () => {
+    const moved = moveSection(sampleResume, twoColumn, "skills", "right", { now });
+
+    expect(layoutOf(moved, twoColumn)).toEqual({
+      header: ["header"],
+      "aside-left": ["education"],
+      main: ["summary", "experience", "projects", "custom-talks", "custom-volunteering", "skills"],
+    });
+  });
+
+  test("left only moves out of main, and right only out of the sidebar", () => {
+    expect(moveSection(sampleResume, twoColumn, "skills", "left", { now })).toBe(sampleResume);
+    expect(moveSection(sampleResume, twoColumn, "experience", "right", { now })).toBe(sampleResume);
+    expect(moveSection(sharesHeaderZone, twoColumn, "summary", "left", { now })).toBe(sharesHeaderZone);
+    expect(moveSection(sharesHeaderZone, twoColumn, "summary", "right", { now })).toBe(sharesHeaderZone);
+    expect(canMoveSection(sampleResume, twoColumn, "experience", "left")).toBe(true);
+    expect(canMoveSection(sampleResume, twoColumn, "experience", "right")).toBe(false);
+    expect(canMoveSection(sampleResume, twoColumn, "skills", "right")).toBe(true);
+    expect(canMoveSection(sampleResume, twoColumn, "skills", "left")).toBe(false);
+  });
+
+  test("up from the top of main or of the sidebar moves the Section to the end of the top Zone", () => {
+    expect(layoutOf(moveSection(sampleResume, twoColumn, "summary", "up", { now }), twoColumn)).toEqual({
+      header: ["header", "summary"],
+      "aside-left": ["skills", "education"],
+      main: ["experience", "projects", "custom-talks", "custom-volunteering"],
+    });
+    expect(layoutOf(moveSection(sampleResume, twoColumn, "skills", "up", { now }), twoColumn)).toEqual({
+      header: ["header", "skills"],
+      "aside-left": ["education"],
+      main: DEFAULT_LAYOUT.main,
+    });
+  });
+
+  test("up lower down a column still moves within it", () => {
+    const moved = moveSection(sampleResume, twoColumn, "education", "up", { now });
+
+    expect(layoutOf(moved, twoColumn)["aside-left"]).toEqual(["education", "skills"]);
+  });
+
+  test("down from the end of the top Zone moves the Section to the start of main", () => {
+    expect(layoutOf(moveSection(sharesHeaderZone, twoColumn, "summary", "down", { now }), twoColumn)).toEqual(DEFAULT_LAYOUT);
+  });
+
+  test("down higher up the top Zone still moves within it", () => {
+    const resume = withLayout({ ...DEFAULT_LAYOUT, header: ["header", "summary", "experience"], main: DEFAULT_LAYOUT.main!.slice(2) });
+
+    expect(layoutOf(moveSection(resume, twoColumn, "summary", "down", { now }), twoColumn).header).toEqual([
+      "header",
+      "experience",
+      "summary",
+    ]);
+  });
+
+  test("down from the end of main or of the sidebar changes nothing", () => {
+    expect(moveSection(sampleResume, twoColumn, "custom-volunteering", "down", { now })).toBe(sampleResume);
+    expect(moveSection(sampleResume, twoColumn, "education", "down", { now })).toBe(sampleResume);
+    expect(canMoveSection(sampleResume, twoColumn, "education", "down")).toBe(false);
+  });
+
+  test("up from just below the Pinned Header changes nothing, and the Header moves in no direction", () => {
+    expect(moveSection(sharesHeaderZone, twoColumn, "summary", "up", { now })).toBe(sharesHeaderZone);
+    expect(canMoveSection(sharesHeaderZone, twoColumn, "summary", "up")).toBe(false);
+    for (const direction of ["up", "down", "left", "right"] as const) {
+      expect(moveSection(sampleResume, twoColumn, "header", direction, { now })).toBe(sampleResume);
+      expect(canMoveSection(sampleResume, twoColumn, "header", direction)).toBe(false);
+    }
+  });
+
+  test("a Section moved up out of the sidebar and back down lands at the start of main", () => {
+    const up = moveSection(sampleResume, twoColumn, "skills", "up", { now });
+    const down = moveSection(up, twoColumn, "skills", "down", { now });
+
+    expect(layoutOf(down, twoColumn)).toEqual({
+      header: ["header"],
+      "aside-left": ["education"],
+      main: ["skills", ...DEFAULT_LAYOUT.main!],
+    });
+  });
+
+  test("an unknown Section id changes nothing", () => {
+    expect(moveSection(sampleResume, twoColumn, "no-such-section", "left", { now })).toBe(sampleResume);
   });
 });
 

@@ -97,3 +97,52 @@ export function useReorderable<T extends HTMLElement>({
 
   return { ref, handleRef, dragging, dropSide };
 }
+
+/**
+ * Makes a box holding a list (e.g. a Zone in the Layout tab) a place to drop
+ * the list's rows at its end, for the space no row covers: below the last
+ * row, or anywhere in an empty list. Rows of the same `group` from other
+ * lists can be dropped there too. Rows inside take their own drops; the box
+ * only takes a drop where it's the innermost target.
+ *
+ * As with rows, `accepts` says whether a drop would do something; only then
+ * is `active` set, for drawing a marker at the list's end, and only then
+ * does `onDrop` run.
+ */
+export function useDropAtEnd<T extends HTMLElement>({
+  group,
+  accepts,
+  onDrop,
+}: {
+  group: string;
+  accepts: (sourceId: string) => boolean;
+  onDrop: (sourceId: string) => void;
+}) {
+  const ref = useRef<T>(null);
+  const [active, setActive] = useState(false);
+
+  const accepted = useEffectEvent((source: Record<string, unknown>, innermost: boolean) => {
+    const sourceId = (source as Partial<RowData>).id;
+    return innermost && typeof sourceId === "string" && accepts(sourceId) ? sourceId : null;
+  });
+  const drop = useEffectEvent((sourceId: string) => onDrop(sourceId));
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    return dropTargetForElements({
+      element,
+      canDrop: ({ source }) => isRow(source.data) && source.data.group === group,
+      onDrag: ({ location, source }) =>
+        setActive(accepted(source.data, location.current.dropTargets[0]?.element === element) !== null),
+      onDragLeave: () => setActive(false),
+      onDrop: ({ location, source }) => {
+        setActive(false);
+        const sourceId = accepted(source.data, location.current.dropTargets[0]?.element === element);
+        if (sourceId) drop(sourceId);
+      },
+    });
+  }, [group]);
+
+  return { ref, active };
+}
