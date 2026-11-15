@@ -1,4 +1,4 @@
-import { DEFAULT_THEME_ID } from "@/lib/resume/types";
+import { DEFAULT_THEME_ID, MARGIN_THEME_ID } from "@/lib/resume/types";
 import type { Theme } from "./theme";
 
 /**
@@ -7,6 +7,7 @@ import type { Theme } from "./theme";
  */
 const THEMES: Record<string, () => Promise<Theme>> = {
   [DEFAULT_THEME_ID]: () => import("./ledger/ledger").then((module) => module.ledger),
+  [MARGIN_THEME_ID]: () => import("./margin/margin").then((module) => module.margin),
 };
 
 /**

@@ -1,9 +1,10 @@
-import { DEFAULT_THEME_ID } from "@/lib/resume/types";
+import { DEFAULT_THEME_ID, MARGIN_THEME_ID } from "@/lib/resume/types";
 
 // Kept apart from the Themes themselves, so pages that only name a Theme
 // (like the Library) never load a Theme's code, CSS or font.
 const THEME_NAMES: Record<string, string> = {
   [DEFAULT_THEME_ID]: "Ledger",
+  [MARGIN_THEME_ID]: "Margin",
 };
 
 /**
