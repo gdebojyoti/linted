@@ -4,6 +4,7 @@ import { addEntry } from "./entries";
 import { renderableView } from "./renderable-view";
 import { setThemeOption } from "./theme-options";
 import { sampleResume } from "./sample-resume";
+import { switchTheme } from "./switch-theme";
 import type { Bullet, Resume } from "./types";
 import { updateContact } from "./update-contact";
 import { updateHeader } from "./update-header";
@@ -63,6 +64,12 @@ describe("duplicateResume", () => {
     expect(withoutIds(copy)).toEqual(withoutIds(sampleResume));
     expect(renderableView(copy).sections.map((s) => s.title)).toEqual(renderableView(sampleResume).sections.map((s) => s.title));
     expect(copy.themeSettings).toEqual(sampleResume.themeSettings);
+  });
+
+  test("keeps a Theme other than the default", () => {
+    const original = switchTheme(sampleResume, "margin", { now });
+
+    expect(duplicateResume(original, { now }).themeSettings.themeId).toBe("margin");
   });
 
   test("keeps the original's Theme Options", () => {

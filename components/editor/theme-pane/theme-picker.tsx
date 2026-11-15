@@ -11,12 +11,12 @@ import { MiniPage } from "./mini-page";
  */
 export function ThemePicker({
   themeId,
-  accent,
+  sectionTitleColour,
   onPick,
 }: {
   themeId: string;
-  /** The colour the mini page diagrams draw Section titles in. */
-  accent: string;
+  /** The Resume's accent: the colour the mini page diagrams draw Section titles in. */
+  sectionTitleColour: string;
   onPick: (themeId: string) => void;
 }) {
   return (
@@ -37,7 +37,7 @@ export function ThemePicker({
             value={card.id}
             className="h-auto self-stretch justify-start gap-3.5 rounded-xl border border-line bg-surface p-3.5 text-left font-normal whitespace-normal hover:bg-surface-soft aria-pressed:border-accent aria-pressed:bg-surface aria-pressed:ring-3 aria-pressed:ring-accent-tint"
           >
-            <MiniPage columns={card.columns} accent={accent} />
+            <MiniPage columns={card.columns} accent={sectionTitleColour} />
             <span className="flex grow flex-col gap-0.75">
               <span className="text-[14px] font-semibold text-ink">{themeName(card.id)}</span>
               <span className="text-[12.5px] text-ink-muted">{card.description}</span>

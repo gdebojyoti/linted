@@ -26,7 +26,7 @@ export function ThemePane({ resume, onEdit }: { resume: Resume; onEdit: (edit: R
     <div className="flex grow flex-col gap-6 overflow-auto px-6 pt-5 pb-6">
       <ThemePicker
         themeId={themeId}
-        accent={options ? ACCENTS[options.accent].hex : "var(--color-line-input)"}
+        sectionTitleColour={options ? ACCENTS[options.accent].hex : "var(--color-line-input)"}
         onPick={(picked) => onEdit((current) => switchTheme(current, picked))}
       />
       <div className="flex flex-col gap-1">

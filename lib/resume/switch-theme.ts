@@ -12,6 +12,6 @@ export function switchTheme(resume: Resume, themeId: string, { now = new Date() 
   return {
     ...resume,
     metadata: { ...resume.metadata, lastEditedAt: now.toISOString() },
-    themeSettings: { themeId, layout: null, options: NO_THEME_OPTIONS_PICKED },
+    themeSettings: { themeId, layout: null, options: { ...NO_THEME_OPTIONS_PICKED } },
   };
 }
