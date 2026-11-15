@@ -137,7 +137,7 @@ export function LayoutPane({ resume, onEdit }: { resume: Resume; onEdit: (edit: 
       <p className="flex items-start gap-2.5 text-[12.5px] leading-normal text-ink-muted">
         <Info aria-hidden="true" className="mt-px size-4 shrink-0" />
         Drag a section to move it, or point to it or Tab to it and use its arrows. Empty and disabled sections can be placed too; they
-        won&apos;t appear in your resume.
+        won&apos;t appear in your resume. Switching theme resets this layout to the new theme&apos;s default.
       </p>
       <LiveMessage message={announcement()} />
     </div>
