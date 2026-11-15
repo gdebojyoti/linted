@@ -2,12 +2,12 @@ import { Document, Page } from "@react-pdf/renderer";
 import type { ResolvedThemeOptions } from "@/lib/resume/theme-options";
 import type { PlacedSections } from "@/lib/theme/place-sections";
 import { LEDGER_ZONES } from "@/themes/ledger/zones";
-import { registerLedgerFonts } from "./fonts";
+import { registerFonts } from "@/themes/fonts/fonts";
 import { LedgerSection } from "./ledger-section";
 import { ledgerLook, LedgerLookContext } from "./look";
 import { styles } from "./styles";
 
-registerLedgerFonts();
+registerFonts();
 
 /**
  * Ledger drawn with react-pdf (ADR 0006): an A4 PDF of the Sections it is
