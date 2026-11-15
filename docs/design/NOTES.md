@@ -82,7 +82,7 @@
 
 ## The Margin page (`linted-editor-tabs-design/PreviewTwoCol.dc.html`)
 
-**Margin** is the second Theme: the `header` Zone across the full width, then the sidebar (`aside-left`) on the left beside `main`. Its look comes from `PreviewTwoCol`: a 164px sidebar, 28px between the sidebar and `main`, and 30px (Comfortable) or 20px (Compact) below the `header` Zone, all used as pt, as Ledger does. Line height and the space between Sections follow Density as in Ledger (1.42 and 14pt, or 1.32 and 9pt). Decided in #105.
+**Margin** is the second Theme: the `header` Zone across the full width, then the sidebar (`aside-left`) on the left beside `main`. Its look comes from `PreviewTwoCol`: a 164px sidebar and 28px between the sidebar and `main`, both used as pt, as Ledger does. Line height and the space between Sections follow Density as in Ledger (1.42 and 14pt, or 1.32 and 9pt). Decided in #105. **The space below the `header` Zone is the space between Sections**, not the design's 30px or 20px, so Sections are spaced alike in one column or two (#107).
 
 **Zones and defaults:**
 

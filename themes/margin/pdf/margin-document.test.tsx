@@ -228,7 +228,7 @@ describe("MarginDocument", () => {
     expect(await lineGap(setThemeOption(twoLines, "density", "compact"))).toBeCloseTo(12.54, 1);
   });
 
-  test("Compact Density leaves less space below the header Zone: 20 pt against Comfortable's 30", async () => {
+  test("leaves the space between Sections below the header Zone, as in one column: Compact's 9 pt against Comfortable's 14", async () => {
     const gap = async (resume: Resume) => {
       const { runOf } = finder(await marginPdf(resume));
       return runOf("SKILLS").y - runOf("Last-words").y;
@@ -236,7 +236,7 @@ describe("MarginDocument", () => {
     const resume = resumeOf([header, summary("Last-words"), skills(1), experience(manyEntries(1))]);
 
     expect((await gap(resume)) - (await gap(setThemeOption(resume, "density", "compact")))).toBeCloseTo(
-      10 + 13.49 - 12.54,
+      5 + 13.49 - 12.54,
       0,
     );
   });

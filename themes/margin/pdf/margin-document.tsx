@@ -22,7 +22,7 @@ export function MarginDocument({ zones, options }: { zones: PlacedSections; opti
   const headerZone = zones.header;
   const sidebar = zones["aside-left"];
   const main = zones.main;
-  const belowHeaderZone = headerZone.length > 0 ? look.spaceBelowHeaderZone : 0;
+  const belowHeaderZone = headerZone.length > 0 ? look.spaceBetweenSections : 0;
 
   /** A Zone's Sections, the first `spaceBefore` pt below what's above it. */
   const draw = (sections: RenderedSection[], spaceBefore = 0) =>

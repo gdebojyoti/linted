@@ -1,5 +1,4 @@
 // Copied from Ledger (themes/ledger/pdf/look.ts), so each Theme stays independent.
-// Changed for Margin: the space below the `header` Zone, which follows Density.
 // The copies may drift apart. When you fix one, check whether the other
 // needs the same fix.
 
@@ -21,20 +20,22 @@ export type MarginLook = {
   oneLine: number;
   /** Two lines of body text, in pt: the least that must follow a title on its page. */
   twoLines: number;
-  /** Space between Sections, in pt. */
+  /** Space between Sections, in pt, the `header` Zone and the columns below it included. */
   spaceBetweenSections: number;
-  /** Space between the `header` Zone and the columns below it, in pt. */
-  spaceBelowHeaderZone: number;
 };
 
-/** Each Density's spacing (docs/design/NOTES.md, the Margin page). */
-const DENSITY: Record<DensityId, { lineHeight: number; spaceBetweenSections: number; spaceBelowHeaderZone: number }> = {
-  comfortable: { lineHeight: 1.42, spaceBetweenSections: 14, spaceBelowHeaderZone: 30 },
-  compact: { lineHeight: 1.32, spaceBetweenSections: 9, spaceBelowHeaderZone: 20 },
+/**
+ * Each Density's line height and space between Sections (docs/design/NOTES.md,
+ * the Margin page). The same space sits below the `header` Zone, so Sections
+ * are spaced alike whether they run in one column or two.
+ */
+const DENSITY: Record<DensityId, { lineHeight: number; spaceBetweenSections: number }> = {
+  comfortable: { lineHeight: 1.42, spaceBetweenSections: 14 },
+  compact: { lineHeight: 1.32, spaceBetweenSections: 9 },
 };
 
 export function marginLook(options: ResolvedThemeOptions): MarginLook {
-  const { lineHeight, spaceBetweenSections, spaceBelowHeaderZone } = DENSITY[options.density];
+  const { lineHeight, spaceBetweenSections } = DENSITY[options.density];
   const oneLine = BODY_SIZE * lineHeight;
   return {
     accent: ACCENTS[options.accent].hex,
@@ -43,7 +44,6 @@ export function marginLook(options: ResolvedThemeOptions): MarginLook {
     oneLine,
     twoLines: oneLine * 2,
     spaceBetweenSections,
-    spaceBelowHeaderZone,
   };
 }
 
