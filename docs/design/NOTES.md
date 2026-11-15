@@ -76,8 +76,8 @@
 | Clicking a chip's handle selects it, and only the selected chip shows its arrows | **No selecting.** A chip's arrows show while the pointer is over it or focus is in it, and they are ordinary Tab stops. The whole chip can be dragged, not just its grip (#88) |
 | No drop marker | **A 2px Amethyst line** in the gap where a dragged chip will land, shown only where a drop would move it (#88) |
 | "Empty" and "Disabled" chip tags as filled grey pills | The app's grey **Badge**, as for "Current" |
-| Footer note: "Drag sections between zones, or select one and use the arrows. Empty and disabled sections can be placed too; they won't print. Switching theme resets this layout to the new theme's default." | **"Drag a section to move it, or point to it or Tab to it and use its arrows. Empty and disabled sections can be placed too; they won't appear in your resume."** Switching Theme (a second Theme) adds its sentence when it exists |
-| Theme cards for Ledger and Margin | **Ledger only, so no Theme cards** until a second Theme exists; the Theme tab holds "Customize Ledger". Margin's page and defaults are settled in its own section below |
+| Footer note: "Drag sections between zones, or select one and use the arrows. Empty and disabled sections can be placed too; they won't print. Switching theme resets this layout to the new theme's default." | **"Drag a section to move it, or point to it or Tab to it and use its arrows. Empty and disabled sections can be placed too; they won't appear in your resume. Switching theme resets this layout to the new theme's default."** (#107) |
+| Theme cards for Ledger and Margin | **As designed** (#107), as a single-select **Toggle Group** like the Theme Options: arrow keys move between the cards. Picking a card switches straight away, with no confirmation. The mini page diagrams draw Section titles in the Resume's accent; the ring and check badge are Amethyst. Margin's page and defaults are settled in its own section below |
 | A 640px left pane beside the preview, at desktop width only | **Desktop only for now.** A mobile layout comes later |
 
 ## The Margin page (`linted-editor-tabs-design/PreviewTwoCol.dc.html`)
