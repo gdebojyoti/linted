@@ -90,6 +90,23 @@ describe("MarginDocument's look", () => {
     expect(main?.style.marginLeft).toBe("auto");
   });
 
+  test("marks top-level Bullets with a dot and nested ones with a ring, indented", () => {
+    const tree = marginTree();
+    const rowOf = (text: string) => pathTo(tree, text).findLast((node) => node.props.wrap === false);
+    const dotOf = (row: Primitive | undefined) => (row?.children[0] as Primitive).children[0] as Primitive;
+
+    const top = rowOf("Mentor to four engineers; two promoted to senior.");
+    const nested = rowOf(
+      "Designed the rollout: shadow traffic, then per-merchant flags, with zero failed payments during cutover.",
+    );
+
+    expect(top?.style.paddingLeft).toBe(0);
+    expect(dotOf(top).style.backgroundColor).toBeDefined();
+    expect(nested?.style.paddingLeft).toBe(14);
+    expect(dotOf(nested).style.backgroundColor).toBeUndefined();
+    expect(dotOf(nested).style.borderWidth).toBeGreaterThan(0);
+  });
+
   test("keeps a Section's title, its first Entry's lines and first Bullet together", () => {
     const group = unbreakableAround("University of Manchester");
 

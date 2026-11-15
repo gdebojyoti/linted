@@ -54,9 +54,12 @@ describe("exportDocument", () => {
     const [page] = await readPdf(pdfDocument);
     const xOf = (text: string) => page.text.find((run) => run.text.startsWith(text))?.x;
 
+    const leftMargin = 48;
+    const sidebarWidth = 164;
+
     // Skills in the sidebar at the left margin, Experience in main beside it.
-    expect(xOf("Languages")).toBeCloseTo(48, 0);
-    expect(xOf("Mentor to four engineers")).toBeGreaterThan(48 + 164);
+    expect(xOf("Languages")).toBeCloseTo(leftMargin, 0);
+    expect(xOf("Mentor to four engineers")).toBeGreaterThan(leftMargin + sidebarWidth);
   });
 
   test("gives nothing to export when no Content is Enabled and filled in", () => {

@@ -1,5 +1,6 @@
 // Copied from Ledger (themes/ledger/pdf/entry-line.tsx), so each Theme stays independent.
-// Changed for Margin: the dates move below the main line when they don't fit beside it.
+// Changed for Margin: only the description below. The dates move below the
+// main line when they don't fit beside it because of `styles.line` (./styles.ts).
 // The copies may drift apart. When you fix one, check whether the other
 // needs the same fix.
 

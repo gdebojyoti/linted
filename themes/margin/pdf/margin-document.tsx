@@ -19,10 +19,10 @@ registerFonts();
  */
 export function MarginDocument({ zones, options }: { zones: PlacedSections; options: ResolvedThemeOptions }) {
   const look = marginLook(options);
-  const top = zones.header;
+  const headerZone = zones.header;
   const sidebar = zones["aside-left"];
   const main = zones.main;
-  const belowTop = top.length > 0 ? look.spaceBelowHeaderZone : 0;
+  const belowHeaderZone = headerZone.length > 0 ? look.spaceBelowHeaderZone : 0;
 
   /** A Zone's Sections, the first `spaceBefore` pt below what's above it. */
   const draw = (sections: RenderedSection[], spaceBefore = 0) =>
@@ -38,14 +38,14 @@ export function MarginDocument({ zones, options }: { zones: PlacedSections; opti
     <MarginLookContext value={look}>
       <Document>
         <Page size="A4" style={[styles.page, { fontFamily: look.fontFamily, lineHeight: look.lineHeight }]}>
-          {draw(top)}
+          {draw(headerZone)}
           {sidebar.length > 0 && main.length > 0 ? (
-            <View style={[styles.columns, { marginTop: belowTop }]}>
+            <View style={[styles.columns, { marginTop: belowHeaderZone }]}>
               <View style={styles.sidebar}>{draw(sidebar)}</View>
               <View style={styles.main}>{draw(main)}</View>
             </View>
           ) : (
-            draw(sidebar.length > 0 ? sidebar : main, belowTop)
+            draw(sidebar.length > 0 ? sidebar : main, belowHeaderZone)
           )}
         </Page>
       </Document>

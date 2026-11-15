@@ -200,15 +200,6 @@ describe("MarginDocument", () => {
     expect(sameLine(main.runOf("London · Mar 2022 – Present"), main.runOf("Platform-Lead"))).toBe(true);
   });
 
-  test("draws Prose in Source Serif 4, with real bold and italic fonts", async () => {
-    const [page] = await marginPdf(sampleResume);
-    const fontOf = (text: string) => page.text.find((run) => run.text.includes(text))?.font;
-
-    expect(fontOf("Backend engineer with")).toBe("SourceSerif4-Regular");
-    expect(fontOf("8 years")).toBe("SourceSerif4-SemiBold");
-    expect(fontOf("boring")).toBe("SourceSerif4-Italic");
-  });
-
   describe.each([
     ["serif", "SourceSerif4"],
     ["sans", "IBMPlexSans"],
@@ -261,27 +252,37 @@ describe("MarginDocument", () => {
     expect(without.runOf("PROFESSIONAL").y).toBeCloseTo(startedOnItsOwn.runOf("PROFESSIONAL").y, 0);
   });
 
-  test("gives main the full width when the sidebar draws nothing", async () => {
-    const pages = await marginPdf(
-      resumeOf([header, { ...skills(2), enabled: false }, experience([experienceEntry("Platform-Lead", ["Built it."])])]),
-    );
-    const { runOf } = finder(pages);
-    const dates = runOf("London · Mar 2022 – Present");
+  describe("when one column draws nothing", () => {
+    const words = summary(Array.from({ length: 80 }, (_, i) => `word${i + 1}`).join(" "));
+    /** How many words of the Summary fit on its first line. */
+    const wordsOnFirstLine = async (resume: Resume) => {
+      const [page] = await marginPdf(resume);
+      return page.text.find((run) => run.text.startsWith("word1 "))?.text.trim().split(" ").length ?? 0;
+    };
 
-    expect(runOf("PROFESSIONAL").x).toBeCloseTo(SIDEBAR_X, 0);
-    // The dates end at the page's right margin, not at main's narrow column's.
-    expect(dates.x).toBeGreaterThan(MAIN_X + 150);
-    expect(sameLine(dates, runOf("Platform-Lead"))).toBe(true);
-  });
+    test("gives main the full width", async () => {
+      const beside = await wordsOnFirstLine(resumeOf([header, words, skills(1)], { main: ["summary"] }));
+      const alone = await wordsOnFirstLine(
+        resumeOf([header, words, { ...skills(1), enabled: false }], { main: ["summary"] }),
+      );
+      const { runOf } = finder(
+        await marginPdf(resumeOf([header, words, { ...skills(1), enabled: false }], { main: ["summary"] })),
+      );
 
-  test("gives the sidebar the full width when main draws nothing", async () => {
-    const words = Array.from({ length: 60 }, (_, i) => `word${i + 1}`).join(" ");
-    const pages = await marginPdf(resumeOf([header, summary(words)], { "aside-left": ["summary"] }));
-    const firstLine = pages[0].text.find((run) => run.text.startsWith("word1 "));
+      expect(runOf("SUMMARY").x).toBeCloseTo(SIDEBAR_X, 0);
+      // Beside the sidebar, main is 307pt wide; alone, it's the page's 499pt.
+      expect(alone).toBeGreaterThan(beside * 1.4);
+    });
 
-    expect(finder(pages).runOf("SUMMARY").x).toBeCloseTo(SIDEBAR_X, 0);
-    // A 164pt sidebar would fit about 4 of these words on a line.
-    expect(firstLine?.text.split(" ").length).toBeGreaterThan(10);
+    test("gives the sidebar the full width", async () => {
+      const beside = await wordsOnFirstLine(
+        resumeOf([header, words, experience(manyEntries(1))], { "aside-left": ["summary"] }),
+      );
+      const alone = await wordsOnFirstLine(resumeOf([header, words], { "aside-left": ["summary"] }));
+
+      // Beside main, the sidebar is 164pt wide; alone, it's the page's 499pt.
+      expect(alone).toBeGreaterThan(beside * 2);
+    });
   });
 
   test("makes Header, Project and Prose links clickable", async () => {
@@ -291,6 +292,138 @@ describe("MarginDocument", () => {
     expect(urls).toContain("https://github.com/example-maya");
     expect(urls).toContain("https://ledgerly.example.com");
     expect(urls).toContain("https://maya.example.com/talks/idempotency");
+  });
+
+  test("shows a link that isn't http(s) or mailto as plain text, not a link", async () => {
+    const [page] = await marginPdf(
+      resumeOf([header, summary("Write to [me](mailto:maya@example.com), not [there](javascript:alert(1)).")]),
+    );
+    const urls = page.links.map((link) => link.url);
+
+    expect(urls).toContain("mailto:maya@example.com");
+    expect(urls).not.toContain("javascript:alert(1)");
+  });
+
+  test("draws the header Zone on page 1 only", async () => {
+    const pages = await marginPdf(resumeOf([header, summary("Opening-words."), skills(2), experience(manyEntries(40))]));
+
+    expect(pages.length).toBeGreaterThan(1);
+    expect(pageText(pages[0])).toContain("Maya Okafor");
+    for (const page of pages.slice(1)) {
+      expect(pageText(page)).not.toContain("Maya Okafor");
+      expect(pageText(page)).not.toContain("Opening-words");
+    }
+  });
+
+  test("starts each column on a later page at the top margin, whether an Entry or a Bullet comes first", async () => {
+    // Where a line of body text starts on a later page: a long Summary
+    // paragraph in the header Zone carries on there with no space above it.
+    const [, summaryPage] = await marginPdf(
+      resumeOf([header, summary(Array.from({ length: 1500 }, () => "word").join(" "))]),
+    );
+    const topLine = (runs: PdfText[]) => runs.reduce((top, run) => (run.y < top.y ? run : top));
+    const expected = topLine(summaryPage.text.filter((run) => run.text.startsWith("word"))).y;
+
+    // Entries of 1 to 4 Bullets in each column, behind more and more Skills
+    // rows, so that later pages start with an Entry in some and a Bullet in others.
+    const startedBy = new Set<string>();
+    for (let rows = 0; rows < 6; rows++) {
+      const pages = await marginPdf(
+        resumeOf([header, skills(rows), experience(manyEntries(24, "Side"), "side"), experience(manyEntries(30))], {
+          "aside-left": ["skills", "side"],
+          main: ["experience"],
+        }),
+      );
+      for (const [number, page] of pages.slice(1).entries()) {
+        for (const inSidebar of [true, false]) {
+          const body = page.text.filter(
+            (run) => run.x < MAIN_X - 14 === inSidebar && /^(Role|Side)(Point)?-/.test(run.text),
+          );
+          if (body.length === 0) continue;
+          const top = topLine(body);
+          startedBy.add(top.text.includes("Point-") ? "a Bullet" : "an Entry");
+          expect(top.y, `${rows} Skills, page ${number + 2}, ${inSidebar ? "sidebar" : "main"}: "${top.text}"`).toBeCloseTo(
+            expected,
+            1,
+          );
+        }
+      }
+    }
+    expect(startedBy).toContain("an Entry");
+    expect(startedBy).toContain("a Bullet");
+  });
+
+  test.each([
+    ["main", "main"],
+    ["the sidebar", "aside-left"],
+  ] as const)("never leaves a Section's title alone at the bottom of a page in %s", async (_, zone) => {
+    // Custom Sections of 1 to 3 short Entries, so that, somewhere, one starts near the bottom of a page.
+    const sections: CustomSection[] = Array.from({ length: 30 }, (_, i) => {
+      const n = String(i + 1).padStart(2, "0");
+      return {
+        id: `custom-${n}`,
+        type: "custom",
+        title: `Section-${n}`,
+        enabled: true,
+        entries: Array.from({ length: (i % 3) + 1 }, (_, j) => ({
+          id: `custom-${n}-${j}`,
+          enabled: true,
+          title: `Entry-${n}-${j + 1}`,
+          subtitle: "",
+          dates: { start: null, current: false, end: null },
+          bullets: [],
+        })),
+      };
+    });
+    const other = zone === "main" ? "aside-left" : "main";
+    const pages = await marginPdf(
+      resumeOf([header, skills(2), ...sections], { [zone]: sections.map((s) => s.id), [other]: ["skills"] }),
+    );
+    const { pageOf } = finder(pages);
+
+    expect(pages.length).toBeGreaterThan(1);
+    for (let i = 1; i <= sections.length; i++) {
+      const n = String(i).padStart(2, "0");
+      expect(pageOf(`SECTION-${n}`), `Section-${n}`).toBe(pageOf(`Entry-${n}-1`));
+    }
+    expectInsideMargins(pages, `30 Sections in ${zone}`);
+  });
+
+  test("breaks an Entry with many Bullets between Bullets in a column, keeping every one", async () => {
+    const bullets = Array.from({ length: 70 }, (_, i) => `Point-${i + 1} of a very long Entry.`);
+    const pages = await marginPdf(resumeOf([header, skills(2), experience([experienceEntry("Role-01", bullets)])]));
+    const text = squash(pages.map(pageText).join(""));
+
+    expect(pages.length).toBeGreaterThan(1);
+    for (const bullet of bullets) expect(text).toContain(squash(bullet));
+    expectInsideMargins(pages, "70 Bullets");
+  });
+
+  test("breaks a long Summary paragraph across pages in a column, starting it under its title", async () => {
+    const words = Array.from({ length: 900 }, (_, i) => `word${i + 1}`).join(" ");
+    const pages = await marginPdf(resumeOf([header, summary(words), skills(2)], { main: ["summary"] }));
+    const { pageOf } = finder(pages);
+
+    expect(pageOf("SUMMARY")).toBe(0);
+    expect(pageOf("word1 word2")).toBe(0);
+    expect(pageOf("word900")).toBeGreaterThan(0);
+    expectInsideMargins(pages, "a long Summary");
+  });
+
+  test("never leaves a Summary's title alone at the bottom of a page in the sidebar", async () => {
+    // More and more Skills rows above the Summary, so that, in one of them,
+    // its title lands near the bottom of the first page.
+    for (let rows = 14; rows <= 24; rows++) {
+      const pages = await marginPdf(
+        resumeOf(
+          [header, skills(rows), summary("Opening-words of a Summary that runs over a few lines. ".repeat(4)), experience(manyEntries(1))],
+          { "aside-left": ["skills", "summary"] },
+        ),
+      );
+      const { pageOf } = finder(pages);
+
+      expect(pageOf("SUMMARY"), `${rows} Skills`).toBe(pageOf("Opening-words"));
+    }
   });
 
   test("carries main on onto later pages in its own place after the sidebar has ended", async () => {
