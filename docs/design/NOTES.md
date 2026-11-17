@@ -53,6 +53,7 @@ The export was updated with three mobile screens (`LibraryMobileEmpty`, `Library
 | The design shows | Build this instead |
 |---|---|
 | 48px New resume and Cancel buttons | **As designed**, with our own Button size **`xl`** (48px), added to shadcn's. From `md` up, New resume is `lg` (36px), as before |
+| A sticky New resume bar with 16px padding | **12px** above and below the button, 16px at the sides |
 | A hand-built actions sheet | shadcn's **Drawer**, styled to the design |
 | Rename, Duplicate, Export PDF and Delete resume in the sheet, with no divider | **As in the "…" menu**: Rename and Duplicate, a divider, then a red Delete resume. No Export PDF |
 | "all empty" on a row | **Always counts**, e.g. "0 of 6 sections" |
