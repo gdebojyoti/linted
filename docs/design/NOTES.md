@@ -38,7 +38,7 @@
 |---|---|
 | Pine green buttons, logo and Resume sketches | **Amethyst**, like the rest of the app |
 | Geist, and Geist Mono for the logo and grey meta lines | **Open Sans** everywhere |
-| Buttons 38px (list) and 42px (empty state) tall | shadcn Button's **built-in sizes** only: `lg` (36px) for New resume in both places, the same height as the search box. The editor's top-bar buttons use `lg` too |
+| Buttons 38px (list) and 42px (empty state) tall | Button's **set sizes** only, not hand-sized: `lg` (36px) for New resume in both places on desktop (mobile uses `xl`, below), the same height as the search box. The editor's top-bar buttons use `lg` too |
 | A working search box, with no state for "nothing matches" | **It works** (v2, #79): shadcn's **Input**, styled to the design. It filters as you type, ignoring case and spaces at the ends, and the count line reads e.g. "2 of 5 resumes" while it filters. When nothing matches, a centred **Notice**, "No matching resumes", replaces the list |
 | A Duplicate button and a "…" menu (Rename, Duplicate, Export PDF, Delete) on each row | The **"…" menu holds Rename (#11), Duplicate (#12) and, after a divider, a red "Delete resume" (#13)**. Rename and Duplicate open the title dialog below. There's **no separate Duplicate button** on the row, and Export PDF isn't in the menu |
 | "all sections empty" when nothing will show | **Always counts**, e.g. "0 of 6 sections" |
@@ -52,7 +52,7 @@ The export was updated with three mobile screens (`LibraryMobileEmpty`, `Library
 
 | The design shows | Build this instead |
 |---|---|
-| 48px New resume and Cancel buttons | shadcn Button's **`lg`** (36px), as on desktop |
+| 48px New resume and Cancel buttons | **As designed**, with our own Button size **`xl`** (48px), added to shadcn's. From `md` up, New resume is `lg` (36px), as before |
 | A hand-built actions sheet | shadcn's **Drawer**, styled to the design |
 | Rename, Duplicate, Export PDF and Delete resume in the sheet, with no divider | **As in the "…" menu**: Rename and Duplicate, a divider, then a red Delete resume. No Export PDF |
 | "all empty" on a row | **Always counts**, e.g. "0 of 6 sections" |

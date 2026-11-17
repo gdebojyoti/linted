@@ -96,8 +96,8 @@ export function RowSheet({
           render={
             <Button
               variant="outline"
-              size="lg"
-              className="mx-4 mt-4 cursor-pointer rounded-[10px] border-line-input bg-surface text-[15px] text-ink hover:bg-subtle"
+              size="xl"
+              className="mx-4 mt-4 cursor-pointer border-line-input bg-surface text-ink hover:bg-subtle"
             >
               Cancel
             </Button>

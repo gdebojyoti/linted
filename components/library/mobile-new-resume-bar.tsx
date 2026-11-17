@@ -16,7 +16,7 @@ export function MobileNewResumeBar({
 }) {
   return (
     <div className="sticky bottom-0 border-t border-line bg-surface p-4 md:hidden">
-      <NewResumeButton ref={newResumeRef} creating={creating} onCreate={onCreate} className="w-full" />
+      <NewResumeButton ref={newResumeRef} creating={creating} onCreate={onCreate} size="xl" className="w-full" />
     </div>
   );
 }

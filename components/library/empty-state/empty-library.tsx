@@ -24,7 +24,14 @@ export function EmptyLibrary({
             choose what each one includes.
           </p>
         </div>
-        <NewResumeButton ref={newResumeRef} creating={creating} onCreate={onCreate} />
+        {/* xl on mobile; back to lg's height, padding and text from md up. */}
+        <NewResumeButton
+          ref={newResumeRef}
+          creating={creating}
+          onCreate={onCreate}
+          size="xl"
+          className="md:h-9 md:gap-1.5 md:rounded-lg md:px-2.5 md:text-sm"
+        />
         {/* Boxed on desktop; plain on mobile. */}
         <StorageNote className="mt-1 text-left leading-normal md:mt-3 md:rounded-lg md:border md:border-line md:bg-surface md:px-3.5 md:py-3 md:leading-snug" />
       </div>
