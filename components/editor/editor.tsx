@@ -104,7 +104,7 @@ export function Editor({ initialResume }: { initialResume: Resume }) {
           initialTitle={copyTitle(resume.metadata.title)}
           submitting={duplicating}
           onSubmit={handleDuplicate}
-          returnFocusTo={duplicateRef}
+          returnFocusTo={() => duplicateRef.current}
         />
       </EditorFrame>
     </Tabs>

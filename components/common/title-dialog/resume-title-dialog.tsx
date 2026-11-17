@@ -1,5 +1,4 @@
 import { X } from "lucide-react";
-import type { RefObject } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ResumeTitleForm } from "./resume-title-form";
@@ -35,13 +34,13 @@ export function ResumeTitleDialog({
   initialTitle: string;
   submitting: boolean;
   onSubmit: (title: string) => void;
-  /** Focused when the dialog closes, usually the button that opened it. */
-  returnFocusTo: RefObject<HTMLElement | null>;
+  /** Where focus goes when the dialog closes, usually the button that opened it. */
+  returnFocusTo: () => HTMLElement | null;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        finalFocus={returnFocusTo}
+        finalFocus={() => returnFocusTo()}
         showCloseButton={false}
         className="block w-115 max-w-[calc(100%-2rem)] gap-0 rounded-2xl p-0 text-ink shadow-dialog ring-0 sm:max-w-115"
       >
