@@ -194,6 +194,15 @@ export function Library() {
         onSubmit={handleSubmit}
         returnFocusTo={openerRef}
       />
+
+      <div className="flex flex-col items-center pb-4 text-[12.5px] text-ink-muted gap-0.5">
+        <span>
+          If you found this useful,
+          consider <a className="text-accent underline underline-offset-2 font-semibold" target="_blank" href="https://pages.razorpay.com/debojyotighosh">leaving us a tip</a>
+        </span>
+        <span>Crafted with 🩷 in Durgapur, India</span>
+        {/* <span>Crafted with ❤️ in 🇮🇳</span> */}
+      </div>
     </div>
   );
 }
