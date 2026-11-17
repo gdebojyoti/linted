@@ -86,14 +86,18 @@ button{font-family:inherit}
 </div>
 </div>
 </main>
+<footer style="flex-shrink: 0; padding: 20px 24px 24px; display: flex; flex-direction: column; align-items: center; gap: 0; font-size: 12.5px; line-height: 1.5; color: #8F8F88; text-align: center">
+<span>Linted is built by one person. If it helped, <a href="https://pages.razorpay.com/debojyotighosh" target="_blank" rel="noopener" style="color: #17784A">leave a tip</a>.</span>
+<span>Crafted with 🩷 in Durgapur, India</span>
+</footer>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":940}}'>
+<script type="text/x-dc" data-dc-script data-props='{"openMenu":{"editor":null,"tsType":"number"},"$preview":{"width":1440,"height":940}}'>
 class Component extends DCLogic {
   renderVals() {
     var self = this;
     var st = this.state || {};
-    var open = st.open === undefined ? 1 : st.open;
+    var open = st.open === undefined ? (this.props.openMenu === undefined ? 1 : this.props.openMenu) : st.open;
     var R = [
       { title: 'Backend — payments v2', meta: 'Ledger · 6 of 7 sections', edited: '2 minutes ago', created: '14 Sep 2026' },
       { title: 'Platform infra — Series B startups', meta: 'Ledger · 5 of 6 sections', edited: 'Yesterday, 18:40', created: '9 Sep 2026' },

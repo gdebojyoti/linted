@@ -39,18 +39,19 @@ export function ResumeList({
   const shown = searchResumes(resumes, query);
 
   return (
-    <main className="flex grow justify-center px-16 pt-10 pb-10">
-      <div className="flex w-280 max-w-full flex-col gap-5">
-        <div className="flex items-end gap-4">
-          <div className="flex flex-col gap-1.5">
-            <h1 className="text-[26px] font-semibold tracking-tight">Library</h1>
+    <main className="flex grow justify-center px-4 pt-6 pb-0 md:px-16 md:pt-10 md:pb-10">
+      <div className="flex w-280 max-w-full flex-col gap-4 md:gap-5">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end">
+          <div className="flex flex-col gap-1 md:gap-1.5">
+            <h1 className="text-2xl font-semibold tracking-tight md:text-[26px]">Library</h1>
             <span className="text-xs text-ink-meta" aria-live="polite">
               {formatLibraryCount(shown.length, resumes.length)} · most recently edited first
             </span>
           </div>
-          <div className="grow" />
+          <div className="grow max-md:hidden" />
           <SearchBox query={query} onQueryChange={setQuery} />
-          <NewResumeButton ref={newResumeRef} creating={creating} onCreate={onCreate} />
+          {/* On mobile, New resume is in the bar below the list instead. */}
+          <NewResumeButton ref={newResumeRef} creating={creating} onCreate={onCreate} className="max-md:hidden" />
         </div>
 
         {shown.length === 0 ? (
@@ -59,7 +60,7 @@ export function ResumeList({
           <div className="overflow-hidden rounded-xl border border-line bg-surface">
             <div
               aria-hidden="true"
-              className={`${LIBRARY_COLUMNS} h-10 border-b border-line-soft pr-3 pl-5 text-xs font-medium text-ink-muted`}
+              className={`${LIBRARY_COLUMNS} h-10 border-b max-md:hidden border-line-soft pr-3 pl-5 text-xs font-medium text-ink-muted`}
             >
               <span>Resume title</span>
               <span className="flex items-center gap-1 text-ink">

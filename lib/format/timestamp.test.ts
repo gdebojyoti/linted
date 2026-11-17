@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { formatDay, formatLastEdited } from "./timestamp";
+import { formatDay, formatEditedPhrase, formatLastEdited } from "./timestamp";
 
 // Local times, so the tests pass in any time zone. Months count from 0.
 const now = new Date(2026, 8, 27, 14, 5, 30);
@@ -41,6 +41,17 @@ describe("formatLastEdited", () => {
   test("a week or more ago shows the date", () => {
     expect(ago(new Date(2026, 8, 20, 8, 0))).toBe("20 Sep 2026");
     expect(ago(new Date(2025, 0, 2, 8, 0))).toBe("2 Jan 2025");
+  });
+});
+
+describe("formatEditedPhrase", () => {
+  const phrase = (date: Date) => formatEditedPhrase(date.toISOString(), now);
+
+  test("starts with Edited, and the time reads on in lower case", () => {
+    expect(phrase(new Date(2026, 8, 27, 14, 5, 0))).toBe("Edited just now");
+    expect(phrase(new Date(2026, 8, 26, 18, 40))).toBe("Edited yesterday, 18:40");
+    expect(phrase(new Date(2026, 8, 27, 13, 50, 0))).toBe("Edited 15 minutes ago");
+    expect(phrase(new Date(2026, 8, 20, 8, 0))).toBe("Edited 20 Sep 2026");
   });
 });
 

@@ -12,6 +12,8 @@ import { renameResume } from "@/lib/resume/rename-resume";
 import { DEFAULT_RESUME_TITLE, type Resume } from "@/lib/resume/types";
 import { EmptyLibrary } from "./empty-state/empty-library";
 import { LibraryHeader } from "./header/library-header";
+import { LibraryFooter } from "./library-footer";
+import { MobileNewResumeBar } from "./mobile-new-resume-bar";
 import { ResumeList } from "./resume-list/resume-list";
 
 type Status =
@@ -64,6 +66,8 @@ export function Library() {
   const [toDelete, setToDelete] = useState<Resume | null>(null);
   /** Where focus goes when a row's "…" button is gone: after a delete, or a rename the search no longer matches. */
   const newResumeRef = useRef<HTMLButtonElement>(null);
+  /** Mobile's New resume, in the bar below the list. */
+  const barNewResumeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     let current = true;
@@ -132,8 +136,17 @@ export function Library() {
     setConfirming(false);
   }
 
-  /** The button that opened a dialog while it's still on the page, else New resume. */
-  const focusAfterClose = () => (openerRef.current?.isConnected ? openerRef.current : newResumeRef.current);
+  /**
+   * The button that opened a dialog while it's still on the page, else New
+   * resume: the one beside the search box, or on mobile the one in the bar.
+   */
+  const focusAfterClose = () => {
+    if (openerRef.current?.isConnected) return openerRef.current;
+    const bar = barNewResumeRef.current;
+    return bar?.checkVisibility() ? bar : newResumeRef.current;
+  };
+
+  const showingList = status.kind === "ready" && status.resumes.length > 0;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -195,14 +208,11 @@ export function Library() {
         returnFocusTo={focusAfterClose}
       />
 
-      <div className="flex flex-col items-center pb-4 text-[12.5px] text-ink-muted gap-0.5">
-        <span>
-          If you found this useful,
-          consider <a className="text-accent underline underline-offset-2 font-semibold" target="_blank" href="https://pages.razorpay.com/debojyotighosh">leaving us a tip</a>
-        </span>
-        <span>Crafted with 🩷 in Durgapur, India</span>
-        {/* <span>Crafted with ❤️ in 🇮🇳</span> */}
-      </div>
+      {/* On mobile the list's footer sits closer to it, and the New resume bar below it. */}
+      <LibraryFooter className={`px-4 md:px-6 md:pt-5 md:pb-6 ${showingList ? "pt-6 pb-4" : "pt-4 pb-6"}`} />
+      {showingList && (
+        <MobileNewResumeBar creating={saving} onCreate={openNew} newResumeRef={barNewResumeRef} />
+      )}
     </div>
   );
 }
