@@ -46,6 +46,19 @@
 | "Untitled resume" | **"Untitled Resume"**, the code's default |
 | Two wordings of the browser-storage note | **One wording** in both places: "No account needed. Your resumes are saved in this browser only, so clearing site data or switching browser / device will not bring them with you." |
 
+### Mobile and the footer (updated export)
+
+The export was updated with three mobile screens (`LibraryMobileEmpty`, `LibraryMobile`, and `LibraryMobileSheet` with its actions sheet) and a new footer on every screen. Everything in the table above applies to mobile too. The mobile layout is used below Tailwind's `md` breakpoint (768px). The footer is built as designed: its copy, the `#8F8F88` grey and the plain accent link. Where we build something different:
+
+| The design shows | Build this instead |
+|---|---|
+| 48px New resume and Cancel buttons | shadcn Button's **`lg`** (36px), as on desktop |
+| A hand-built actions sheet | shadcn's **Drawer**, styled to the design |
+| Rename, Duplicate, Export PDF and Delete resume in the sheet, with no divider | **As in the "…" menu**: Rename and Duplicate, a divider, then a red Delete resume. No Export PDF |
+| "all empty" on a row | **Always counts**, e.g. "0 of 6 sections" |
+| Only the title opens a Resume | **The whole row** opens it, as on desktop |
+| A second wording of the storage note | **The one wording** above |
+
 ## The New resume dialog (`linted-new-resume-dialog/`)
 
 `linted-new-resume-dialog/` is a third Claude Design export: the dialog that **New resume** opens in the Library, to name the Resume before it's created. The same dialog names a Duplicate (#12): headed "Duplicate resume", with a **Duplicate** button, starting from "<title> (copy)" selected. It also renames a Resume from the Library (#11): headed "Rename resume", with a **Rename** button, starting from the current title selected, and no footer hint. Its `Library.dc.html` is only the backdrop, the same design as in the Library export. Everything above about colours and fonts applies. Where we build something different:
