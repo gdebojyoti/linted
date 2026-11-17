@@ -62,7 +62,7 @@ export function Library() {
   const [confirming, setConfirming] = useState(false);
   /** The Resume the delete confirmation is for, kept while the dialog fades out. */
   const [toDelete, setToDelete] = useState<Resume | null>(null);
-  /** Where focus goes after a delete, since the deleted row's "…" button is gone. */
+  /** Where focus goes when a row's "…" button is gone: after a delete, or a rename the search no longer matches. */
   const newResumeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -132,8 +132,8 @@ export function Library() {
     setConfirming(false);
   }
 
-  /** The "…" button that opened the dialog while its row is still there, else New resume. */
-  const focusAfterDelete = () => (openerRef.current?.isConnected ? openerRef.current : newResumeRef.current);
+  /** The button that opened a dialog while it's still on the page, else New resume. */
+  const focusAfterClose = () => (openerRef.current?.isConnected ? openerRef.current : newResumeRef.current);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -184,7 +184,7 @@ export function Library() {
         action="Delete resume"
         deleting={saving}
         onConfirm={handleDelete}
-        returnFocusTo={focusAfterDelete}
+        returnFocusTo={focusAfterClose}
       />
       <ResumeTitleDialog
         {...dialogText(request)}
@@ -192,7 +192,7 @@ export function Library() {
         onOpenChange={(open) => !saving && setNaming(open)}
         submitting={saving}
         onSubmit={handleSubmit}
-        returnFocusTo={openerRef}
+        returnFocusTo={focusAfterClose}
       />
 
       <div className="flex flex-col items-center pb-4 text-[12.5px] text-ink-muted gap-0.5">
