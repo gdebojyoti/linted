@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
  */
 export function EditorFrame({ topBar, children }: { topBar: ReactNode; children: ReactNode }) {
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
+    <div className="flex h-dvh flex-col overflow-hidden">
       {topBar}
       <div className="flex min-h-0 grow">{children}</div>
     </div>

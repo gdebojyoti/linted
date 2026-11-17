@@ -149,7 +149,7 @@ export function Library() {
   const showingList = status.kind === "ready" && status.resumes.length > 0;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-dvh flex-col">
       <LibraryHeader />
       {status.kind !== "ready" && (
         <main className="flex grow items-center justify-center px-4 pb-14">
