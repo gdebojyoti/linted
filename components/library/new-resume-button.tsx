@@ -12,13 +12,21 @@ export function NewResumeButton({
   ref,
   creating,
   onCreate,
+  className,
 }: {
   ref?: Ref<HTMLButtonElement>;
   creating: boolean;
   onCreate: (opener: HTMLElement) => void;
+  className?: string;
 }) {
   return (
-    <Button ref={ref} size="lg" onClick={(event) => onCreate(event.currentTarget)} disabled={creating}>
+    <Button
+      ref={ref}
+      size="lg"
+      onClick={(event) => onCreate(event.currentTarget)}
+      disabled={creating}
+      className={className}
+    >
       <Plus aria-hidden="true" />
       New resume
     </Button>

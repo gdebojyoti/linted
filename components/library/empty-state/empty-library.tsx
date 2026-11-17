@@ -14,18 +14,19 @@ export function EmptyLibrary({
   newResumeRef: Ref<HTMLButtonElement>;
 }) {
   return (
-    <main className="flex grow items-center justify-center px-4 pb-14">
+    <main className="flex grow items-center justify-center px-6 pb-8">
       <div className="flex w-130 max-w-full flex-col items-center gap-5 text-center">
         <StackedPages />
         <div className="flex flex-col gap-2">
-          <h1 className="text-[26px] font-semibold tracking-tight">No resumes yet</h1>
-          <p className="text-sm leading-relaxed text-ink-muted">
+          <h1 className="text-2xl font-semibold tracking-tight md:text-[26px]">No resumes yet</h1>
+          <p className="text-[15px] leading-relaxed text-ink-muted md:text-sm">
             Start a resume and fill in only what you want. Keep several for different roles, and
             choose what each one includes.
           </p>
         </div>
         <NewResumeButton ref={newResumeRef} creating={creating} onCreate={onCreate} />
-        <StorageNote className="mt-3 rounded-lg border border-line bg-surface px-3.5 py-3 text-left leading-snug" />
+        {/* Boxed on desktop; plain on mobile. */}
+        <StorageNote className="mt-1 text-left leading-normal md:mt-3 md:rounded-lg md:border md:border-line md:bg-surface md:px-3.5 md:py-3 md:leading-snug" />
       </div>
     </main>
   );

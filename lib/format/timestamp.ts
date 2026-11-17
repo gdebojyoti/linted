@@ -34,6 +34,15 @@ export function formatLastEdited(iso: string, now: Date): string {
   return formatDay(iso);
 }
 
+/**
+ * The last-edited time as a phrase, for mobile's Resume rows and actions
+ * sheet: "Edited just now", "Edited yesterday, 18:40", "Edited 14 Sep 2026".
+ */
+export function formatEditedPhrase(iso: string, now: Date): string {
+  const when = formatLastEdited(iso, now);
+  return `Edited ${when[0].toLowerCase()}${when.slice(1)}`;
+}
+
 /** How many midnights lie between the two dates, in the viewer's time zone. */
 function calendarDaysBetween(earlier: Date, later: Date): number {
   const midnight = (date: Date) =>
