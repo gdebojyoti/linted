@@ -32,8 +32,7 @@ export function EmptyLibrary({
           size="xl"
           className="md:h-9 md:gap-1.5 md:rounded-lg md:px-2.5 md:text-sm"
         />
-        {/* Boxed on desktop; plain on mobile. */}
-        <StorageNote className="mt-1 text-left leading-normal md:mt-3 md:rounded-lg md:border md:border-line md:bg-surface md:px-3.5 md:py-3 md:leading-snug" />
+        <StorageNote className="mt-3 rounded-lg border border-line bg-surface px-3.5 py-3 text-left leading-normal md:leading-snug" />
       </div>
     </main>
   );

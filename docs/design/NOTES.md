@@ -52,6 +52,7 @@ The export was updated with three mobile screens (`LibraryMobileEmpty`, `Library
 
 | The design shows | Build this instead |
 |---|---|
+| A plain storage note under New resume when there are no Resumes | **Boxed**, as on desktop |
 | A header with the logo only | The logo and **"Saved in this browser"** on the right, as on desktop. No divider or "Library" |
 | 48px New resume and Cancel buttons | **As designed**, with our own Button size **`xl`** (48px), added to shadcn's. From `md` up, New resume is `lg` (36px), as before |
 | A sticky New resume bar with 16px padding | **12px** above and below the button, 16px at the sides |
