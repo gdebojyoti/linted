@@ -13,7 +13,8 @@ export type AddOptions = EditOptions & {
 
 /**
  * The Resume with an Empty, Enabled Entry added at the end of the Section. In
- * the Header, that Entry is a link.
+ * the Header, that Entry is a link. The Entry's id is `newId`'s first; an
+ * Experience Entry's first Position takes the next.
  */
 export function addEntry(
   resume: Resume,
@@ -24,7 +25,7 @@ export function addEntry(
     resume,
     (section) =>
       section.id === sectionId
-        ? withEntries(section, [...section.entries, emptyEntry(section.type, newId())])
+        ? withEntries(section, [...section.entries, emptyEntry(section.type, newId(), newId)])
         : section,
     options,
   );

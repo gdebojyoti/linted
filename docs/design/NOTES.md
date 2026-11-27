@@ -127,6 +127,31 @@ Where we build something different from `PreviewTwoCol`:
 | Header links shown as the address (e.g. "github.com/asharao") | **As in Ledger** (row 9 of the first table): each link shows its label, or its URL when it has no label |
 | Pine green and Source Serif 4 only | Margin's **defaults**. Its accent, typeface and density come from its Theme Options, as Ledger's do |
 
+## Positions in an Experience Entry (`linted-multi-position-design/`)
+
+`linted-multi-position-design/` is a fifth Claude Design export. An Experience Entry holds the company (Company, Location, Enabled) and one or more **Positions**, each with its own Role, Start, End, Current, Enabled and Bullets. Its own `README.md` describes the files and the data model. Everything above about colours and fonts applies, and so do the Content pane rows of the first table (6, 7, 10 and 11). Where we build something different, or the export leaves it open:
+
+| The design shows | Build this instead |
+|---|---|
+| Three page options, B1 to B3, none chosen | **B1** (`PreviewTwoColPositions1`): the company in bold with "Location · overall range" on the right, then each Position as an italic role with its own dates, then its Bullets. In **Margin and Ledger** both |
+| Positions sorted newest first automatically, when saving | **Never sorted automatically.** Positions stay in the order they're saved, and the form, the preview and the Export all show that order. "Add position" adds one **at the bottom**. When the list is out of date order, a **"Sort by date"** button shows, with lucide's `ArrowDownUp` icon and the note "These positions aren't in date order. Sort them so the most recent one is at the top." Clicking it sorts and saves the list, and the button goes away. It sits at the bottom of the list, just above "Add position", with the note **to its right**, as "Add position" has its hint |
+| "Positions · newest first" above the list | **"Positions"** only; the "newest first" label is dropped |
+| The closed card of a multi-Position Entry: the latest role and "+1" | **A count instead**: "Parcelwise · 2 positions" |
+| The End fields disabled while Current is ticked | **Hidden**, as everywhere (row 10) |
+| An outlined "Current" tag | The app's grey **Badge**, as everywhere (row 11) |
+
+**Out of date order** means an Enabled Position sits above another Enabled Position with a later start, or an Enabled Position with no start sits above one with a start. Disabled Positions don't count. Positions with the same start, or both with none, are never out of order, and sorting keeps them in their current order. Dates are compared with a **missing month or day counting as the earliest**: "2022" ties with "Jan 2022" and goes below "Mar 2022". Sorting puts the newest start at the top and Positions with no start at the bottom, and **sorts Disabled Positions with the rest**, though they never make the button show.
+
+**The closed card's header line** counts only Enabled Positions: "2 positions" when two or more are Enabled, the role when only one is, and just the company when none is; then "Current" or the overall range from them. A Position card whose role is blank reads **"New position"** in grey, as an Entry card reads "New entry".
+
+**The Entry's overall range** (B1's company line) comes from its Enabled Positions that have dates; it isn't stored. The start is the earliest Start, and the end the latest End, or **"Present"** when any of them is Current. When two dates tie as far as both go, the vaguer one is shown: "2022" and "Mar 2022" start at **2022**; "Mar 2022" and "2023" start at **Mar 2022**; "Jan 2025" and "2025" end at **2025**.
+
+**What's drawn:** an Entry with its company filled in is always drawn, as today. A Position is drawn when it's Enabled and has a role, dates or a Bullet. When an Entry has **one or no Positions to draw**, it uses today's layout ("Role, Company", then "Location · dates"); with none, that's the company and location only.
+
+**Existing Resumes** are converted when they're read: each Experience Entry becomes an Entry with one Position, keeping its role, dates and Bullets. `SCHEMA_VERSION` stays 1.
+
+**The last Position can't be deleted.** An Entry with one Position shows the single-Position form (Company, Role, Location, dates, Bullets, then "Add position" with the hint "Promoted, or changed roles at the same company?"), with no Position card and so no delete button. Deleting down to one Position brings that form back, and **Enables** that Position if it was Disabled, since the form has no checkbox for it.
+
 ## The delete confirmation (no design yet)
 
 "Delete resume" in a row's "…" menu (#13) asks first, in shadcn's **Alert Dialog** styled like the title dialog: same width, radius, shadow and footer strip. It reads "Delete resume?" and "“<title>” will be deleted from this browser. This can't be undone.", with **Cancel** and a red **Delete resume** button. Focus starts on Cancel, and clicking outside doesn't close it. Replace this with a Claude Design export when there is one.

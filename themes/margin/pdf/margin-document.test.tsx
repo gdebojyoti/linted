@@ -3,7 +3,7 @@ import { layoutOf } from "@/lib/resume/layout";
 import { renderableView } from "@/lib/resume/renderable-view";
 import { sampleResume } from "@/lib/resume/sample-resume";
 import { setThemeOption, themeOptionsOf } from "@/lib/resume/theme-options";
-import type { CustomSection, ExperienceEntry, Layout, Resume, Section, SkillsSection } from "@/lib/resume/types";
+import type { CustomSection, DateRange, ExperienceEntry, Layout, Position, Resume, Section, SkillsSection } from "@/lib/resume/types";
 import { placeSections } from "@/lib/theme/place-sections";
 import { MARGIN_LAYOUT } from "@/themes/margin/default-layout";
 import { MARGIN_DEFAULT_OPTIONS } from "@/themes/margin/default-options";
@@ -46,9 +46,17 @@ function experienceEntry(role: string, bullets: string[]): ExperienceEntry {
     id: role,
     enabled: true,
     company: "Paystream",
-    role,
     location: "London",
-    dates: { start: { year: 2022, month: 3, day: null }, current: true, end: null },
+    positions: [position(role, bullets, { start: { year: 2022, month: 3, day: null }, current: true, end: null })],
+  };
+}
+
+function position(role: string, bullets: string[], dates: DateRange): Position {
+  return {
+    id: `${role}-position`,
+    enabled: true,
+    role,
+    dates,
     bullets: bullets.map((text, i) => ({ id: `${role}-${i}`, enabled: true, text, children: [] })),
   };
 }
@@ -186,6 +194,52 @@ describe("MarginDocument", () => {
     expect(new Set(ys).size).toBe(3);
     expect(squash(pageText(pages[0]))).toContain(squash("Manchester, UK · 2013 – 2017 · First-class honours"));
     expect(runOf("University of Manchester").font).toBe("SourceSerif4-SemiBold");
+  });
+
+  describe("an Entry with several Positions", () => {
+    const parcelwise: ExperienceEntry = {
+      id: "parcelwise",
+      enabled: true,
+      company: "Parcelwise",
+      location: "Bengaluru",
+      positions: [
+        position("Staff-Engineer", ["Leads the payments group."], {
+          start: { year: 2025, month: 2, day: null },
+          current: true,
+          end: null,
+        }),
+        position("Senior-Engineer", ["Moved the order ledger."], {
+          start: { year: 2022, month: 3, day: null },
+          current: false,
+          end: { year: 2025, month: 1, day: null },
+        }),
+      ],
+    };
+
+    test("draws the company and its overall range, then each role in italic with its own dates and Bullets", async () => {
+      const { runOf } = finder(await marginPdf(resumeOf([header, experience([parcelwise])])));
+      const lines = ["Parcelwise", "Staff-Engineer", "Leads the payments group.", "Senior-Engineer", "Moved the order ledger."];
+
+      const ys = lines.map((text) => runOf(text).y);
+      expect(ys).toEqual([...ys].sort((a, b) => a - b));
+      expect(new Set(ys).size).toBe(lines.length);
+      expect(sameLine(runOf("Parcelwise"), runOf("Bengaluru · Mar 2022 – Present"))).toBe(true);
+      expect(sameLine(runOf("Staff-Engineer"), runOf("Feb 2025 – Present"))).toBe(true);
+      expect(sameLine(runOf("Senior-Engineer"), runOf("Mar 2022 – Jan 2025"))).toBe(true);
+      expect(runOf("Parcelwise").font).toBe("SourceSerif4-SemiBold");
+      expect(runOf("Staff-Engineer").font).toBe("SourceSerif4-Italic");
+    });
+
+    test("with one Position left to draw, draws it as an Entry with one Position", async () => {
+      const [, senior] = parcelwise.positions;
+      const oneDrawn = { ...parcelwise, positions: [{ ...parcelwise.positions[0], enabled: false }, senior] };
+      const pages = await marginPdf(resumeOf([header, experience([oneDrawn])]));
+      const { runOf } = finder(pages);
+
+      expect(squash(pageText(pages[0]))).toContain(squash("Senior-Engineer, Parcelwise"));
+      expect(sameLine(runOf("Senior-Engineer"), runOf("Bengaluru · Mar 2022 – Jan 2025"))).toBe(true);
+      expect(squash(pageText(pages[0]))).not.toContain(squash("Staff-Engineer"));
+    });
   });
 
   test("moves an Entry's dates below its main line when they don't fit beside it", async () => {

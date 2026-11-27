@@ -1,4 +1,4 @@
-import type { Entry, Resume, Section } from "./types";
+import type { Entry, ExperienceSection, Position, Resume, Section } from "./types";
 
 export type EditOptions = {
   now?: Date;
@@ -39,6 +39,23 @@ export function editEntry<S extends Section>(
     section,
     section.entries.map((entry) => (entry.id === entryId ? edit(entry) : entry)),
   );
+}
+
+/**
+ * The Experience Section with the Position `positionId` passed through
+ * `edit`, or the Section itself when it has no such Position.
+ */
+export function editPosition(
+  section: ExperienceSection,
+  positionId: string,
+  edit: (position: Position) => Position,
+): ExperienceSection {
+  const entry = section.entries.find((e) => e.positions.some((p) => p.id === positionId));
+  if (!entry) return section;
+  return editEntry(section, entry.id, (e) => ({
+    ...e,
+    positions: e.positions.map((p) => (p.id === positionId ? edit(p) : p)),
+  }));
 }
 
 /**

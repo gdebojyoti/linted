@@ -14,7 +14,7 @@ export function copyTitle(title: string): string {
 
 /**
  * A Duplicate: a full, independent copy of the Resume (CONTEXT.md). The
- * Resume and every Section, Entry and Bullet in it get new ids, so nothing
+ * Resume and every Section, Entry, Position and Bullet in it get new ids, so nothing
  * links the two, and the Layout follows the Sections' new ids. Created and
  * last-edited are now. The given Resume is not changed.
  */
@@ -47,10 +47,17 @@ export function duplicateResume(
   };
 }
 
-/** A deep copy, so the copy's dates and Bullets are its own objects. */
+/** A deep copy, so the copy's dates, Positions and Bullets are its own objects. */
 function copyEntry(entry: Entry, newId: () => string): Entry {
   const copy = { ...structuredClone(entry), id: newId() };
   if ("bullets" in copy) copy.bullets = copyBullets(copy.bullets, newId);
+  if ("positions" in copy) {
+    copy.positions = copy.positions.map((position) => ({
+      ...position,
+      id: newId(),
+      bullets: copyBullets(position.bullets, newId),
+    }));
+  }
   return copy;
 }
 

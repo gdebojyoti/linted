@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { renderableView } from "@/lib/resume/renderable-view";
 import { sampleResume } from "@/lib/resume/sample-resume";
-import type { CustomSection, ExperienceEntry, Resume, SkillsSection } from "@/lib/resume/types";
+import type { CustomSection, DateRange, ExperienceEntry, Position, Resume, SkillsSection } from "@/lib/resume/types";
 import { layoutOf } from "@/lib/resume/layout";
 import { placeSections } from "@/lib/theme/place-sections";
 import { pageText, readPdf, type PdfPage } from "@/themes/testing/read-pdf";
@@ -59,9 +59,17 @@ function experienceEntry(role: string, bullets: string[]): ExperienceEntry {
     id: role,
     enabled: true,
     company: "Paystream",
-    role,
     location: "London",
-    dates: { start: { year: 2022, month: 3, day: null }, current: true, end: null },
+    positions: [position(role, bullets, { start: { year: 2022, month: 3, day: null }, current: true, end: null })],
+  };
+}
+
+function position(role: string, bullets: string[], dates: DateRange): Position {
+  return {
+    id: `${role}-position`,
+    enabled: true,
+    role,
+    dates,
     bullets: bullets.map((text, i) => ({ id: `${role}-${i}`, enabled: true, text, children: [] })),
   };
 }
@@ -139,6 +147,46 @@ describe("LedgerDocument", () => {
     const positions = inOrder.map((part) => text.indexOf(squash(part)));
     expect(positions).not.toContain(-1);
     expect(positions).toEqual([...positions].sort((a, b) => a - b));
+  });
+
+  test("draws an Entry with several Positions as the company and its range, then each role in italic with its own dates", async () => {
+    const parcelwise: ExperienceEntry = {
+      id: "parcelwise",
+      enabled: true,
+      company: "Parcelwise",
+      location: "Bengaluru",
+      positions: [
+        position("Staff Engineer", ["Leads the payments group."], {
+          start: { year: 2025, month: 2, day: null },
+          current: true,
+          end: null,
+        }),
+        position("Senior Ledger Engineer", ["Moved the order ledger."], {
+          start: { year: 2022, month: 3, day: null },
+          current: false,
+          end: { year: 2025, month: 1, day: null },
+        }),
+      ],
+    };
+    const [page] = await ledgerPdf(withExperience([parcelwise]));
+    const text = squash(pageText(page));
+    const fontOf = (part: string) => page.text.find((run) => run.text.includes(part))?.font;
+
+    const inOrder = [
+      "Parcelwise",
+      "Bengaluru · Mar 2022 – Present",
+      "Staff Engineer",
+      "Feb 2025 – Present",
+      "Leads the payments group.",
+      "Senior Ledger Engineer",
+      "Mar 2022 – Jan 2025",
+      "Moved the order ledger.",
+    ];
+    const positions = inOrder.map((part) => text.indexOf(squash(part)));
+    expect(positions).not.toContain(-1);
+    expect(positions).toEqual([...positions].sort((a, b) => a - b));
+    expect(fontOf("Parcelwise")).toBe("SourceSerif4-SemiBold");
+    expect(fontOf("Senior Ledger Engineer")).toBe("SourceSerif4-Italic");
   });
 
   test("draws Prose in Source Serif 4, with real bold and italic fonts", async () => {

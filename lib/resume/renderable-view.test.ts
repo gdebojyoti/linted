@@ -12,6 +12,7 @@ import type {
   ExperienceEntry,
   ExperienceSection,
   HeaderSection,
+  Position,
   ProjectEntry,
   ProjectsSection,
   Resume,
@@ -50,17 +51,22 @@ function experience(entries: ExperienceEntry[]): ExperienceSection {
   return { id: "experience", type: "experience", title: "Experience", enabled: true, entries };
 }
 
-function experienceEntry(overrides: Partial<ExperienceEntry> = {}): ExperienceEntry {
-  return {
-    id: "job",
-    enabled: true,
-    company: "",
-    role: "",
-    location: "",
-    dates: noDates,
-    bullets: [],
-    ...overrides,
-  };
+/** An Experience Entry: with one Position made of `role`, `dates` and `bullets`, unless `positions` is given. */
+function experienceEntry({
+  id = "job",
+  enabled = true,
+  company = "",
+  location = "",
+  role = "",
+  dates = noDates,
+  bullets = [],
+  positions,
+}: Partial<ExperienceEntry> & Partial<Pick<Position, "role" | "dates" | "bullets">> = {}): ExperienceEntry {
+  return { id, enabled, company, location, positions: positions ?? [position({ id: `${id}-position`, role, dates, bullets })] };
+}
+
+function position(overrides: Partial<Position> = {}): Position {
+  return { id: "position", enabled: true, role: "", dates: noDates, bullets: [], ...overrides };
 }
 
 function bullet(text: string, children: Bullet[] = [], overrides: Partial<Bullet> = {}): Bullet {
@@ -71,7 +77,7 @@ function bullet(text: string, children: Bullet[] = [], overrides: Partial<Bullet
 function renderedBullets(bullets: Bullet[]) {
   const [section] = renderableView(resumeWith(experience([experienceEntry({ company: "Acme", bullets })]))).sections;
   if (section?.type !== "experience") throw new Error("expected the Experience Section to render");
-  return section.entries[0].bullets;
+  return section.entries[0].positions[0]?.bullets ?? [];
 }
 
 function skills(entries: SkillsEntry[]): SkillsSection {
@@ -185,9 +191,10 @@ describe("renderableView", () => {
     expect(ids(section("skills").entries)).toEqual(["skills-languages", "skills-infra"]);
 
     const [paystream, northwind] = section("experience").entries;
-    expect(ids(paystream.bullets)).toEqual(["exp-paystream-b1", "exp-paystream-b2", "exp-paystream-b3"]);
-    expect(ids(paystream.bullets[0].children)).toEqual(["exp-paystream-b1-1"]);
-    expect(ids(northwind.bullets)).toEqual(["exp-northwind-b1"]);
+    const [paystreamPosition] = paystream.positions;
+    expect(ids(paystreamPosition.bullets)).toEqual(["exp-paystream-b1", "exp-paystream-b2", "exp-paystream-b3"]);
+    expect(ids(paystreamPosition.bullets[0].children)).toEqual(["exp-paystream-b1-1"]);
+    expect(ids(northwind.positions[0].bullets)).toEqual(["exp-northwind-b1"]);
   });
 
   describe("Empty filtering", () => {
@@ -211,7 +218,7 @@ describe("renderableView", () => {
       const resume = resumeWith(experience([experienceEntry({ role: "  ", location: "Leeds" })]));
 
       expect(renderableView(resume).sections[0].entries).toEqual([
-        { id: "job", company: "", role: "", location: "Leeds", dates: noDates, bullets: [] },
+        { id: "job", company: "", location: "Leeds", positions: [] },
       ]);
     });
 
@@ -228,7 +235,7 @@ describe("renderableView", () => {
       expect(headerView).toMatchObject({ name: "Maya Okafor", headline: "Engineer" });
       expect(experienceView.entries[0]).toMatchObject({
         company: "Acme",
-        bullets: [{ text: "Led", children: [{ text: "Shipped" }] }],
+        positions: [{ bullets: [{ text: "Led", children: [{ text: "Shipped" }] }] }],
       });
       expect(skillsView.entries[0]).toMatchObject({ label: "Languages", skills: "Go, SQL" });
       expect(summaryView.entries[0]).toMatchObject({ text: "Backend engineer." });
@@ -239,7 +246,7 @@ describe("renderableView", () => {
       const resume = resumeWith(experience([experienceEntry({ dates })]));
 
       expect(renderableView(resume).sections[0].entries).toEqual([
-        { id: "job", company: "", role: "", location: "", dates, bullets: [] },
+        { id: "job", company: "", location: "", positions: [{ id: "job-position", role: "", dates, bullets: [] }] },
       ]);
     });
 
@@ -393,6 +400,66 @@ describe("renderableView", () => {
 
     test("a Disabled Header is left out", () => {
       const resume = resumeWith(header({ name: "Maya Okafor", enabled: false }));
+
+      expect(renderableView(resume).sections).toEqual([]);
+    });
+  });
+
+  describe("Positions", () => {
+    const dates: DateRange = { start: { year: 2020, month: null, day: null }, current: true, end: null };
+
+    test("render in their saved order, without Enabled flags; Disabled and Empty ones are left out", () => {
+      const resume = resumeWith(
+        experience([
+          experienceEntry({
+            company: "Acme",
+            positions: [
+              position({ id: "staff", role: " Staff Engineer " }),
+              position({ id: "off", role: "Lead", enabled: false }),
+              position({ id: "empty", role: "  " }),
+              position({ id: "dated", dates }),
+              position({ id: "bulleted", bullets: [bullet("Led")] }),
+            ],
+          }),
+        ]),
+      );
+
+      expect(renderableView(resume).sections[0].entries).toEqual([
+        {
+          id: "job",
+          company: "Acme",
+          location: "",
+          positions: [
+            { id: "staff", role: "Staff Engineer", dates: noDates, bullets: [] },
+            { id: "dated", role: "", dates, bullets: [] },
+            { id: "bulleted", role: "", dates: noDates, bullets: [{ id: "bullet-Led", text: "Led", children: [] }] },
+          ],
+        },
+      ]);
+    });
+
+    test("an Entry with its company filled in renders though no Position does", () => {
+      const resume = resumeWith(
+        experience([experienceEntry({ company: "Acme", positions: [position({ role: "Lead", enabled: false })] })]),
+      );
+
+      expect(renderableView(resume).sections[0].entries).toEqual([
+        { id: "job", company: "Acme", location: "", positions: [] },
+      ]);
+    });
+
+    test("a Position alone is enough for an Entry to render", () => {
+      const resume = resumeWith(experience([experienceEntry({ role: "Lead" })]));
+
+      expect(renderableView(resume).sections[0].entries).toEqual([
+        { id: "job", company: "", location: "", positions: [{ id: "job-position", role: "Lead", dates: noDates, bullets: [] }] },
+      ]);
+    });
+
+    test("an Entry whose only filled Position is Disabled, with no company or location, is left out", () => {
+      const resume = resumeWith(
+        experience([experienceEntry({ positions: [position({ role: "Lead", enabled: false }), position({ id: "empty" })] })]),
+      );
 
       expect(renderableView(resume).sections).toEqual([]);
     });

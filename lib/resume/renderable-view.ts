@@ -6,6 +6,7 @@ import type {
   DateRange,
   EducationEntry,
   ExperienceEntry,
+  Position,
   ProjectEntry,
   Resume,
   Section,
@@ -32,7 +33,7 @@ export type RenderableView = {
 
 /**
  * Turns a Resume into only the Content a Theme should draw. A Section, Entry,
- * Bullet or contact item is kept only if it and all its ancestors are
+ * Position, Bullet or contact item is kept only if it and all its ancestors are
  * Enabled and it is not Empty. Text is trimmed, and unfilled fields of kept
  * items come out as "". Section order is the Content's; placing Sections is
  * the Theme's job (ADR 0005).
@@ -116,17 +117,27 @@ function renderSummaryEntry(entry: SummaryEntry): Rendered<SummaryEntry> | null 
   return { id: entry.id, text: trimmed(entry.text) };
 }
 
+/** Kept when its company or location is filled in, or any of its Positions is kept. */
 function renderExperienceEntry(entry: ExperienceEntry): Rendered<ExperienceEntry> | null {
   if (!entry.enabled) return null;
   const rendered = {
     id: entry.id,
     company: trimmed(entry.company),
-    role: trimmed(entry.role),
     location: trimmed(entry.location),
-    dates: entry.dates,
-    bullets: renderBullets(entry.bullets),
+    positions: dropNulls(entry.positions.map(renderPosition)),
   };
-  return anyFilled(rendered, [rendered.company, rendered.role, rendered.location]) ? rendered : null;
+  return rendered.company !== "" || rendered.location !== "" || rendered.positions.length > 0 ? rendered : null;
+}
+
+function renderPosition(position: Position): Rendered<Position> | null {
+  if (!position.enabled) return null;
+  const rendered = {
+    id: position.id,
+    role: trimmed(position.role),
+    dates: position.dates,
+    bullets: renderBullets(position.bullets),
+  };
+  return anyFilled(rendered, [rendered.role]) ? rendered : null;
 }
 
 function renderProjectEntry(entry: ProjectEntry): Rendered<ProjectEntry> | null {

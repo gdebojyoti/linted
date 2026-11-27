@@ -31,6 +31,9 @@ export const SPACE_BETWEEN_PARAGRAPHS = 5;
 /** Space between Entries, in pt. */
 export const SPACE_BETWEEN_ENTRIES = 8;
 
+/** Space between an Experience Entry's Positions, in pt. */
+export const SPACE_BETWEEN_POSITIONS = 6;
+
 /** Space between an Entry's Bullets, in pt. */
 export const SPACE_BETWEEN_BULLETS = 2;
 
@@ -163,6 +166,11 @@ export const styles = StyleSheet.create({
   },
   lineMain: {
     flexShrink: 1,
+  },
+  // A multi-Position Entry's company line: 4pt above the first role, 1pt
+  // more than the Entry head's gap.
+  companyLine: {
+    marginBottom: 1,
   },
   meta: {
     flexShrink: 0,

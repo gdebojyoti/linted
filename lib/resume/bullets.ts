@@ -1,15 +1,17 @@
-import { editEntry, editSections, type EditOptions } from "./edit-sections";
+import { editEntry, editPosition, editSections, type EditOptions } from "./edit-sections";
 import type { AddOptions } from "./entries";
 import type { MoveDirection } from "./layout";
-import type { Bullet, Entry, Resume } from "./types";
+import type { Bullet, Entry, Position, Resume } from "./types";
 
-// Bullet operations. Experience, Projects, Education and Custom Entries have
-// Bullets; other Entries don't. Bullets go two levels deep: top-level
+// Bullet operations. Projects, Education and Custom Entries have Bullets, and
+// so does each Position of an Experience Entry; other Entries don't. An
+// `entryId` here is the id of whichever holds the Bullets: an Entry, or a
+// Position. Bullets go two levels deep: top-level
 // Bullets and their children. A child Bullet has no children of its own.
 // Moving a Bullet never changes its level, so it can't make a third one:
 // only nesting and un-nesting do that.
 
-/** The Resume with an Empty, Enabled Bullet added at the end of the Entry's top level. */
+/** The Resume with an Empty, Enabled Bullet added at the end of the Entry's (or Position's) top level. */
 export function addBullet(
   resume: Resume,
   entryId: string,
@@ -17,7 +19,7 @@ export function addBullet(
 ): Resume {
   return editBullets(
     resume,
-    (entry) => entry.id === entryId,
+    (owner) => owner.id === entryId,
     (bullets) => [...bullets, { id: newId(), enabled: true, text: "", children: [] }],
     options,
   );
@@ -214,23 +216,32 @@ function blockEnd(flat: FlatBullet[], from: number): number {
   return end;
 }
 
-/** An Entry that has Bullets. */
-type EntryWithBullets = Extract<Entry, { bullets: Bullet[] }>;
+/** What holds Bullets: an Entry that has them, or an Experience Entry's Position. */
+type BulletOwner = Extract<Entry, { bullets: Bullet[] }> | Position;
 
 /**
- * The Resume with one Entry's Bullets passed through `edit`: the Entry that
- * `isTarget` picks. When there's none, or `edit` returns the same list, the
- * given Resume comes back unchanged.
+ * The Resume with one owner's Bullets passed through `edit`: the Entry or
+ * Position that `isTarget` picks. When there's none, or `edit` returns the
+ * same list, the given Resume comes back unchanged.
  */
 function editBullets(
   resume: Resume,
-  isTarget: (entry: EntryWithBullets) => boolean,
+  isTarget: (owner: BulletOwner) => boolean,
   edit: (bullets: Bullet[]) => Bullet[],
   options: EditOptions,
 ): Resume {
   return editSections(
     resume,
     (section) => {
+      if (section.type === "experience") {
+        for (const position of section.entries.flatMap((entry) => entry.positions)) {
+          if (!isTarget(position)) continue;
+          const bullets = edit(position.bullets);
+          if (bullets === position.bullets) return section;
+          return editPosition(section, position.id, (p) => ({ ...p, bullets }));
+        }
+        return section;
+      }
       for (const entry of section.entries) {
         if (!("bullets" in entry) || !isTarget(entry)) continue;
         const bullets = edit(entry.bullets);
@@ -261,7 +272,7 @@ function editInReadingOrder(
 ): Resume {
   return editBullets(
     resume,
-    (entry) => flatten(entry.bullets).some((f) => f.bullet.id === bulletId),
+    (owner) => flatten(owner.bullets).some((f) => f.bullet.id === bulletId),
     (bullets) => {
       const flat = flatten(bullets);
       const edited = edit(flat, indexOf(flat, bulletId));

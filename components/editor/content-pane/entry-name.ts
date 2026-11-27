@@ -1,3 +1,4 @@
+import { formatCount } from "@/lib/format/count";
 import type {
   CustomSection,
   EducationSection,
@@ -25,7 +26,13 @@ export function entryHeading(section: CardSection, index: number): EntryHeading 
   switch (section.type) {
     case "experience": {
       const entry = section.entries[index];
-      return heading(entry?.company, entry?.role);
+      if (!entry) return heading();
+      if (entry.positions.length === 1) return heading(entry.company, entry.positions[0].role);
+      // Only Enabled Positions count: "3 positions" when two or more are, or
+      // else the one Enabled Position's role, if there is one.
+      const enabled = entry.positions.filter((p) => p.enabled);
+      const detail = enabled.length > 1 ? formatCount(enabled.length, "position", "positions") : enabled[0]?.role;
+      return heading(entry.company, detail);
     }
     case "projects": {
       const entry = section.entries[index];

@@ -60,6 +60,10 @@ _Avoid_: User section, freeform section
 One item within a Section, such as a single job, degree, project or summary paragraph.
 _Avoid_: Item, record, row
 
+**Position**:
+One role held at an Experience Entry's company, with its own dates, Current flag and Bullets. An Experience Entry holds the company and location and one or more Positions, so a promotion doesn't repeat the company. Positions stay in the order the user saved them, newest at the top by convention; they're only reordered when the user sorts them by date. The Entry's overall dates are worked out from its Enabled Positions, never stored. An Entry's last Position can't be deleted.
+_Avoid_: Role (for the whole record), job, title
+
 **Prose**:
 Free-text Content that supports inline formatting (bold, italic, links): Summaries and Bullets. All other fields are plain text.
 _Avoid_: Rich text, description
