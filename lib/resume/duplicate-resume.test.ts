@@ -11,14 +11,18 @@ import { updateHeader } from "./update-header";
 
 const now = new Date("2026-09-28T12:00:00.000Z");
 
-/** Every id in the Resume: its own, and every Section's, Entry's and Bullet's. */
+/** Every id in the Resume: its own, and every Section's, Entry's, Position's and Bullet's. */
 function allIds(resume: Resume): string[] {
   const bulletIds = (bullets: Bullet[]): string[] => bullets.flatMap((b) => [b.id, ...bulletIds(b.children)]);
   return [
     resume.metadata.id,
     ...resume.content.sections.flatMap((section) => [
       section.id,
-      ...section.entries.flatMap((entry) => [entry.id, ...("bullets" in entry ? bulletIds(entry.bullets) : [])]),
+      ...section.entries.flatMap((entry) => [
+        entry.id,
+        ...("bullets" in entry ? bulletIds(entry.bullets) : []),
+        ...("positions" in entry ? entry.positions.flatMap((p) => [p.id, ...bulletIds(p.bullets)]) : []),
+      ]),
     ]),
   ];
 }
@@ -43,12 +47,19 @@ function scribbleOver(resume: Resume) {
       entry.enabled = !entry.enabled;
       if ("dates" in entry) entry.dates.start = { year: 1900, month: null, day: null };
       if ("bullets" in entry) scribbleBullets(entry.bullets);
+      if ("positions" in entry) {
+        for (const position of entry.positions) {
+          position.role = "scribbled";
+          position.dates.start = { year: 1900, month: null, day: null };
+          scribbleBullets(position.bullets);
+        }
+      }
     }
   }
 }
 
 describe("duplicateResume", () => {
-  test("gives the copy a new id for the Resume and every Section, Entry and Bullet", () => {
+  test("gives the copy a new id for the Resume and every Section, Entry, Position and Bullet", () => {
     const copy = duplicateResume(sampleResume, { now });
     const original = new Set(allIds(sampleResume));
 

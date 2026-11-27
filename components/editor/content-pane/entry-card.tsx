@@ -76,8 +76,7 @@ export function EntryCard({
             <>
               {main && <span className="font-semibold">{main}</span>}
               {main && detail && " "}
-              {detail && <span className="text-ink-muted">{detail}</span>}
-            </>
+              {detail && <span className="text-ink-muted">{detail}</span>}            </>
           ) : (
             <span className="text-ink-meta">New entry</span>
           )}

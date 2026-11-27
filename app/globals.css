@@ -26,6 +26,8 @@
   --color-segment: #efefeb;
   /* A dialog's footer strip. */
   --color-surface-soft: #fafaf8;
+  /* A card inside a card, such as an Experience Entry's Position. */
+  --color-surface-nested: #fcfcfa;
 
   /* Lines */
   --color-line: #e3e3de;

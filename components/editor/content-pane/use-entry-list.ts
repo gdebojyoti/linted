@@ -17,7 +17,13 @@ export function useEntryList(sectionId: string, onEdit: (edit: ResumeEdit) => vo
     addButtonRef,
     add() {
       const id = crypto.randomUUID();
-      onEdit((resume) => addEntry(resume, sectionId, { newId: () => id }));
+      // The Entry takes `id`; anything inside it, such as an Experience
+      // Entry's first Position, gets an id of its own.
+      onEdit((resume) => {
+        let first = true;
+        const newId = () => (first ? ((first = false), id) : crypto.randomUUID());
+        return addEntry(resume, sectionId, { newId });
+      });
       setAddedId(id);
       return id;
     },

@@ -20,32 +20,40 @@ import type { Bullet, Resume } from "./types";
 
 const now = new Date("2026-09-29T12:00:00.000Z");
 
-const paystream = "exp-paystream";
+const paystream = "exp-paystream-position-1";
 
-function bulletsOf(resume: Resume, entryId: string): Bullet[] {
-  for (const section of resume.content.sections) {
-    const entry = section.entries.find((e) => e.id === entryId);
-    if (entry && "bullets" in entry) return entry.bullets;
-  }
-  throw new Error(`expected an Entry with Bullets: ${entryId}`);
+/** What holds Bullets among these Entries: each Entry, or an Experience Entry's Positions. */
+function owners(entries: readonly { id: string }[]): { id: string; bullets?: unknown }[] {
+  return entries.flatMap((e) => ("positions" in e ? (e.positions as { id: string }[]) : [e]));
 }
 
-/** The Entry's Bullets as the renderable view draws them. */
+/** The Bullets of the Entry or Position with this id. */
+function bulletsOf(resume: Resume, entryId: string): Bullet[] {
+  for (const section of resume.content.sections) {
+    const owner = owners(section.entries).find((e) => e.id === entryId);
+    if (owner?.bullets) return owner.bullets as Bullet[];
+  }
+  throw new Error(`expected an Entry or Position with Bullets: ${entryId}`);
+}
+
+/** The Entry's (or Position's) Bullets as the renderable view draws them. */
 function drawnBullets(resume: Resume, entryId: string): Rendered<Bullet>[] {
   for (const section of renderableView(resume).sections) {
-    const entry = section.entries.find((e) => e.id === entryId);
-    if (entry && "bullets" in entry) return entry.bullets;
+    const owner = owners(section.entries).find((e) => e.id === entryId);
+    if (owner?.bullets) return owner.bullets as Rendered<Bullet>[];
   }
-  throw new Error(`expected a drawn Entry with Bullets: ${entryId}`);
+  throw new Error(`expected a drawn Entry or Position with Bullets: ${entryId}`);
 }
 
 /**
  * The Entry's Bullet ids in reading order, indented two spaces per level, and
- * shortened by dropping the Entry's id: ["b1", "  b1-1", "b2"].
+ * shortened by dropping the Entry's id: ["b1", "  b1-1", "b2"]. For a
+ * Position, that's its Entry's id, without "-position-1".
  */
 function outline(resume: Resume, entryId: string): string[] {
+  const prefix = `${entryId.replace(/-position-\d+$/, "")}-`;
   const walk = (bullets: Bullet[], indent: string): string[] =>
-    bullets.flatMap((b) => [indent + b.id.replace(`${entryId}-`, ""), ...walk(b.children, `${indent}  `)]);
+    bullets.flatMap((b) => [indent + b.id.replace(prefix, ""), ...walk(b.children, `${indent}  `)]);
   return walk(bulletsOf(resume, entryId), "");
 }
 
@@ -68,7 +76,7 @@ describe("addBullet", () => {
     expect(renderableView(updated)).toEqual(renderableView(sampleResume));
   });
 
-  test.each(["exp-northwind", "proj-ledgerly", "edu-manchester", "talk-meetup"])(
+  test.each(["exp-northwind-position-1", "proj-ledgerly", "edu-manchester", "talk-meetup"])(
     "adds to Experience, Projects, Education and Custom Entries: %s",
     (entryId) => {
       const updated = addBullet(sampleResume, entryId, { now, newId: () => "new" });
@@ -214,11 +222,11 @@ describe("nestBullet", () => {
   });
 
   test("keeps the Bullet's text and Enabled state", () => {
-    const [, disabledBullet] = bulletsOf(sampleResume, "exp-northwind");
+    const [, disabledBullet] = bulletsOf(sampleResume, "exp-northwind-position-1");
 
     const updated = nestBullet(sampleResume, disabledBullet.id, { now });
 
-    expect(bulletsOf(updated, "exp-northwind")[0].children).toEqual([disabledBullet]);
+    expect(bulletsOf(updated, "exp-northwind-position-1")[0].children).toEqual([disabledBullet]);
   });
 
   test("the first Bullet can't be nested, as there's nothing above it", () => {
@@ -368,7 +376,7 @@ describe("placedBullets and movedBullets", () => {
   test("give the Bullets as placeBullet and moveBullet leave them, for wording the move, or null when nothing moves", () => {
     const bullets = bulletsOf(sampleResume, paystream);
     const ids = (list: Bullet[] | null) =>
-      list?.map((b) => [b.id.replace(`${paystream}-`, ""), ...b.children.map((c) => c.id.replace(`${paystream}-`, ""))]);
+      list?.map((b) => [b.id.replace("exp-paystream-", ""), ...b.children.map((c) => c.id.replace("exp-paystream-", ""))]);
 
     expect(ids(placedBullets(bullets, "exp-paystream-b1-1", 4))).toEqual([["b1", "b1-2"], ["b2", "b1-1"], ["b3"]]);
     expect(ids(movedBullets(bullets, "exp-paystream-b2", "up"))).toEqual([["b2"], ["b1", "b1-1", "b1-2"], ["b3"]]);

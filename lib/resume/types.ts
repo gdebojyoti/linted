@@ -136,10 +136,24 @@ export type SummaryEntry = Enableable & {
   text: string;
 };
 
+/**
+ * A company: where the user worked. Each role they held there is a Position,
+ * so a promotion doesn't repeat the company. The Entry's own dates are
+ * worked out from its Positions (positionsDateRange), never stored.
+ */
 export type ExperienceEntry = Enableable & {
   company: string;
-  role: string;
   location: string;
+  /**
+   * At least one, in the order the user sees them. Never sorted on its own:
+   * only "Sort by date" (sortPositions) reorders them.
+   */
+  positions: Position[];
+};
+
+/** One role at an Experience Entry's company. */
+export type Position = Enableable & {
+  role: string;
   dates: DateRange;
   bullets: Bullet[];
 };

@@ -13,29 +13,28 @@ function experienceEntry(resume: Resume, id: string): ExperienceEntry {
 }
 
 describe("updateExperienceEntry", () => {
-  test("sets the company, role and location exactly as typed", () => {
+  test("sets the company and location exactly as typed", () => {
     const updated = updateExperienceEntry(
       sampleResume,
       "exp-paystream",
-      { company: "Paystream Ltd ", role: "Staff Engineer", location: "Remote" },
+      { company: "Paystream Ltd ", location: "Remote" },
       { now },
     );
 
     expect(experienceEntry(updated, "exp-paystream")).toEqual({
       ...experienceEntry(sampleResume, "exp-paystream"),
       company: "Paystream Ltd ",
-      role: "Staff Engineer",
       location: "Remote",
     });
     expect(experienceEntry(updated, "exp-northwind")).toEqual(experienceEntry(sampleResume, "exp-northwind"));
     expect(updated.metadata.lastEditedAt).toBe("2026-10-04T12:00:00.000Z");
   });
 
-  test("sets one field, leaving the others, including dates and Bullets", () => {
+  test("sets one field, leaving the others, including the Positions", () => {
     const before = experienceEntry(sampleResume, "exp-paystream");
-    const updated = updateExperienceEntry(sampleResume, "exp-paystream", { role: "" }, { now });
+    const updated = updateExperienceEntry(sampleResume, "exp-paystream", { location: "" }, { now });
 
-    expect(experienceEntry(updated, "exp-paystream")).toEqual({ ...before, role: "" });
+    expect(experienceEntry(updated, "exp-paystream")).toEqual({ ...before, location: "" });
   });
 
   test("an unknown Experience Entry changes nothing", () => {

@@ -93,40 +93,46 @@ export const sampleResume: Resume = {
             id: "exp-paystream",
             enabled: true,
             company: "Paystream",
-            role: "Senior Backend Engineer",
             location: "London, UK (hybrid)",
-            dates: { start: month(2022, 3), current: true, end: null },
-            bullets: [
+            positions: [
               {
-                id: "exp-paystream-b1",
+                id: "exp-paystream-position-1",
                 enabled: true,
-                text: "Led the move of card authorisation from a monolith to **six Go services**, cutting p99 latency from 480 ms to 95 ms.",
-                children: [
+                role: "Senior Backend Engineer",
+                dates: { start: month(2022, 3), current: true, end: null },
+                bullets: [
                   {
-                    id: "exp-paystream-b1-1",
+                    id: "exp-paystream-b1",
                     enabled: true,
-                    text: "Designed the rollout: shadow traffic, then per-merchant flags, with zero failed payments during cutover.",
+                    text: "Led the move of card authorisation from a monolith to **six Go services**, cutting p99 latency from 480 ms to 95 ms.",
+                    children: [
+                      {
+                        id: "exp-paystream-b1-1",
+                        enabled: true,
+                        text: "Designed the rollout: shadow traffic, then per-merchant flags, with zero failed payments during cutover.",
+                        children: [],
+                      },
+                      {
+                        id: "exp-paystream-b1-2",
+                        enabled: false,
+                        text: "Wrote the internal RFC template the platform team still uses.",
+                        children: [],
+                      },
+                    ],
+                  },
+                  {
+                    id: "exp-paystream-b2",
+                    enabled: true,
+                    text: "Introduced idempotency keys across the public API, removing a class of duplicate-charge incidents (*~30 a quarter* before).",
                     children: [],
                   },
                   {
-                    id: "exp-paystream-b1-2",
-                    enabled: false,
-                    text: "Wrote the internal RFC template the platform team still uses.",
+                    id: "exp-paystream-b3",
+                    enabled: true,
+                    text: "Mentor to four engineers; two promoted to senior.",
                     children: [],
                   },
                 ],
-              },
-              {
-                id: "exp-paystream-b2",
-                enabled: true,
-                text: "Introduced idempotency keys across the public API, removing a class of duplicate-charge incidents (*~30 a quarter* before).",
-                children: [],
-              },
-              {
-                id: "exp-paystream-b3",
-                enabled: true,
-                text: "Mentor to four engineers; two promoted to senior.",
-                children: [],
               },
             ],
           },
@@ -134,21 +140,27 @@ export const sampleResume: Resume = {
             id: "exp-northwind",
             enabled: true,
             company: "Northwind Analytics",
-            role: "Backend Engineer",
             location: "Manchester, UK",
-            dates: { start: month(2019, 6), current: false, end: month(2022, 2) },
-            bullets: [
+            positions: [
               {
-                id: "exp-northwind-b1",
+                id: "exp-northwind-position-1",
                 enabled: true,
-                text: "Built the event ingestion pipeline (Kafka, Python, ClickHouse) processing **2B events a month**.",
-                children: [],
-              },
-              {
-                id: "exp-northwind-b2",
-                enabled: false,
-                text: "Maintained the legacy PHP reporting service until it was retired.",
-                children: [],
+                role: "Backend Engineer",
+                dates: { start: month(2019, 6), current: false, end: month(2022, 2) },
+                bullets: [
+                  {
+                    id: "exp-northwind-b1",
+                    enabled: true,
+                    text: "Built the event ingestion pipeline (Kafka, Python, ClickHouse) processing **2B events a month**.",
+                    children: [],
+                  },
+                  {
+                    id: "exp-northwind-b2",
+                    enabled: false,
+                    text: "Maintained the legacy PHP reporting service until it was retired.",
+                    children: [],
+                  },
+                ],
               },
             ],
           },
@@ -156,15 +168,21 @@ export const sampleResume: Resume = {
             id: "exp-first-job",
             enabled: false,
             company: "Brightside Web Studio",
-            role: "Junior Developer",
             location: "Leeds, UK",
-            dates: { start: year(2017), current: false, end: year(2019) },
-            bullets: [
+            positions: [
               {
-                id: "exp-first-job-b1",
+                id: "exp-first-job-position-1",
                 enabled: true,
-                text: "Built WordPress and Laravel sites for 20+ small-business clients.",
-                children: [],
+                role: "Junior Developer",
+                dates: { start: year(2017), current: false, end: year(2019) },
+                bullets: [
+                  {
+                    id: "exp-first-job-b1",
+                    enabled: true,
+                    text: "Built WordPress and Laravel sites for 20+ small-business clients.",
+                    children: [],
+                  },
+                ],
               },
             ],
           },

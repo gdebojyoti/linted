@@ -9,12 +9,14 @@ const year = (year: number): ResumeDate => ({ year, month: null, day: null });
 const month = (year: number, month: number): ResumeDate => ({ year, month, day: null });
 const day = (year: number, month: number, day: number): ResumeDate => ({ year, month, day });
 
+/** The dates of the Entry with this id, or of an Experience Entry's Position. */
 function datesOf(resume: Resume, entryId: string): DateRange {
   for (const section of resume.content.sections) {
-    const entry = section.entries.find((e) => e.id === entryId);
-    if (entry && "dates" in entry) return entry.dates;
+    const owners = section.entries.flatMap((e): object[] => ("positions" in e ? e.positions : [e]));
+    const owner = owners.find((e) => "id" in e && e.id === entryId);
+    if (owner && "dates" in owner) return owner.dates as DateRange;
   }
-  throw new Error(`expected an Entry with dates: ${entryId}`);
+  throw new Error(`expected an Entry or Position with dates: ${entryId}`);
 }
 
 describe("isValidDate", () => {
@@ -53,26 +55,26 @@ describe("isValidDate", () => {
 
 describe("updateDates", () => {
   test("sets the start and end dates", () => {
-    const updated = updateDates(sampleResume, "exp-northwind", { start: month(2019, 9), end: day(2022, 2, 28) }, { now });
+    const updated = updateDates(sampleResume, "exp-northwind-position-1", { start: month(2019, 9), end: day(2022, 2, 28) }, { now });
 
-    expect(datesOf(updated, "exp-northwind")).toEqual({ start: month(2019, 9), current: false, end: day(2022, 2, 28) });
-    expect(datesOf(updated, "exp-first-job")).toEqual(datesOf(sampleResume, "exp-first-job"));
+    expect(datesOf(updated, "exp-northwind-position-1")).toEqual({ start: month(2019, 9), current: false, end: day(2022, 2, 28) });
+    expect(datesOf(updated, "exp-first-job-position-1")).toEqual(datesOf(sampleResume, "exp-first-job-position-1"));
     expect(updated.metadata.lastEditedAt).toBe(now.toISOString());
   });
 
   test("a date left out stays as it is", () => {
-    const updated = updateDates(sampleResume, "exp-northwind", { end: year(2023) }, { now });
+    const updated = updateDates(sampleResume, "exp-northwind-position-1", { end: year(2023) }, { now });
 
-    expect(datesOf(updated, "exp-northwind")).toEqual({ start: month(2019, 6), current: false, end: year(2023) });
+    expect(datesOf(updated, "exp-northwind-position-1")).toEqual({ start: month(2019, 6), current: false, end: year(2023) });
   });
 
   test("null clears a date, so an Entry can have no dates at all", () => {
-    const updated = updateDates(sampleResume, "exp-northwind", { start: null, end: null }, { now });
+    const updated = updateDates(sampleResume, "exp-northwind-position-1", { start: null, end: null }, { now });
 
-    expect(datesOf(updated, "exp-northwind")).toEqual({ start: null, current: false, end: null });
+    expect(datesOf(updated, "exp-northwind-position-1")).toEqual({ start: null, current: false, end: null });
   });
 
-  test.each(["exp-northwind", "proj-rate-limiter", "edu-manchester", "talk-meetup"])(
+  test.each(["exp-northwind-position-1", "proj-rate-limiter", "edu-manchester", "talk-meetup"])(
     "sets the dates of Experience, Projects, Education and Custom Entries: %s",
     (entryId) => {
       const updated = updateDates(sampleResume, entryId, { start: year(2021) }, { now });
@@ -82,29 +84,29 @@ describe("updateDates", () => {
   );
 
   test("an end date before the start date is allowed", () => {
-    const updated = updateDates(sampleResume, "exp-northwind", { start: year(2022), end: year(2020) }, { now });
+    const updated = updateDates(sampleResume, "exp-northwind-position-1", { start: year(2022), end: year(2020) }, { now });
 
-    expect(datesOf(updated, "exp-northwind")).toEqual({ start: year(2022), current: false, end: year(2020) });
+    expect(datesOf(updated, "exp-northwind-position-1")).toEqual({ start: year(2022), current: false, end: year(2020) });
   });
 
   test("an invalid date rejects the whole change", () => {
-    expect(updateDates(sampleResume, "exp-northwind", { start: year(1850) }, { now })).toBe(sampleResume);
+    expect(updateDates(sampleResume, "exp-northwind-position-1", { start: year(1850) }, { now })).toBe(sampleResume);
     expect(
-      updateDates(sampleResume, "exp-northwind", { start: month(2019, 7), end: month(2022, 13) }, { now }),
+      updateDates(sampleResume, "exp-northwind-position-1", { start: month(2019, 7), end: month(2022, 13) }, { now }),
     ).toBe(sampleResume);
   });
 
   test("a Current Entry can't be given an end date", () => {
-    expect(updateDates(sampleResume, "exp-paystream", { end: month(2024, 1) }, { now })).toBe(sampleResume);
+    expect(updateDates(sampleResume, "exp-paystream-position-1", { end: month(2024, 1) }, { now })).toBe(sampleResume);
     expect(
-      updateDates(sampleResume, "exp-paystream", { start: month(2021, 1), end: month(2024, 1) }, { now }),
+      updateDates(sampleResume, "exp-paystream-position-1", { start: month(2021, 1), end: month(2024, 1) }, { now }),
     ).toBe(sampleResume);
   });
 
   test("a Current Entry's start date can still change", () => {
-    const updated = updateDates(sampleResume, "exp-paystream", { start: month(2021, 11), end: null }, { now });
+    const updated = updateDates(sampleResume, "exp-paystream-position-1", { start: month(2021, 11), end: null }, { now });
 
-    expect(datesOf(updated, "exp-paystream")).toEqual({ start: month(2021, 11), current: true, end: null });
+    expect(datesOf(updated, "exp-paystream-position-1")).toEqual({ start: month(2021, 11), current: true, end: null });
   });
 
   test.each(["no-such-entry", "summary-backend", "skills-languages", "contact-email"])(
@@ -117,7 +119,7 @@ describe("updateDates", () => {
   test("the given Resume is not changed", () => {
     const before = structuredClone(sampleResume);
 
-    updateDates(sampleResume, "exp-northwind", { start: null, end: year(2023) }, { now });
+    updateDates(sampleResume, "exp-northwind-position-1", { start: null, end: year(2023) }, { now });
 
     expect(sampleResume).toEqual(before);
   });
@@ -125,24 +127,24 @@ describe("updateDates", () => {
 
 describe("setCurrent", () => {
   test("marking an Entry Current removes its end date", () => {
-    const updated = setCurrent(sampleResume, "exp-northwind", true, { now });
+    const updated = setCurrent(sampleResume, "exp-northwind-position-1", true, { now });
 
-    expect(datesOf(updated, "exp-northwind")).toEqual({ start: month(2019, 6), current: true, end: null });
+    expect(datesOf(updated, "exp-northwind-position-1")).toEqual({ start: month(2019, 6), current: true, end: null });
     expect(updated.metadata.lastEditedAt).toBe(now.toISOString());
   });
 
   test("unmarking it doesn't bring the end date back", () => {
-    const updated = setCurrent(setCurrent(sampleResume, "exp-northwind", true, { now }), "exp-northwind", false, { now });
+    const updated = setCurrent(setCurrent(sampleResume, "exp-northwind-position-1", true, { now }), "exp-northwind-position-1", false, { now });
 
-    expect(datesOf(updated, "exp-northwind")).toEqual({ start: month(2019, 6), current: false, end: null });
+    expect(datesOf(updated, "exp-northwind-position-1")).toEqual({ start: month(2019, 6), current: false, end: null });
   });
 
   test("an Entry that is no longer Current can be given an end date", () => {
-    const updated = updateDates(setCurrent(sampleResume, "exp-paystream", false, { now }), "exp-paystream", {
+    const updated = updateDates(setCurrent(sampleResume, "exp-paystream-position-1", false, { now }), "exp-paystream-position-1", {
       end: month(2025, 6),
     });
 
-    expect(datesOf(updated, "exp-paystream")).toEqual({ start: month(2022, 3), current: false, end: month(2025, 6) });
+    expect(datesOf(updated, "exp-paystream-position-1")).toEqual({ start: month(2022, 3), current: false, end: month(2025, 6) });
   });
 
   test("an Entry with no start date can be Current", () => {
@@ -161,7 +163,7 @@ describe("setCurrent", () => {
   test("the given Resume is not changed", () => {
     const before = structuredClone(sampleResume);
 
-    setCurrent(sampleResume, "exp-northwind", true, { now });
+    setCurrent(sampleResume, "exp-northwind-position-1", true, { now });
 
     expect(sampleResume).toEqual(before);
   });

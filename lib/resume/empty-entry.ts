@@ -1,4 +1,4 @@
-import type { DateRange, Entry, FixedContactEntry, FixedContactKind, SectionType } from "./types";
+import type { DateRange, Entry, FixedContactEntry, FixedContactKind, Position, SectionType } from "./types";
 
 const noDates: DateRange = { start: null, current: false, end: null };
 
@@ -7,11 +7,21 @@ export function emptyContact(kind: FixedContactKind, id: string): FixedContactEn
   return { id, enabled: true, kind, value: "" };
 }
 
+/** An Empty, Enabled Position: a role at an Experience Entry's company. */
+export function emptyPosition(id: string): Position {
+  return { id, enabled: true, role: "", dates: noDates, bullets: [] };
+}
+
 /**
  * An Empty, Enabled Entry for a Section of this type. For the Header it is a
- * link: the only contact item that can be added.
+ * link: the only contact item that can be added. An Experience Entry starts
+ * with one Empty Position, whose id comes from `newId`.
  */
-export function emptyEntry(type: SectionType, id: string): Entry {
+export function emptyEntry(
+  type: SectionType,
+  id: string,
+  newId: () => string = () => crypto.randomUUID(),
+): Entry {
   const enabled = true;
   switch (type) {
     case "header":
@@ -19,7 +29,7 @@ export function emptyEntry(type: SectionType, id: string): Entry {
     case "summary":
       return { id, enabled, text: "" };
     case "experience":
-      return { id, enabled, company: "", role: "", location: "", dates: noDates, bullets: [] };
+      return { id, enabled, company: "", location: "", positions: [emptyPosition(newId())] };
     case "projects":
       return { id, enabled, name: "", linkLabel: "", link: "", techStack: "", dates: noDates, bullets: [] };
     case "skills":

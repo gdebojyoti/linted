@@ -1,9 +1,10 @@
-import { editEntry, editSections, type EditOptions } from "./edit-sections";
+import { editEntry, editPosition, editSections, type EditOptions } from "./edit-sections";
 import type { DateRange, Resume, ResumeDate } from "./types";
 
 // Setting an Entry's dates, marking it Current, and checking its dates.
-// Experience, Projects, Education and Custom Entries have dates; other
-// Entries don't.
+// Projects, Education and Custom Entries have dates, and so does each
+// Position of an Experience Entry; other Entries don't. An `entryId` here is
+// the id of whichever holds the dates: an Entry, or a Position.
 
 /** The earliest year a date may have. */
 export const MIN_YEAR = 1900;
@@ -108,9 +109,17 @@ export function setCurrent(
   );
 }
 
-/** The dates of the Entry with this id, or null if there's no such Entry or it has no dates. */
+/**
+ * The dates of the Entry or Position with this id, or null if there's no
+ * such Entry or Position or it has no dates.
+ */
 function datesOf(resume: Resume, entryId: string): DateRange | null {
   for (const section of resume.content.sections) {
+    if (section.type === "experience") {
+      const position = section.entries.flatMap((e) => e.positions).find((p) => p.id === entryId);
+      if (position) return position.dates;
+      continue;
+    }
     const entry = section.entries.find((e) => e.id === entryId);
     if (entry) return "dates" in entry ? entry.dates : null;
   }
@@ -120,7 +129,10 @@ function datesOf(resume: Resume, entryId: string): DateRange | null {
 function withDates(resume: Resume, entryId: string, dates: DateRange, options: EditOptions): Resume {
   return editSections(
     resume,
-    (section) => editEntry(section, entryId, (entry) => ("dates" in entry ? { ...entry, dates } : entry)),
+    (section) =>
+      section.type === "experience"
+        ? editPosition(section, entryId, (position) => ({ ...position, dates }))
+        : editEntry(section, entryId, (entry) => ("dates" in entry ? { ...entry, dates } : entry)),
     options,
   );
 }
