@@ -134,13 +134,15 @@ Where we build something different from `PreviewTwoCol`:
 | The design shows | Build this instead |
 |---|---|
 | Three page options, B1 to B3, none chosen | **B1** (`PreviewTwoColPositions1`): the company in bold with "Location · overall range" on the right, then each Position as an italic role with its own dates, then its Bullets. In **Margin and Ledger** both |
-| Positions sorted newest first automatically, when saving | **Never sorted automatically.** Positions stay in the order they're saved, and the form, the preview and the Export all show that order. "Add position" adds one **at the bottom**. When the list is out of date order, a **"Sort by date"** button shows, with the note "These positions aren't in date order. Sort them so the most recent one is at the top." Clicking it sorts and saves the list, and the button goes away. Placed at the bottom of the list, just above "Add position", for now: final placement to be decided after trying it |
+| Positions sorted newest first automatically, when saving | **Never sorted automatically.** Positions stay in the order they're saved, and the form, the preview and the Export all show that order. "Add position" adds one **at the bottom**. When the list is out of date order, a **"Sort by date"** button shows, with lucide's `ArrowDownUp` icon and the note "These positions aren't in date order. Sort them so the most recent one is at the top." Clicking it sorts and saves the list, and the button goes away. It sits at the bottom of the list, just above "Add position", with the note **to its right**, as "Add position" has its hint |
 | "Positions · newest first" above the list | **"Positions"** only; the "newest first" label is dropped |
-| The closed card of a multi-Position Entry: the latest role and "+1" | The role of the Position **at the top of the list**, e.g. "Parcelwise · Senior Backend Engineer +1" while it's unsorted |
+| The closed card of a multi-Position Entry: the latest role and "+1" | **A count instead**: "Parcelwise · 2 positions" |
 | The End fields disabled while Current is ticked | **Hidden**, as everywhere (row 10) |
 | An outlined "Current" tag | The app's grey **Badge**, as everywhere (row 11) |
 
-**Out of date order** means an Enabled Position sits above another Enabled Position with a later start, or an Enabled Position with no start sits above one with a start. Disabled Positions don't count. Positions with the same start, or both with none, are never out of order, and sorting keeps them in their current order. Dates are compared with a **missing month or day counting as the earliest**: "2022" ties with "Jan 2022" and goes below "Mar 2022". Sorting puts the newest start at the top and Positions with no start at the bottom. The button shows exactly when clicking it would change the order.
+**Out of date order** means an Enabled Position sits above another Enabled Position with a later start, or an Enabled Position with no start sits above one with a start. Disabled Positions don't count. Positions with the same start, or both with none, are never out of order, and sorting keeps them in their current order. Dates are compared with a **missing month or day counting as the earliest**: "2022" ties with "Jan 2022" and goes below "Mar 2022". Sorting puts the newest start at the top and Positions with no start at the bottom, and **sorts Disabled Positions with the rest**, though they never make the button show.
+
+**The closed card's header line** counts only Enabled Positions: "2 positions" when two or more are Enabled, the role when only one is, and just the company when none is; then "Current" or the overall range from them. A Position card whose role is blank reads **"New position"** in grey, as an Entry card reads "New entry".
 
 **The Entry's overall range** (B1's company line) comes from its Enabled Positions that have dates; it isn't stored. The start is the earliest Start, and the end the latest End, or **"Present"** when any of them is Current. When two dates tie as far as both go, the vaguer one is shown: "2022" and "Mar 2022" start at **2022**; "Mar 2022" and "2023" start at **Mar 2022**; "Jan 2025" and "2025" end at **2025**.
 
@@ -148,7 +150,7 @@ Where we build something different from `PreviewTwoCol`:
 
 **Existing Resumes** are converted when they're read: each Experience Entry becomes an Entry with one Position, keeping its role, dates and Bullets. `SCHEMA_VERSION` stays 1.
 
-**The last Position can't be deleted.** An Entry with one Position shows the single-Position form (Company, Role, Location, dates, Bullets, then "Add position" with the hint "Promoted, or changed roles at the same company?"), with no Position card and so no delete button. Deleting down to one Position brings that form back.
+**The last Position can't be deleted.** An Entry with one Position shows the single-Position form (Company, Role, Location, dates, Bullets, then "Add position" with the hint "Promoted, or changed roles at the same company?"), with no Position card and so no delete button. Deleting down to one Position brings that form back, and **Enables** that Position if it was Disabled, since the form has no checkbox for it.
 
 ## The delete confirmation (no design yet)
 
